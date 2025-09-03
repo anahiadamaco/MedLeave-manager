@@ -1,0 +1,87 @@
+Link de interés:  
+1) https://aws.amazon.com/es/rds/postgresql/what-is-postgresql/#:~:text=PostgreSQL%20is%20an%20object%2Drelational,Define%20complex%20custom%20data%20types.
+2) https://aws.amazon.com/es/compare/the-difference-between-mysql-vs-postgresql/
+3) https://wiki.postgresql.org/wiki/BinaryFilesInDB
+4) https://www.tigerdata.com/learn/handling-large-objects-in-postgres
+
+¿Qué es PostgreSQL?
+-------------------
+    PostgreSQL es un sistema de gestión de bases de datos objeto-relacionales (ORDMBS), lo que significa que tiene capacidades relacionales y un diseño orientado a objetos.
+
+    Gracias a las funcionalidades orientadas a objetos que ofrece PostgreSQL, los desarrolladores cuentan con la capacidad de:
+	•	Establecer comunicación con los servidores de bases de datos a través de objetos definidos en el propio código.
+	•	Diseñar tipos de datos personalizados con estructuras complejas.
+	•	Implementar funciones que operen específicamente sobre dichos tipos de datos.
+	•	Modelar relaciones de herencia (padre-hijo) entre tablas para representar jerarquías en los esquemas de datos.
+
+   En consecuencia, el diseño de PostgreSQL presenta una mayor flexibilidad en comparación con otros servidores de bases de datos relacionales. Esta característica posibilita la 
+   representación de distintos tipos de datos y relaciones directamente en el sistema de gestión de bases de datos, evitando su implementación externa en el código de la aplicación. 
+   De igual forma, contribuye al aseguramiento de la consistencia y a la optimización del rendimiento, al establecer el comportamiento esperado en una proximidad inmediata a los datos. 
+
+
+¿Cuál es la diferencia entre MySQL y PostgreSQL?
+-------------------------------------------------
+    MySQL es un sistema de gestión de bases de datos relacionales que organiza la información en tablas con filas y columnas. Es una de las tecnologías más utilizadas en el desarrollo de 
+    aplicaciones web, sitios dinámicos y sistemas integrados, lo que explica su gran reconocimiento y difusión. En cambio, PostgreSQL es un sistema de gestión de bases de datos relacionales 
+    orientado a objetos que incorpora un conjunto más amplio de funcionalidades.
+
+Diferencias principales entre PostgreSQL y MySQL
+-------------------------------------------------
+    	•	Concurrencia (MVCC): PostgreSQL permite que múltiples usuarios accedan y modifiquen datos de forma simultánea sin perder consistencia; MySQL no ofrece esta capacidad de manera nativa.
+        •	Índices: MySQL soporta principalmente índices en árboles-B y árboles-R; PostgreSQL ofrece más opciones (índices de expresión, parciales, hash, etc.), lo que otorga mayor flexibilidad y rendimiento.
+    	•	Tipos de datos: MySQL es puramente relacional; PostgreSQL es relacional de objetos, lo que permite trabajar con estructuras más complejas (objetos, herencia, arrays, XML, entre otros).
+     	•	Disparadores: MySQL limita su uso a BEFORE y AFTER; PostgreSQL añade INSTEAD OF, lo que facilita automatizar procesos más complejos.
+
+Almacenamiento de PDFs en PostgreSQL
+------------------------------------
+Existen dos formas principales de almacenar archivos PDF en PostgreSQL:
+
+1. Usar el tipo de datos BYTEA
+------------------------------
+• Permite almacenar datos binarios directamente en una columna de la tabla.
+• Adecuado para archivos de tamaño moderado (hasta 1 GB)
+• Fácil de implementar, acceso directo al archivo desde SQL.
+• No es ideal para archivos muy grandes, ya que puede afectar el rendimiento.
+
+Ejemplo en Python: 
+
+import psycopg2
+
+def convert_to_binary(filename):
+    with open(filename, 'rb') as file:
+        return file.read()
+
+def insert_pdf(conn, file_path):
+    with conn.cursor() as cursor:
+        with open(file_path, 'rb') as file:
+            binary_data = file.read()
+        cursor.execute("INSERT INTO documentos (archivo) VALUES (%s)", (psycopg2.Binary(binary_data),))
+    conn.commit()
+
+2. Usar objetos grandes (Large Objects)
+---------------------------------------
+• PostgreSQL ofrece una API para manejar objetos grandes almacenados en pg_largeobject.
+• Adecuado para archivos grandes, mejor rendimiento en grandes volúmenes de datos.
+• Requiere uso de API específica, implementación más compleja.
+
+Algunas consideraciones
+---------------------------
+• Compresión: PostgreSQL utiliza TOAST para comprimir y almacenar datos grandes.
+• Respaldo y mantenimiento: almacenar archivos grandes puede complicar estas tareas y afectar el rendimiento.
+
+
+En general, PostgreSQL ofrece soluciones robustas para almacenar archivos PDF dentro de la base de datos. La elección entre BYTEA y Large Objects dependerá principalmente del tamaño de los archivos, 
+la frecuencia de acceso y la necesidad de eficiencia en las operaciones de lectura y escritura. Para archivos pequeños o medianos, BYTEA es sencillo y directo. Para archivos grandes o sistemas que manejan 
+gran volumen de documentos, los Large Objects proporcionan un mejor rendimiento y escalabilidad.
+
+
+Comparativa entre BYTEA y Objetos Grandes (Large Objects)
+---------------------------------------------------------
+
+Característica                       | BYTEA                            | Objetos Grandes (Large Objects)
+-------------------------------------|---------------------------------|--------------------------------
+Tamaño máximo por archivo            | Hasta 1 GB                        | Hasta 4 TB
+Complejidad de implementación        | Baja                               | Alta
+Rendimiento para archivos grandes    | Menor                              | Mejor
+Requiere funciones específicas       | No                                 | Sí
+Eliminación automática               | Sí                                 | No
