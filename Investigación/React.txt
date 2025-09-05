@@ -1,0 +1,39 @@
+# Enlaces de interés
+- https://es.react.dev/learn
+- https://youtu.be/bvxm389cYVI?si=48_-ADOXPTY9JxIB
+- https://youtu.be/JNhhdkCuyog?si=somW29rG7RCc8JIj
+- https://youtu.be/xE7TBCR6cj0?si=7kXCnuVAULwM4ZH8
+
+# Información 
+- React es una librería JavaScript para construir interfaces de usuario basadas en componentes reutilizables.
+- Apoyado en Virtual DOM, que permite actualizar solo lo necesario y no recargar toda la página, mejorando el rendimiento.
+- El código de la interfaz se escribe con JSX, una sintaxis parecida a HTML pero integrada en JavaScript.
+
+~ Fundamentos esenciales
+- Componentes: Funciones que devuelven JSX, su nombre comienza con mayúscula.
+- Props: Parámetros que los componentes reciben para ser reutilizables.
+- Estado: Memoria interna de un componente, cambia dinámicamente con ´useState´
+- Eventos: React escucha eventos como ´onClick´ y ´onChange´, entre otros.
+- Renderizado condicional y listas: Mostrar elementos dinámicamente con expresiones en JSX.
+- Hooks: 
+  - useState: Estado local.
+  - useEffect: Efectos secundarios
+  - Personalizados: Encapsular lógica reutilizable.
+- Context y Reducers: Para compartit estado global o manejar lógica más compleja.
+
+# React Router
+- Convierte la app en una SPA (Aplicación de una sola página)
+
+~ Componentes clave
+- BrowserRouter: Activa ell enrutamiento.
+- Routes y Route: Definen las rutas y qué componente se muestra en cada una.
+- Link: Navegación sin recarga.
+- useNavigate: Navegación programática (Redirigir con código)
+
+~ Ventajas
+- Mejor experiencia de usuario.
+- Permite rutas anidadas, rutas protegidas y navegación fluida.
+
+~ Herramientas y optimización
+- React Developer Tools: Extensión del navegador para inspeccionar componentes, estados y rendimiento.
+- React Compiler: Analiza y optimiza el código automáticamente aplicando memoización.
