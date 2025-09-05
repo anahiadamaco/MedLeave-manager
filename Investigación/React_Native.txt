@@ -1,0 +1,59 @@
+# Enlaces de interes
+
+ - https://reactnative.dev/ 
+ - https://reactnative.dev/docs/intro-react-native-components
+ - https://reactnative.dev/docs/components-and-apis
+ - https://storybook.js.org/tutorials/intro-to-storybook/react-native/en/get-started/
+
+
+#Fundamentos
+
+ - Es similar a React, pero utiliza componentes nativos en lugar de componentes web.
+ - Es un framework de codigo abierto para crear app Android e iOS.
+ - Se usa JavaScript para acceder a las API de la plataforma, así como para describir la apariencia 
+ y el comportamiento de la interfaz de usuario.
+ - React Native te permite crear aplicaciones verdaderamente nativas sin comprometer la experiencia de tus usuarios.
+ - Ofrece un conjunto básico de componentes nativos independientes de la plataforma.
+
+# Ecosistema y herramientas
+
+  -Expo
+
+- Plataforma que simplifica el desarrollo con React Native.
+- Permite crear apps para Android, iOS y web sin necesidad de configurar entornos nativos al inicio.
+- Incluye herramientas como el Snack Player (para probar código en el navegador), manejo de assets,
+- notificaciones push y despliegue con EAS (Expo Application Services).
+
+  -React Native CLI
+
+- Herramienta oficial para crear y gestionar proyectos React Native desde cero.
+- Requiere configuración manual de Android Studio (para Android) y Xcode (para iOS).
+- Ideal si necesitas acceso completo al código nativo o integración con librerías que Expo no soporta directamente.
+
+# UI y Componentes
+
+ - React Native incluye un conjunto de componentes nativos listos para usar,
+ equivalentes a los widgets de Android o los UIKit de iOS:
+
+   * View → contenedor básico (similar a <div> en web).
+   * Text → para mostrar texto.
+   * Image → para mostrar imágenes.
+   * TextInput → para campos de texto editables.
+   * ScrollView → para vistas con scroll.
+   * TouchableOpacity / Pressable → para botones interactivos.
+
+ - Storybook para React Native
+
+   * Herramienta que permite desarrollar y probar componentes de UI de forma aislada,
+   sin necesidad de montar toda la app.
+   * Ideal para equipos grandes que trabajan en diseño de componentes reutilizables.
+   * Facilita la documentación visual de la UI.
+
+ - UI Kits y librerías populares
+
+ - Además de los componentes nativos, existen librerías que ofrecen conjuntos de componentes estilizados y
+   listos para producción:
+
+   * React Native Elements → UI Kit muy completo y fácil de usar, incluye botones, cards, listas, formularios, etc.
+   * NativeBase → librería de componentes personalizables, compatible con múltiples plataformas.
+   * React Native Paper → basada en Material Design, ideal para apps con diseño estilo Android/Google.
