@@ -1,0 +1,46 @@
+# Enlaces de interés
+- https://dev.mysql.com/doc/refman/8.0/en/
+- https://www.mysqltutorial.org/
+- https://www.youtube.com/watch?v=NIBPw0oS1rY
+
+# Información 
+- Se trata de un sistema de gestión de base de datos relacional basado en SQL.
+- Es de código abierto y ampliamente usado en aplicaciones web, empresariales y móviles.
+- Permite organizar, almacenar y consultar una amplio volúmen de datos de forma estructurada.
+- Se utiliza el modelo cliente-servidor, el cliente se conecta a un servidor para interactuar con la base de datos.
+- Se destaca por ser rápido y tener una gran comunidad de soporte.
+
+~ Estructura básica en MySQL
+- Base de datos: Conjunto de tablas relacionadas.
+- Tabla: Colección de filas y columnas.
+- Fila (registro): Cada entrada de datos.
+- Columna (campo): Define el tipo de dato.
+- Clave primaria (PRIMARY KEY): Identificador único de cada fila.
+- Clave foránea (FOREIGN KEY): Relaciona tablas entre sí.
+
+~ Validación y Verificación
+- Validación: Comprobar que los datos cumplen el formato o tipo esperado al insertarlos.
+- Verificación: Se asegura que los datos cumplen condiciones de integridad.
+
+~ Diferencia entre exportar e importar
+- Exportar: Guardar la estructura y/o datos de la base en un archivo.
+- Importar: Cargar una base de datos o tabla a partir de un archivo externo.
+
+~ Lenguaje SQL en MySQL
+- DDL (Data Definition Language): Crear y modificar estructuras (CREATE, ALTER, DROP)
+- DML (Data Manipulation Language): Manipular datos (INSERT, UPDATE, DELETE)
+- DQL (Data Query Language): Consultar información (SELECT)
+- DCL (Data Control Language): Control de accesos (GRANT, REVOKE)
+
+~ Principales diferencias con PostgreSQL
+- Modelo y filosofía
+  - MySQL: Prioriza la simplicidad, velocidad y facilidad de uso. Ideal para aplicaciones web con alto volumen de lecturas.
+  - PostgreSQL: Prioriza la robustez, estándares SQL y extensibilidad. Muy usado en aplicaciones críticas y científicas.
+
+- Rendimiento
+  - MySQL: Muy rápido en lecturas simples y consultas no tan complejas. Ideal para aplicaciones web.
+  - PostgreSQL: Mejor en consultas complejas, grandes volúmenes de datos y operaciones analíticas.
+
+- Estandarización SQL
+  - MySQL: Menos estricto, facilitando el aprenderlo pero puede generar comportamientos “propios” del motor.
+  - PostgreSQL: Muy estricto, excelente para portabilidad y buenas prácticas.
