@@ -1,0 +1,139 @@
+Link de interés:
+1) https://expressjs.com/es/
+2) https://www.lucushost.com/blog/que-es-node-js/
+3) https://nodesource.com/blog/how-nodejs-works
+4) https://www.startechup.com/es/blog/express-js-what-it-is-used-for-and-when-where-to-use-it-for-your-enterprise-app-development/#:~:text=Conclusi%C3%B3n-,D%C3%B3nde%20y%20cu%C3%A1ndo%20utilizar%20Express.,de%20varias%20p%C3%A1ginas%20o%20h%C3%ADbridas.
+
+Node.js
+-------
+Node.js es un entorno de ejecución de JavaScript del lado del servidor, basado en el motor V8 de Google Chrome. Permite ejecutar código JavaScript fuera del navegador, lo que facilita desarrollar aplicaciones completas usando un único lenguaje.  
+Node.js funciona con un modelo asíncrono y orientado a eventos, utilizando un Event Loop que permite manejar múltiples conexiones simultáneamente sin bloquear el hilo principal. Esto lo hace eficiente para aplicaciones con alto volumen de operaciones concurrentes.
+
+Características de Node.js
+• Asincronía y eventos: permite ejecutar operaciones sin bloquear el hilo principal.  
+• Escalabilidad: maneja muchas conexiones simultáneas.  
+• Un solo lenguaje: JavaScript en cliente y servidor.  
+• Ecosistema de módulos: npm ofrece miles de paquetes listos para usar.  
+• Alto rendimiento: gracias al motor V8.
+
+Express.js
+----------
+Express.js es un framework minimalista y flexible para Node.js que simplifica la creación de aplicaciones web y APIs. Facilita el manejo de rutas, middleware y solicitudes HTTP de forma eficiente.
+
+Características de Express.js
+• Enrutamiento: permite definir rutas para diferentes endpoints.  
+• Middleware: ejecuta funciones entre la recepción de la solicitud y la respuesta, útil para autenticación, logging o manejo de errores.  
+• Gestión de solicitudes HTTP: facilita la lectura de parámetros y envío de respuestas.  
+
+Casos de uso comunes
+• APIs RESTful  
+• Aplicaciones de una sola página (SPA)  
+• Aplicaciones híbridas web y móviles  
+• Servidores web rápidos para proyectos empresariales
+
+Ventajas de Node.js y Express.js
+• Desarrollo unificado: mismo lenguaje en frontend y backend.  
+• Rendimiento eficiente: arquitectura no bloqueante.  
+• Ecosistema amplio: acceso a paquetes y módulos mediante npm.  
+• Escalabilidad y concurrencia: maneja múltiples conexiones de forma eficiente.  
+• Flexibilidad y rapidez de desarrollo: permite crear prototipos y aplicaciones completas rápidamente.
+
+Limitaciones y consideraciones
+• No es óptimo para operaciones de cálculo pesado, ya que un solo hilo podría bloquear el Event Loop.  
+• Manejo de callbacks y promesas puede ser complejo sin async/await.  
+• Seguridad: se debe revisar la versión y confiabilidad de los paquetes externos.
+
+Cómo usar Node.js y Express.js
+------------------------------
+
+1. Instalación de Node.js
+• Descargar el instalador desde la [página oficial de Node.js](https://nodejs.org/) y seguir las instrucciones.  
+• Verificar la instalación en la terminal:  
+
+node -v
+npm -v
+
+2. Crear un proyecto
+• Crear una carpeta para el proyecto y acceder a ella en la terminal.  
+• Inicializar npm para crear el archivo `package.json`:  
+
+npm init -y
+
+3. Instalar Express.js
+• Ejecutar en la terminal:  
+
+npm install express
+
+4. Crear el servidor básico
+• Crear un archivo `index.js` con el siguiente contenido:  
+
+```javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Hola mundo desde Express.js!');
+});
+
+app.get('/usuario/:id', (req, res) => {
+  res.send(`Usuario con ID: ${req.params.id}`);
+});
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
+});
+
+5. Ejecutar el servidor
+• En la terminal, ejecutar:
+
+node index.js
+
+• Abrir un navegador o usar herramientas como Postman para probar las rutas:
+• http://localhost:3000/ → muestra “Hola mundo desde Express.js!”
+• http://localhost:3000/usuario/1 → muestra “Usuario con ID: 1”
+
+Conexión a base de datos (PostgreSQL)
+-------------------------------------
+
+1. Instalar módulo para PostgreSQL
+• Usar pg para conectar Node.js con PostgreSQL:
+  npm install pg
+
+2. Ejemplo de conexión
+• Crear un archivo db.js o incluirlo en index.js:
+  const { Pool } = require('pg');
+
+  const pool = new Pool({
+    user: 'tu_usuario',
+    host: 'localhost',
+    database: 'tu_base_de_datos',
+    password: 'tu_contraseña',
+    port: 5432,
+  });
+
+  pool.query('SELECT NOW()', (err, res) => {
+    if(err){
+      console.error('Error ejecutando la consulta', err);
+    } else {
+      console.log('Hora actual en PostgreSQL:', res.rows[0]);
+    }
+  });
+
+3. Integrar con Express.js
+• Crear una ruta que obtenga datos de la base de datos:
+  app.get('/usuarios', async (req, res) => {
+    try {
+      const resultado = await pool.query('SELECT * FROM usuarios');
+      res.json(resultado.rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error al obtener usuarios');
+    }
+  });
+
+• Ahora al visitar http://localhost:3000/usuarios se obtendrá un JSON con los registros de la tabla usuarios.
+
+Node.js y Express.js son herramientas potentes para el desarrollo de aplicaciones modernas, rápidas y escalables. Node.js aporta eficiencia y capacidad de manejo de múltiples conexiones, mientras que Express.js facilita la creación de rutas, middleware y APIs de manera estructurada y rápida. Además, con la integración de bases de datos como PostgreSQL, se pueden crear aplicaciones completas y funcionales con facilidad.
