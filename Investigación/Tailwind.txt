@@ -1,0 +1,25 @@
+#Enlaces de interes
+
+- https://tailwindcss.com/docs/editor-setup
+- https://openwebinars.net/blog/que-es-tailwind-css-y-por-que-deberias-usarlo/
+- https://www.youtube.com/watch?v=7hHUnYDr9kQ
+
+
+#Fundamentos
+
+- Es un framework CSS que da prioridad a la utilidad sobre el propio estilo, pero a diferencia de otros frameworks CSS no provee una serie de componentes predefinidos.
+- Proporciona un conjunto de clases (Utility Classes) de ayuda para estructura y estilado, de forma que, usando dichas clases, es posible crear rápidamente diseños personalizados con facilidad.
+- Tailwind proporciona un excelente equilibrio entre compatibilidad entre navegadores, estilado, visibilidad y facilidad de uso.
+- Proporciona enrutamiento basado en el sistema de archivos, optimización automática y soporte para API routes.
+
+# Tailwind + Frameworks
+- Funciona con React, Vue, Angular, Next.js, Laravel, entre otros.
+- Integra bien con componentes reutilizables (por ejemplo, usando "className" en React).
+
+#Fundamentos escenciales
+
+- Clases de utilidad: Cada clase aplica un estilo especifico (espaciado,colores, tipografía,etc.).
+- Se pueden añadir clases personalizadas mediante el sistema de configuración.
+- Es posible realizar animaciones añadiendo la configuración en el sistema de configuración.
+- Mejor rendimiento y optimización automática de bundles.
+- Escalabilidad y soporte para aplicaciones grandes.

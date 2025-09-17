@@ -1,0 +1,76 @@
+Investigación sobre tipografías para un sistema de gestión de licencias médicas:
+
+1. Importancia de la tipografía en proyectos de salud y educación
+
+      *Claridad y legibilidad: los usuarios (estudiantes, administrativos, médicos) deben leer con rapidez y sin confusión.
+
+      *Seriedad institucional: debe transmitir confianza y profesionalismo, no parecer un diseño “informal”.
+
+      *Accesibilidad: tipografías fáciles de leer en pantalla y compatibles con diferentes dispositivos.
+
+      *Consistencia visual: la misma tipografía (o familia tipográfica) debe usarse en toda la interfaz para mantener coherencia.
+
+
+2. Tipos de tipografías aplicables
+
+      *Existen 4 grandes categorías, pero no todas son adecuadas para tu proyecto:
+
+
+          + Serif (con remates o “adornos” en los extremos)
+
+          Ejemplos: Times New Roman, Georgia, Merriweather.
+
+          Ventajas: transmiten formalidad y tradición.
+
+          Desventajas: en pantallas pequeñas pueden perder legibilidad.
+
+
+          + Sans Serif (sin remates, más limpias)
+
+          Ejemplos: Arial, Helvetica, Roboto, Open Sans, Lato.
+
+          Ventajas: muy legibles en pantallas, transmiten modernidad y neutralidad.
+
+    - Recomendadas para tu proyecto.
+
+      * Monoespaciadas (cada letra ocupa el mismo espacio)
+
+       Ejemplo: Courier, Consolas.
+
+       Uso limitado: sirven más para código o datos técnicos, no para una interfaz de usuario general.
+
+      * Display o decorativas
+
+        Ejemplo: tipografías artísticas.
+
+        No recomendadas en proyectos serios de salud/educación.
+
+
+3. Tipografías recomendadas para tu sistema
+
+   + Las más utilizadas en proyectos de software, salud y educación son:
+
+        * Roboto (Google) → moderna, limpia, adaptable a móviles y web.
+
+        * Open Sans → muy usada en plataformas educativas, excelente legibilidad.
+
+        * Lato → amigable y profesional.
+
+        * Nunito → más redondeada, transmite cercanía.
+
+        *  Merriweather (serif) → puede usarse en títulos o documentos oficiales.
+
+
+4. Buenas prácticas en el uso tipográfico
+
+      + Usar máximo 2 familias tipográficas:
+
+      +  Una para títulos (ejemplo: Lato Bold).
+
+      + Otra para textos de párrafos (ejemplo: Open Sans Regular).
+ 
+      + Mantener un contraste adecuado (color del texto vs. fondo).
+
+      + Priorizar tamaños legibles: mínimo 14px en textos, 18–24px en títulos.
+
+      + Considerar accesibilidad: evitar tipografías muy delgadas o colores con poco contraste (para usuarios con baja visión).

@@ -1,0 +1,64 @@
+# Enlaces de interés
+- https://www.jwt.io/introduction#difference-decoding-encoding-jwt
+- https://youtu.be/tWQobKFQLG0?si=6C4XXpuPDmxjmmlr
+- https://youtu.be/fnor7F3uAnQ?si=bwJgQVEsFsxmIatO
+
+# Información
+- Es un estándar abierto para transmitir información de forma segura como JSON.
+- Las formar de firmado son: Mediante un secreto (HMAC) o con un par de llaves pública/privada (ESA o ECDSA)
+- Los JWT pueden cifrarse para proporcionar confidencialidad entre las partes.
+- Diferencia entre firmado y cifrado:
+  - Firmado: Asegura integridad y autenticidad de los datos.
+  - Cifrado: Oculta el contenido para dar confidencialidad.
+- Los firmados con pares de claves pública/privada esto certifica que solo la parte de clave privada la firmó.
+
+~ Principales casos de usos
+1. Autorización.
+- Desde el inicio de sesión, el usuario recibe un JWT que se envía en cada petición.
+- Permite el acceso a rutas, servicios y recursos autorizados.
+- El inicio de sesión único (SSO) es muy utilizado porque es ligero y funciona bien entre distintos dominios.
+2. Intercambio de información seguro
+- Sirven para transmitir datos de forma confiable entre partes.
+- La firma digital asegura autenticidad (emisor válido) e integridad (contenido sin alterar)
+
+~ Estructura del JWT
+- En su forma compacta, constan de tres partes separadas por puntos ( .), que son: Encabezamiento, Carga útil, Firma
+  - Encabezamiento:
+    - Consta de dos partes:
+    1. Tipo de token → siempre "JWT".
+    2. Algoritmo de firma utilizado → por ejemplo: "HMAC" o "RSA".
+    - Este JSON se codifica en Base64Url y forma la primera parte del token JWT
+  
+  - Carga útil
+    - Contiene las reclamaciones, datos sobre los usuarios y datos adicionales.
+    - Existen tres tipos de reclamaciones
+      1. Registrados: Son reclamos estándar predefinidos, opcionales pero recomendados, que facilitan la interoperabilidad del JWT.
+      2. Públicas: Definidos libremente, pero deben evitar colisiones usando registro IANA o un URI.
+      3. Privadas: Son personalizadas, comparten información entre partes.
+    - Aunque está firmada (no se puede alterar), la carga útil es legible por cualquiera
+    - Se codifica en Base 64Url para formar la segunda parte del JWT
+
+  - Firma
+    - Se crea combinando: Encabezado codificado, Carga útil codificada, Un secreto (o clave privada), El algoritmo definido en el encabezado
+    - Con eso se genera la tercera parte del token, que garantiza autenticidad e integridad.
+
+  - Al poner todo junto:
+    - Un JWT está compuesto por tres cadenas en Base64Url separadas por puntos.
+    - Esto lo hace ligero y fácil de usar en HTML/HTTP, además de ser más compacto que SAML (XML).
+
+~ Diferencias entre validar y verificar
+  - Validación: Garantiza que el token este bien formado.
+    - Estructura: Garantiza que contenga las tres partes estándar separadas por puntos.
+    - Formato: Verifica que cada parte este codificada correctamente y que la carga útil contenga las reclamaciones esperadas.
+    - Contenido: Verifica que las afirmaciones sean correctas, asegurando que el token sea válido y seguro.
+  
+  - Verificación: Garantiza que el token sea genuino y no esté modificado.
+    - De Firma: Comprueba que la firma coincida con el encabezado y la carga útil usando el algoritmo y clave correspondientes; si no coincide, el token puede estar manipulado.
+    - Del Emisor: Comprueba si el reclamo de emisión coincide con el emisor esperado.
+    - De Audiencia: Garantiza que el anuncio coincida con la audiencia esperada.
+
+  - Se puede combinar recibiendo el nombre de "Verificación JWT" abordando validación y verificación.
+
+~ Diferencia entre codificar y decodificar
+  - Codificar: Convierte el encabezado y carga útil de JSON a Base64URL, los une y agrega una firma para crear el token.
+  - Decodificar: Convierte el encabezado y la carga útil de Base64URL a JSON y verifica la firma para asegurar que el token no haya sido alterado.
