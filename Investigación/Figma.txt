@@ -1,0 +1,43 @@
+# Enlaces de interés
+- https://www.figma.com/es/
+- https://help.figma.com/hc/es
+- https://www.youtube.com/watch?v=FoCNedUiVqU
+- https://www.youtube.com/watch?v=zZUr_dmHaFA
+- https://www.youtube.com/watch?v=wdSx2nKkOjc
+
+# Información
+- Figma es una herramienta de diseño colaborativo basada en la nube.
+- Permite crear interfaces, prototipos y sistemas de diseño de forma ágil.
+- Funciona directamente en el navegador, pero también tiene aplicación de escritorio y móvil.
+- Se utiliza tanto para diseño UI/UX como para prototipado interactivo y colaboración en tiempo real.
+
+~ Principales casos de uso
+1. Diseño de interfaces
+   - Creación de prototipos de aplicaciones y sitios web.
+   - Uso de componentes reutilizables y bibliotecas de diseño.
+   - Ajustes en tiempo real con el equipo.
+
+2. Colaboración en equipo
+   - Varios usuarios pueden editar el mismo archivo simultáneamente.
+   - Comentarios en tiempo real dentro del diseño.
+   - Facilita la comunicación entre diseñadores, desarrolladores y clientes.
+
+3. Prototipado interactivo
+   - Se pueden enlazar pantallas y crear flujos de usuario.
+   - Permite pruebas rápidas sin necesidad de código.
+   - Exportación fácil para compartir prototipos.
+
+~ Estructura de un archivo en Figma
+    - Lienzo (Canvas): Espacio donde se colocan marcos, diseños y prototipos.
+    - Marcos (Frames): Contenedores que representan pantallas o secciones.
+    - Capas (Layers): Elementos individuales como textos, imágenes, botones, etc.
+    - Componentes: Elementos reutilizables que mantienen consistencia.
+    - Estilos: Definen colores, tipografías, efectos y se aplican globalmente.
+
+~ Diferencia entre Diseñar y Prototipar
+    - Diseñar: Crear la apariencia visual y estructura de una interfaz.
+    - Prototipar: Simular interacciones entre pantallas, permitiendo pruebas de navegación.
+
+~ Diferencia entre Biblioteca y Componente
+    - Biblioteca: Conjunto de elementos (botones, inputs, colores, estilos) compartidos en proyectos.
+    - Componente: Un único elemento reutilizable dentro del archivo o biblioteca.
