@@ -1,0 +1,23 @@
+Investigación: Uso de PDF en MySQL
+
+Cuando trabajas con archivos PDF en MySQL, existen dos enfoques principales para almacenarlos. El primero y más recomendado es guardar la ruta del archivo en la base de datos, mientras que el segundo, menos aconsejable, es guardar el archivo binario directamente en una columna de tipo BLOB.
+
+La mejor práctica es almacenar únicamente la ruta del archivo PDF en una columna de tipo VARCHAR en tu base de datos. Esto te permite mantener la base de datos ligera y el rendimiento alto. El archivo PDF en sí se guarda en el sistema de archivos del servidor. Para acceder al archivo, 
+tu aplicación utiliza la ruta almacenada en MySQL para buscar el archivo en el disco. Esta estrategia es especialmente útil para aplicaciones web, ya que el servidor solo necesita servir la URL del archivo para que los clientes puedan descargarlo.
+
+Una alternativa, aunque con sus propias desventajas, es almacenar el archivo PDF completo como un dato binario en una columna BLOB (Binary Large Object). Si bien esto garantiza que el archivo y su referencia estén siempre juntos en la base de datos, puede causar problemas de rendimiento, 
+especialmente con archivos grandes. Las operaciones de lectura y escritura se vuelven más lentas y la base de datos crece rápidamente, lo que puede complicar las copias de seguridad y las migraciones.
+
+| Característica | Almacenar la ruta (Recomendado) | Almacenar BLOB (Menos recomendable) |
+| :---           | :---                            | :---                                |
+| Rendimiento    | Más rápido y eficiente.         | Más lento, impacta en las operaciones. |
+| Tamaño DB      | Base de datos más pequeña y manejable. | Aumenta drásticamente el tamaño de la DB. |
+| Backups        | Copias de seguridad rápidas.    | Copias de seguridad lentas y voluminosas. |
+| Acceso a archivos| Fácil acceso desde el servidor web. | Requiere lógica adicional para servir el archivo. |
+
+Enlaces de interés:
+- https://es.stackoverflow.com/questions/329054/almacenar-ruta-de-un-archivo-pdf-en-mysql
+- https://www-geeksforgeeks-org.translate.goog/html/upload-pdf-file-to-mysql-database-for-multiple-records-using-php/?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc
+- https://docparser-com.translate.goog/blog/pdf-to-database/?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc
+- https://forum.xailer.com/viewtopic.php?t=12582
+- https://stackoverflow.com/questions/65911411/how-to-store-pdf-in-mysql-database-using-node-js-and-express#:~:text=PDF%20es%20un%20archivo%2C%20la,de%20almacenamiento%20de%20node%20js%22
