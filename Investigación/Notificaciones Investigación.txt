@@ -1,0 +1,56 @@
+#Enlaces de interes
+
+- https://firebase.google.com/products/cloud-messaging?hl=es-419
+- https://firebase.google.com/docs/cloud-messaging?hl=es-419
+- https://dev.to/ajmal_hasan/handling-push-notifications-in-react-native-a-comprehensive-guide-55ob
+
+--- ¿Qué es? ---
+
+Es un servicio de Google que permite a las aplicaciones móviles de iOS y Android enviar y recibir mensajes y notificaciones push de forma gratuita y confiable.
+
+Firebase Cloud Messaging (FCM) proporciona una conexión confiable y de bajo consumo de batería entre su servidor y dispositivos que le permite enviar y recibir mensajes y notificaciones en iOS, Android. Orienta mensajes fácilmente mediante segmentos predefinidos o crea segmentos propios a partir de datos demográficos y de comportamiento. Puedes orientar mensajes a dispositivos suscritos a temas específicos o también aprovechar un mayor nivel de detalle para dirigir mensajes a un dispositivo individual.
+
+--- Diferencias entre Notificaciones locales y notificaciones FCM ---
+
+Notificaciones locales: Se generan dentro del propio dispositivo y no necesitan internet ni servidor. Su funcionamiento es sencillo, la app a travéz de un código agenda la notificación y la "dispara" en el momento que fue programada.
+
+Ejemplos de notificaciones locales: Configuración de alarma, calendario con recordatorios de eventos.
+
+Notificaciones FCM (Push remotes): Es una notificación que viene desde la nube y llega al dispositivo, requiere un servicio externo e internet. Funciona agregando un token FCM en la app, este token se envía hacia el backend para que el backend (o la consola firebase) envie el mensaje a FCM y finalmente FCM entrega esto al dispositivo.
+
+Ejemplos de notificaciones FCM: Alertas, mensajes en tiempo real, actualizaciones de estados.
+
+--- Ejemplo de notificación local ---
+
+
+export default function App() {
+  const showNotification = () => {
+    PushNotification.localNotification({ --> genera la notificacion en el momento 
+      channelId: "test-channel", --> es obligatorio crear un canal, esto para mostrar las notificaciones
+      title: "Hola ",
+      message: "Esta es una notificación local",
+    });
+  };
+
+
+  --- Ejemplo de notificacion FCM ---
+
+export const setupFCM = () => {
+
+  messaging().requestPermission(); --> Pide permiso a iOS
+
+  --obtiene el tocken del dispositivo--
+  messaging() 
+    .getToken()
+    .then((token) => {
+      console.log("TOKEN FCM:", token); --> este tocken es necesario enviarlo al backend
+
+    });
+
+  Manejo de notificaciones estando la app en primer plano
+  messaging().onMessage(async (remoteMessage) => {
+    Alert.alert(
+      remoteMessage.notification?.title || "Notificación",
+      remoteMessage.notification?.body || "Tienes un nuevo mensaje"
+    );
+
