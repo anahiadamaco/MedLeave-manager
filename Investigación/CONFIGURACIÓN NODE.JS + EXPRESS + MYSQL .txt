@@ -1,0 +1,94 @@
+
+## DEPENDENCIAS NECESARIAS
+```bash
+npm install express mysql2 bcryptjs jsonwebtoken express-validator cors dotenv
+npm install nodemon --save-dev
+
+
+Backend/Node/
+├── Config/
+│   ├── database.js          # Conexión MySQL
+│   └── envConfig.js         # Variables entorno
+├── Controllers/
+│   └── authController.js    # Lógica autenticación
+├── Middleware/
+│   ├── validationMiddleware.js # Validaciones
+│   └── authMiddleware.js    # Middleware JWT
+├── Models/
+│   └── User.js              # Modelo usuario MySQL
+├── Routes/
+│   └── authRoutes.js        # Rutas autenticación
+├── utils/
+│   └── jwt.js               # Utilidades JWT
+├── .env                     # Variables entorno
+├── index.js                 # Servidor principal
+└── package.json
+
+
+archivo env
+# Servidor
+PORT=3000
+NODE_ENV=development
+
+# MySQL
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=tu_password
+DB_NAME=auth_db
+
+# JWT
+JWT_SECRET=mi_clave_super_secreta_jwt_2024
+JWT_EXPIRES_IN=24h
+
+
+COMANDOS SQL PARA CREAR BASE DE DATOS
+
+CREATE DATABASE IF NOT EXISTS auth_db;
+USE auth_db;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+ENDPOINTS DISPONIBLES
+
+Públicos:
+POST /api/auth/register
+
+POST /api/auth/login
+
+GET /api/auth/test
+
+Protegidos (requieren JWT):
+GET /api/auth/profile
+
+POST /api/auth/verify-token
+
+POST /api/auth/refresh-token
+
+
+
+Registro:
+
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@ejemplo.com",
+    "password": "password123",
+    "name": "Juan Pérez"
+  }'
+
+Login:
+
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@ejemplo.com",
+    "password": "password123"
+  }'
