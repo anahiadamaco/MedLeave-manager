@@ -1,9 +1,8 @@
-// src/screens/LoginAlumno.tsx
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { View, Text, TextInput, ScrollView } from "react-native";
 
-const LoginAlumno = () => {
+const A_Login = () => {
   // Estados locales
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,4 +62,4 @@ const LoginAlumno = () => {
   );
 };
 
-export default LoginAlumno;
+export default A_Login;

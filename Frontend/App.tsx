@@ -2,7 +2,10 @@ import React from "react";
 import { StatusBar, useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import LoginAlumno from "./src/components/Login_Alumno";
+// Rutas Alumno
+import A_Login from "./src/screens/A_Login";
+
+// Rutas Profesor
 
 function App() {
   const isDarkMode = useColorScheme() === "dark";
@@ -10,7 +13,7 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
-      <LoginAlumno />
+      <A_Login />
     </SafeAreaProvider>
   );
 }
