@@ -1,0 +1,101 @@
+¿Qué es Express-Validator?
+
+Express-validator es una biblioteca de middleware para Express.js que proporciona un conjunto de funciones para validar y 
+sanitizar datos de entrada en las solicitudes HTTP. 
+Es una de las herramientas más populares para validación en el ecosistema de Node.js/Express.
+
+Características Principales
+1.Validación de datos: Comprueba si los datos cumplen con ciertos criterios
+
+2.Sanitización: Limpia y normaliza los datos de entrada
+
+3.Manejo de errores: Proporciona información detallada sobre errores de validación
+
+4.Extensible: Permite crear validadores personalizados
+
+5.Sintaxis fluida: API fácil de usar con encadenamiento de métodos
+
+Instalación:
+
+npm install express-validator
+
+
+Uso Básico:
+1. Importación
+const { body, validationResult, param, query } = require('express-validator');
+// O para ES modules:
+import { body, validationResult } from 'express-validator';
+
+
+2. Validación Básica
+ const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/user', 
+  // Validaciones
+  body('email').isEmail(),
+  body('password').isLength({ min: 6 }),
+  body('age').isInt({ min: 18 }),
+  
+  // Middleware de manejo de la solicitud
+  (req, res) => {
+    // Verificar si hay errores de validación
+    const errors = validationResult(req);
+    
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    // Si no hay errores, procesar la solicitud
+    res.json({ message: 'Usuario creado exitosamente' });
+  }
+);
+
+Métodos de Validación Comunes
+Validaciones de Cadena
+body('name')
+  .isLength({ min: 2, max: 30 })
+  .isAlpha()
+  .trim()
+  .escape();
+
+Validaciones de Números
+body('age')
+  .isInt({ min: 0, max: 120 })
+  .toInt();
+
+Validaciones de Email y URL
+
+body('email').isEmail().normalizeEmail();
+body('website').isURL();
+
+Validaciones Personalizadas
+body('username')
+  .custom(value => {
+    if (value === 'admin') {
+      throw new Error('Username no puede ser "admin"');
+    }
+    return true;
+  });
+
+
+
+Validación Avanzada
+
+Validación Condicional
+
+body('password')
+  .if(body('changePassword').equals('true'))
+  .isLength({ min: 8 });
+
+Validación con Dependencias entre Campos
+
+body('confirmPassword')
+  .custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Las contraseñas no coinciden');
+    }
+    return true;
+  });
