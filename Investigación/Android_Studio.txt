@@ -1,0 +1,33 @@
+# Enlaces de interés
+- https://developer.android.com/studio?hl=es-419
+- https://developer.android.com/studio/run/emulator
+- https://www.youtube.com/watch?v=aQiHmyfouu0
+
+# Información
+Android Studio es un entorno de desarrollo integrado (IDE) para crear aplicaciones Android.
+Incluye herramientas que permite simular distintos dispositivos y versiones del sistema operativo.
+
+~ Características principales
+    - Compatibilidad nativa: Soporta todas las APIs de Android oficiales.
+    - Los dispositivos virtuales permiten elegir modelo, pantalla, versión de Android y hardware
+    - Emulación de hardware y sensores: permite simular cámara, GPS, batería, llamadas, SMS, red, giroscopio y más.
+    - Integración con desarrollo: compatible con adb y frameworks como React Native y Flutter.
+    - Aceleración por hardware: utiliza Intel HAXM o Hypervisor para mayor rendimiento.
+
+~ Ventajas
+    - Gratis y oficial: mantenido por Google y siempre actualizado.
+    - Alta fidelidad: simula con precisión el comportamiento en un dispositivo real.
+    - Integración con React Native: se lanza con "npx react-native run-android".
+    - Variedad de configuraciones: prueba la app en distintas versiones de Android sin dispositivos físicos.
+
+~ Limitaciones
+    - Requisitos de hardware: alto consumo de RAM y CPU, puede ser lento en equipos modestos.
+    - Limitaciones: no reemplaza totalmente un dispositivo real; pruebas avanzadas deben hacerse en teléfonos físicos.
+    - Instalación pesada: Android Studio con SDKs puede superar 1 GB.
+
+~ Proceso de instalación y uso básico
+    1. Descargar Android Studio desde la web oficial de Google.
+    2. Instalar Android SDK y AVD Manager (se incluyen en el instalador).
+    3. Crear un dispositivo virtual (ej. Pixel 6, Android 13 API 33).
+    4. Ejecutar el emulador desde el menú o por terminal: "emulator -avd <NombreDelDispositivo>"
+    5. Desde el proyecto React Native, lanzar la app con: "npx react-native run-android"
