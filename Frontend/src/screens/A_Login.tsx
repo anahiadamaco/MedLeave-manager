@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { View, Text, TextInput, ScrollView } from "react-native";
+import { TouchableOpacity, View, Text, TextInput, ScrollView } from "react-native";
+import Footer from "../components/Footer";
 
 const A_Login = () => {
   // Estados locales
@@ -50,14 +50,8 @@ const A_Login = () => {
         <Text>Iniciar sesión</Text>
       </TouchableOpacity>
 
-      {/* Footer provisorio */}
-      <View style={{ alignItems: "center", marginTop: 30 }}>
-        <Text>LOGO</Text>
-        <Text>Contáctanos</Text>
-        <Text>Calle cualquiera #1010</Text>
-        <Text>+56 912345678</Text>
-        <Text>medleave@gmail.com</Text>
-      </View>
+      {/* Footer */}
+      <Footer />
     </ScrollView>
   );
 };
