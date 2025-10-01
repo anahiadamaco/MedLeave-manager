@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import NavbarAlumno from "../components/A_Navbar";
+import FooterAlumno from "../components/Footer";
 
 export default function HomeAlumno() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Encabezado */}
-      <View style={styles.header}>
-        <Text style={styles.logo}>MedLeave Manager</Text>
-        <Text style={styles.icon}>🔔</Text>
-      </View>
+      {/* Navbar */}
+      <NavbarAlumno />
 
-  
+      {/* Boton principal */}
       <TouchableOpacity style={styles.mainButton}>
         <Text style={styles.mainButtonText}>Subir licencia</Text>
       </TouchableOpacity>
@@ -23,7 +22,7 @@ export default function HomeAlumno() {
         </Text>
       </View>
 
-   
+      {/* Navegacion */}
       <View style={styles.navSection}>
         <TouchableOpacity style={styles.navButton}>
           <Text style={styles.navButtonText}>Estado de mis licencias</Text>
@@ -38,17 +37,20 @@ export default function HomeAlumno() {
         </TouchableOpacity>
       </View>
 
-    
+      {/* Informacion */}
       <View style={styles.infoBox}>
         <Text style={styles.infoText}>
           Accede a la normativa vigente sobre licencias médicas, incluyendo información sobre plazos de entrega, documentación requerida y criterios de validación.
         </Text>
       </View>
-
- 
+      
+      {/* Boton reglamentos */}
       <TouchableOpacity style={styles.regButton}>
         <Text style={styles.regButtonText}>Ver reglamentos</Text>
       </TouchableOpacity>
+
+      {/* Footer */}
+      <FooterAlumno />
     </ScrollView>
   );
 }
