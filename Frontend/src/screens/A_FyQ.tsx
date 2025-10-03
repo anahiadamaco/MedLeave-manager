@@ -1,139 +1,115 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 
 export default function A_FyQ() {
-    const [expanded, setExpanded] = useState<number | null>(null);
-    const toggleExpand = (index: number) => {
-        setExpanded(expanded === index ? null : index);
-    };
-    
-    return (
-        <ScrollView style={styles.container}>
-            <View style={styles.banner}>
-                <Text style={styles.title}>Preguntas{"\n"}Frecuentes</Text>
-            </View>
-            
-            {/* Preguntas */}
-            <View style={styles.faqSection}>
-                {/* Pregunta 1 */}
-                <TouchableOpacity style={styles.question} onPress={() => toggleExpand(1)}>
-                    <Text style={styles.questionText}>¿Cómo subo mi licencia?</Text>
-                    <Text style={styles.arrow}>▼</Text>
-                </TouchableOpacity>
-                {expanded === 1 && (
-                <View style={styles.answerBox}>
-                    <Text style={styles.answerText}>
-                    Respuesta.
-                    </Text>
-                </View>
-                )}
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const toggleExpand = (index: number) => {
+    setExpanded(expanded === index ? null : index);
+  };
 
-                {/* Pregunta 2 */}
-                <TouchableOpacity style={styles.question} onPress={() => toggleExpand(2)}>
-                    <Text style={styles.questionText}>¿Quién puede ver mi licencia médica?</Text>
-                    <Text style={styles.arrow}>▼</Text>
-                </TouchableOpacity>
-                {expanded === 2 && (
-                <View style={styles.answerBox}>
-                    <Text style={styles.answerText}>
-                        Tu licencia médica será revisada únicamente por la secretaria de carrera
-                        y por los docentes de las asignaturas en las que solicites justificación,
-                        garantizando confidencialidad y uso exclusivo para fines académicos.
-                    </Text>
-                </View>
-                )}
+  return (
+    <ScrollView className="flex-1 bg-white">
+      {/* Titulo */}
+      <View className="items-center py-8 bg-blue-600">
+        <Text className="text-2xl font-bold text-white text-center">
+          Preguntas{"\n"}Frecuentes
+        </Text>
+      </View>
 
-                {/* Pregunta 3 */}
-                <TouchableOpacity style={styles.question} onPress={() => toggleExpand(3)}>
-                    <Text style={styles.questionText}>¿Hay un plazo máximo para subir la licencia?</Text>
-                    <Text style={styles.arrow}>▼</Text>
-                </TouchableOpacity>
-                {expanded === 3 && (
-                <View style={styles.answerBox}>
-                    <Text style={styles.answerText}>
-                        Respuesta
-                    </Text>
-                </View>
-                )}
+      {/* Preguntas */}
+      <View className="px-4 py-4">
+        {/* Pregunta 1 */}
+        <TouchableOpacity
+          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          onPress={() => toggleExpand(1)}
+        >
+          <Text className="text-base font-semibold text-black">
+            ¿Cómo subo mi licencia?
+          </Text>
+          <Text className="text-lg text-yellow-500">▼</Text>
+        </TouchableOpacity>
+        {expanded === 1 && (
+          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
+            <Text className="text-sm text-black text-justify">
+              Respuesta.
+            </Text>
+          </View>
+        )}
 
-                {/* Pregunta 4 */}
-                <TouchableOpacity style={styles.question} onPress={() => toggleExpand(4)}>
-                    <Text style={styles.questionText}>¿Qué significan los estados de mi solicitud?</Text>
-                    <Text style={styles.arrow}>▼</Text>
-                </TouchableOpacity>
-                {expanded === 4 && (
-                <View style={styles.answerBox}>
-                    <Text style={styles.answerText}>
-                        Respuesta
-                    </Text>
-                </View>
-                )}
+        {/* Pregunta 2 */}
+        <TouchableOpacity
+          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          onPress={() => toggleExpand(2)}
+        >
+          <Text className="text-base font-semibold text-black">
+            ¿Quién puede ver mi licencia médica?
+          </Text>
+          <Text className="text-lg text-yellow-500">▼</Text>
+        </TouchableOpacity>
+        {expanded === 2 && (
+          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
+            <Text className="text-sm text-black text-justify">
+              Tu licencia médica será revisada únicamente por la secretaria de carrera y 
+              por los docentes de las asignaturas en las que solicites justificación, 
+              garantizando confidencialidad y uso exclusivo para fines académicos.
+            </Text>
+          </View>
+        )}
 
-                {/* Pregunta 5 */}
-                <TouchableOpacity style={styles.question} onPress={() => toggleExpand(5)}>
-                    <Text style={styles.questionText}>¿Qué hago si mi licencia fue rechazada?</Text>
-                    <Text style={styles.arrow}>▼</Text>
-                </TouchableOpacity>
-                {expanded === 5 && (
-                <View style={styles.answerBox}>
-                    <Text style={styles.answerText}>
-                        Respuesta
-                    </Text>
-                </View>
-                )}
-            </View>
-        </ScrollView>
-    );
+        {/* Pregunta 3 */}
+        <TouchableOpacity
+          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          onPress={() => toggleExpand(3)}
+        >
+          <Text className="text-base font-semibold text-black">
+            ¿Hay un plazo máximo para subir la licencia?
+          </Text>
+          <Text className="text-lg text-yellow-500">▼</Text>
+        </TouchableOpacity>
+        {expanded === 3 && (
+          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
+            <Text className="text-sm text-black text-justify">
+              Respuesta
+            </Text>
+          </View>
+        )}
+
+        {/* Pregunta 4 */}
+        <TouchableOpacity
+          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          onPress={() => toggleExpand(4)}
+        >
+          <Text className="text-base font-semibold text-black">
+            ¿Qué significan los estados de mi solicitud?
+          </Text>
+          <Text className="text-lg text-yellow-500">▼</Text>
+        </TouchableOpacity>
+        {expanded === 4 && (
+          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
+            <Text className="text-sm text-black text-justify">
+              Respuesta
+            </Text>
+          </View>
+        )}
+
+        {/* Pregunta 5 */}
+        <TouchableOpacity
+          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          onPress={() => toggleExpand(5)}
+        >
+          <Text className="text-base font-semibold text-black">
+            ¿Qué hago si mi licencia fue rechazada?
+          </Text>
+          <Text className="text-lg text-yellow-500">▼</Text>
+        </TouchableOpacity>
+        {expanded === 5 && (
+          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
+            <Text className="text-sm text-black text-justify">
+              Respuesta
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
+  );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-    },
-    banner: {
-        alignItems: "center",
-        paddingVertical: 30,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: "bold",
-        color: "#000",
-        textAlign: "center",
-    },
-    faqSection: {
-        padding: 16,
-    },
-    question: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderRadius: 6,
-        padding: 12,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: "#000",
-    },
-    questionText: {
-        fontSize: 15,
-        fontWeight: "600",
-        color: "#000",
-    },
-    arrow: {
-        fontSize: 18,
-        color: "#000",
-    },
-    answerBox: {
-        backgroundColor: "#fff",
-        borderWidth: 1,
-        borderColor: "#000",
-        padding: 12,
-        marginBottom: 10,
-        borderRadius: 6,
-    },
-    answerText: {
-        fontSize: 14,
-        textAlign: "justify",
-        color: "#000",
-    },
-});
