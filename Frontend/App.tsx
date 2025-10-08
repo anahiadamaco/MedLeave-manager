@@ -3,7 +3,7 @@ import { StatusBar, useColorScheme, ScrollView } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Rutas Alumno
-import A_Login from "./src/screens/A_Login";
+// import A_Login from "./src/screens/A_Login";
 import A_Home from "./src/screens/A_Home";
 //import A_SubirLicencia from "./src/screens/A_SubirLicencia";
 //import A_Historial from "./src/screens/A_Historial";
@@ -12,7 +12,7 @@ import A_PreguntasFrecuentes from "./src/screens/A_FyQ";
 
 // Rutas Profesor
 //import P_Login from "./src/screens/P_Login";
-//import P_Home from "./src/screens/P_Home";
+import P_Home from "./src/screens/P_Home";
 //import P_SubirLicencia from "./src/screens/P_SubirLicencia";
 //import P_Historial from "./src/screens/P_Historial";
 //import P_HistorialRamo from "./src/screens/P_HistorialRamo";
@@ -27,7 +27,7 @@ function App() {
 
       <ScrollView>
         {/* Rutas Alumnos */}
-        <A_Login />
+        {/* <A_Login /> */}
         <A_Home />
         {/* <A_SubirLicencia /> */}
         {/* <A_Historial /> */}
@@ -36,7 +36,7 @@ function App() {
 
         {/* Rutas Profesor */}
         {/* <P_Login /> */}
-        {/* <P_Home /> */}
+        <P_Home />
         {/* <P_SubirLicencia /> */}
         {/* <P_Historial /> */}
         {/* <P_HistorialRamo /> */}
