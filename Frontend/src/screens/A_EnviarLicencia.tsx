@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-export default function SubirLicencia() {
+export default function A_EnviarLicencias() {
   const [form, setForm] = useState({
     nombres: '',
     apellidos: '',
