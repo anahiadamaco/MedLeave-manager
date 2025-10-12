@@ -3,7 +3,8 @@ import { StatusBar, useColorScheme, ScrollView } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Rutas Alumno
-// import A_Login from "./src/screens/A_Login";
+import A_Register from "./src/screens/A_Register";
+import A_Login from "./src/screens/A_Login";
 import A_Home from "./src/screens/A_Home";
 //import A_SubirLicencia from "./src/screens/A_SubirLicencia";
 //import A_Historial from "./src/screens/A_Historial";

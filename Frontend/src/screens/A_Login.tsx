@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function A_Login {
+export default function A_Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
