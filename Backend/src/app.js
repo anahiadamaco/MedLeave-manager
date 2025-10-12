@@ -1,14 +1,20 @@
 import express from "express";
 import cors from "cors";
-import pool from "./config/db.js";
+import licenciaRoutes from "./routes/licenciaRoutes.js";
+import notificacionRoutes from "./routes/notificacionRoutes.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/licencias", licenciaRoutes);
+app.use("/api/notificaciones", notificacionRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando correctamente 🚀");
 });
 
 export default app;
+
+
+
