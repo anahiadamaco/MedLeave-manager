@@ -1,59 +1,61 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, Text, TextInput, ScrollView } from "react-native";
-import Footer from "../components/Footer";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const A_Login = () => {
-  // Estados locales
+export default function A_Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const handleLogin = () => {
+    console.log("Correo:", email);
+    console.log("Contraseña:", password);
+  };
+
   return (
-    // Contenedor principal
-    <ScrollView style={{ flex: 1, padding: 16 }}>
-
-      {/* Sección del logo en la parte superior */}
-      <View style={{ alignItems: "center", marginBottom: 20 }}>
-        <Text>LOGO</Text>
+    <SafeAreaView className="flex-1 bg-sky-500 items-center justify-center px-6">
+      {/* Logo */}
+      <View className="items-center mb-10">
+        <View className="border-4 border-white rounded-full p-10">
+          <Text className="text-white font-semibold text-lg">
+            (aquí va el logo)
+          </Text>
+        </View>
       </View>
 
-      {/* Mensaje de bienvenida */}
-      <View style={{ alignItems: "center", marginBottom: 20 }}>
-        <Text>Bienvenido a MedLeave Manager</Text>
-      </View>
+      {/* Formulario */}
+      <View className="bg-sky-500 border border-yellow-400 rounded-xl p-6 w-full max-w-sm">
+        <Text className="text-white text-2xl font-bold text-center mb-6">
+          Bienvenido a{"\n"}MedLeave Manager
+        </Text>
 
-      {/* Campo de texto para ingresar el correo */}
-      <View style={{ marginBottom: 12 }}>
-        <Text>Correo:</Text>
+        <Text className="text-white mb-1 font-medium">Correo:</Text>
         <TextInput
-          placeholder="Ingresa tu correo"
           value={email}
           onChangeText={setEmail}
+          placeholder="Ingrese su correo"
+          placeholderTextColor="#ccc"
+          className="bg-yellow-400 rounded-md px-3 py-2 mb-4 text-black"
         />
-      </View>
 
-      {/* Campo de texto para ingresar la contraseña */}
-      <View style={{ marginBottom: 20 }}>
-        <Text>Contraseña:</Text>
+        <Text className="text-white mb-1 font-medium">Contraseña:</Text>
         <TextInput
-          placeholder="Ingresa tu contraseña"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          placeholder="Ingrese su contraseña"
+          placeholderTextColor="#ccc"
+          className="bg-yellow-400 rounded-md px-3 py-2 mb-6 text-black"
         />
+
+        <TouchableOpacity
+          onPress={handleLogin}
+          className="bg-sky-600 py-2 rounded-md border border-yellow-400"
+        >
+          <Text className="text-center text-white font-semibold">
+            Iniciar sesión
+          </Text>
+        </TouchableOpacity>
       </View>
-
-      {/* Botón iniciar sesión */}
-      <TouchableOpacity 
-        onPress={() => console.log("Login")} 
-        style={{ padding: 12, borderWidth: 1, borderRadius: 4, alignItems: "center" }}
-      >
-        <Text>Iniciar sesión</Text>
-      </TouchableOpacity>
-
-      {/* Footer */}
-      <Footer />
-    </ScrollView>
+    </SafeAreaView>
   );
-};
-
-export default A_Login;
+}
