@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import licenciaRoutes from "./routes/licenciaRoutes.js";
 import notificacionRoutes from "./routes/notificacionRoutes.js";
-import authRoutes from "./routes/auth.js"; 
+import authRoutes from "./routes/authRoutes.js"; 
 import notFound from "./middlewares/notFound.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import logger from './middlewares/logger.js';

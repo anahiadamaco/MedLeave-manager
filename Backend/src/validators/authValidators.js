@@ -23,10 +23,10 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 /**
- * Validaciones para el registro
+ * 🧾 Validaciones para el registro
  */
 export const registerValidation = [
-  body('name')
+  body('nombre')
     .trim()
     .notEmpty()
     .withMessage('El nombre es obligatorio')
@@ -35,17 +35,17 @@ export const registerValidation = [
     .matches(/^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]+$/)
     .withMessage('El nombre solo puede contener letras y espacios'),
 
-  body('email')
+  body('correo_usuario')
     .trim()
     .notEmpty()
-    .withMessage('El email es obligatorio')
+    .withMessage('El correo es obligatorio')
     .isEmail()
-    .withMessage('Debe proporcionar un email válido')
+    .withMessage('Debe proporcionar un correo válido')
     .normalizeEmail()
     .isLength({ max: 100 })
-    .withMessage('El email no puede exceder 100 caracteres'),
+    .withMessage('El correo no puede exceder 100 caracteres'),
 
-  body('password')
+  body('contrasena')
     .notEmpty()
     .withMessage('La contraseña es obligatoria')
     .isLength({ min: 8 })
@@ -53,11 +53,11 @@ export const registerValidation = [
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .withMessage('La contraseña debe contener al menos una mayúscula, una minúscula y un número'),
 
-  body('confirmPassword')
+  body('confirmarContrasena')
     .notEmpty()
     .withMessage('Debe confirmar su contraseña')
     .custom((value, { req }) => {
-      if (value !== req.body.password) {
+      if (value !== req.body.contrasena) {
         throw new Error('Las contraseñas no coinciden');
       }
       return true;
@@ -67,22 +67,20 @@ export const registerValidation = [
 ];
 
 /**
- * Validaciones para el login
+ * 🔐 Validaciones para el login
  */
 export const loginValidation = [
-  body('email')
+  body('correo_usuario')
     .trim()
     .notEmpty()
-    .withMessage('El email es obligatorio')
+    .withMessage('El correo es obligatorio')
     .isEmail()
-    .withMessage('Debe proporcionar un email válido')
+    .withMessage('Debe proporcionar un correo válido')
     .normalizeEmail(),
 
-  body('password')
+  body('contrasena')
     .notEmpty()
-    .withMessage('La contraseña es obligatoria')
-    .isLength({ min: 1 })
-    .withMessage('La contraseña no puede estar vacía'),
+    .withMessage('La contraseña es obligatoria'),
 
   handleValidationErrors
 ];
