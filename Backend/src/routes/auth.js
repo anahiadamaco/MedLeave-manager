@@ -6,14 +6,26 @@ const router = express.Router();
 /**
  * Ruta de registro
  */
-router.post('/register', registerValidation, async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const {
+      nombres,
+      apellidos,
+      rut,
+      correo,
+      fecha_nacimiento,
+      telefono,
+      carrera,
+      anio_ingreso,
+    } = req.body;
+
+    // Aquí iría la inserción en la base de datos:
+    // await pool.query('INSERT INTO alumnos (...) VALUES (...)', [...]);
 
     res.status(201).json({
       success: true,
       message: 'Usuario registrado exitosamente',
-      data: { name, email },
+      data: { nombres, apellidos, correo },
     });
   } catch (error) {
     console.error('Error en registro:', error);

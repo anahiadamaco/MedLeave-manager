@@ -5,10 +5,12 @@ import notificacionRoutes from "./routes/notificacionRoutes.js";
 import authRoutes from "./routes/auth.js"; 
 import notFound from "./middlewares/notFound.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import logger from './middlewares/logger.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(logger);
 
 app.use("/api/licencias", licenciaRoutes);
 app.use("/api/notificaciones", notificacionRoutes);
@@ -18,6 +20,9 @@ app.get("/", (req, res) => {
   res.send("API funcionando correctamente 🚀");
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'OK' });
+});
 
 // IMPORTANTE: Estos dos middlewares van AL FINAL, después de todas las rutas
 app.use(notFound);        // Captura rutas no encontradas

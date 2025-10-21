@@ -1,0 +1,40 @@
+# Investigación sobre **Bcrypt**
+
+## Descripción general
+
+**Bcrypt** es una función de hash criptográfico diseñada para proteger contraseñas.  
+Fue creada por *Niels Provos y David Mazières* en 1999 y se basa en el algoritmo **Blowfish**.  
+Su objetivo principal es hacer que cada intento de descifrar contraseñas sea **computacionalmente costoso**, protegiendo frente a ataques de fuerza bruta y diccionario.
+
+👉 Referencias:
+- [JumpCloud: What is Bcrypt?](https://jumpcloud.com/it-index/what-is-bcrypt)
+- [Izertis: Encriptación de password en NodeJS y MongoDB con bcrypt](https://www.izertis.com/es/-/blog/encriptacion-de-password-en-nodejs-y-mongodb-bcrypt)
+
+---
+
+## ¿Por qué usar Bcrypt?
+
+- **Evita almacenar contraseñas en texto plano.**
+- **Protege contra ataques de Rainbow Tables** gracias a los *salts* únicos.
+- **Permite ajustar el nivel de seguridad** mediante el parámetro de coste (*work factor*).
+- Hace que **cada intento de descifrado sea lento**, desincentivando ataques masivos.
+
+---
+
+## Conceptos clave
+
+| Concepto | Descripción |
+|-----------|-------------|
+| **Hashing** | Proceso unidireccional que convierte una contraseña en una cadena fija e irreversible. |
+| **Salt** | Valor aleatorio añadido antes de hacer hash, asegurando que dos contraseñas iguales tengan resultados distintos. |
+| **Work Factor (Cost)** | Número que indica cuántas veces se aplicará el algoritmo internamente. A mayor valor, más seguridad pero más tiempo de procesamiento. |
+| **Límite de 72 bytes** | Bcrypt sólo considera los primeros 72 bytes de la contraseña. Si son más largos, se recomienda aplicar SHA-256 antes del hash. |
+
+---
+
+## Instalación
+
+Instala bcrypt con npm:
+
+```bash
+npm install bcrypt
