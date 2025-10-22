@@ -1,0 +1,7 @@
+{
+  "name": "medleave-manager",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["MedLeaveExpo2"],
+  "main": "node_modules/expo/AppEntry.js"
+}

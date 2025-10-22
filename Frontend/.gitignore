@@ -1,7 +1,0 @@
-# Frontend/.gitignore
-node_modules/
-android/app/build/
-ios/Pods/
-*.log
-*.jsbundle
-.metro-health-check*
