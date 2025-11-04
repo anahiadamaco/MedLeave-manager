@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import Footer from "../components/Footer";
 
 export default function A_FyQ() {
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -110,6 +111,7 @@ export default function A_FyQ() {
           </View>
         )}
       </View>
+      <Footer />
     </ScrollView>
   );
 }

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import * as React from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Footer from "../components/Footer";
 
 export default function A_Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {
     console.log("Correo:", email);
@@ -12,117 +13,51 @@ export default function A_Login() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-sky-500 items-center justify-center px-6">
       {/* Logo */}
-      <View style={styles.logoContainer}>
-        <View style={styles.logoCircle}>
-          <Text style={styles.logoText}>
+      <View className="items-center mb-10">
+        <View className="border-4 border-white rounded-full p-10">
+          <Text className="text-white font-semibold text-lg">
             (aquí va el logo)
           </Text>
         </View>
       </View>
 
       {/* Formulario */}
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>
+      <View className="bg-sky-500 border border-yellow-400 rounded-xl p-6 w-full max-w-sm">
+        <Text className="text-white text-2xl font-bold text-center mb-6">
           Bienvenido a{"\n"}MedLeave Manager
         </Text>
 
-        <Text style={styles.inputLabel}>Correo:</Text>
+        <Text className="text-white mb-1 font-medium">Correo:</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           placeholder="Ingrese su correo"
           placeholderTextColor="#ccc"
-          style={styles.input}
+          className="bg-yellow-400 rounded-md px-3 py-2 mb-4 text-black"
         />
 
-        <Text style={styles.inputLabel}>Contraseña:</Text>
+        <Text className="text-white mb-1 font-medium">Contraseña:</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           placeholder="Ingrese su contraseña"
           placeholderTextColor="#ccc"
-          style={styles.input}
+          className="bg-yellow-400 rounded-md px-3 py-2 mb-6 text-black"
         />
 
         <TouchableOpacity
           onPress={handleLogin}
-          style={styles.loginButton}
+          className="bg-sky-600 py-2 rounded-md border border-yellow-400"
         >
-          <Text style={styles.loginButtonText}>
+          <Text className="text-center text-white font-semibold">
             Iniciar sesión
           </Text>
         </TouchableOpacity>
       </View>
+      <Footer />
     </SafeAreaView>
   );
 }
-
-// Estilos
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0ea5e9', // sky-500
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 40
-  },
-  logoCircle: {
-    borderWidth: 4,
-    borderColor: 'white',
-    borderRadius: 100,
-    padding: 40
-  },
-  logoText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 18
-  },
-  formContainer: {
-    backgroundColor: '#0ea5e9', // sky-500
-    borderWidth: 1,
-    borderColor: '#facc15', // yellow-400
-    borderRadius: 12,
-    padding: 24,
-    width: '100%',
-    maxWidth: 350
-  },
-  title: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 24
-  },
-  inputLabel: {
-    color: 'white',
-    marginBottom: 4,
-    fontWeight: '500'
-  },
-  input: {
-    backgroundColor: '#facc15', // yellow-400
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 16,
-    color: 'black'
-  },
-  loginButton: {
-    backgroundColor: '#0284c7', // sky-600
-    paddingVertical: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#facc15' // yellow-400
-  },
-  loginButtonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontWeight: '600'
-  }
-});

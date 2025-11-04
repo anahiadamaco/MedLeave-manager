@@ -1,62 +1,37 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image } from 'react-native';
 
 export default function Footer() {
   return (
-    <View style={styles.footer}>
-      <Text style={styles.title}>Contáctanos</Text>
+    <View className="absolute bottom-0 w-full bg-[#007ACC] flex-row justify-between items-center py-4 px-5">
+      {/* Sección izquierda */}
+      <View className="flex-1">
+        <Text className="text-white font-semibold text-[15px] mb-3">Contáctanos</Text>
 
-      <View style={styles.contactItem}>
-        <Text style={styles.icon}>📧</Text>
-        <Text style={styles.contactText}>medleave@gmail.com</Text>
+        <View className="flex-row items-center mb-2">
+          <Image source={require('./Imagenes/Gmail.png')} className="w-[22px] h-[22px] mr-2" />
+          <Text className="text-white text-[14px] underline">medleave@gmail.com</Text>
+        </View>
+
+        <View className="flex-row items-center mb-2">
+          <Image source={require('./Imagenes/Telefono.png')} className="w-[22px] h-[22px] mr-2" />
+          <Text className="text-white text-[14px] underline">+56 9 1234 5678</Text>
+        </View>
+
+        <View className="flex-row items-center">
+          <Image source={require('./Imagenes/Maps.png')} className="w-[22px] h-[22px] mr-2" />
+          <Text className="text-white text-[14px] underline">calle cualquiera #1234</Text>
+        </View>
       </View>
 
-      <View style={styles.contactItem}>
-        <Text style={styles.icon}>📞</Text>
-        <Text style={styles.contactText}>+56 9 1234 5678</Text>
-      </View>
-
-      <View style={styles.brand}>
-        <Text style={styles.brandName}>MedLeave</Text>
-        <Text style={styles.brandSub}>MANAGER</Text>
+      {/* Sección derecha */}
+      <View className="items-center justify-center">
+        <Image
+          source={require('./assets/Logo.png')}
+          className="w-[90px] h-[90px] mr-[10px]"
+          resizeMode="contain"
+        />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  footer: {
-    padding: 16,
-    borderTopWidth: 1,
-    marginTop: 20,
-  },
-  title: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  contactItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  icon: {
-    fontSize: 18,
-    marginRight: 8,
-  },
-  contactText: {
-    fontSize: 14,
-  },
-  brand: {
-    marginTop: 16,
-    alignItems: 'center',
-  },
-  brandName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  brandSub: {
-    fontSize: 12,
-    letterSpacing: 1,
-  },
-});

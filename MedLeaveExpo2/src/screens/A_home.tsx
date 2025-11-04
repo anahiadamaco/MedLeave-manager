@@ -1,11 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Bell, User, MoreHorizontal } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
+import Footer from "../components/Footer";
 
 export default function A_Home() {
-  const navigation = useNavigation();
-
   return (
     <ScrollView className="flex-1 bg-white">
       {/* NAVBAR */}
@@ -24,7 +22,7 @@ export default function A_Home() {
       {/* Fondo decorativo */}
       <View className="relative">
         <Image
-          source={require("../assets/licencia_fondo.jpg")}
+          source={require("../assets/licencia_fondo.png")}
           className="w-full h-32 opacity-60"
           resizeMode="cover"
         />
@@ -33,10 +31,7 @@ export default function A_Home() {
       {/* Contenido */}
       <View className="px-5 mt-4">
         {/* Botón principal */}
-        <TouchableOpacity
-          className="bg-[#0078D4] py-3 rounded-xl shadow-md border-2 border-yellow-400"
-          onPress={() => navigation.navigate("SubirLicencia")}
-        >
+        <TouchableOpacity className="bg-[#0078D4] py-3 rounded-xl shadow-md border-2 border-yellow-400">
           <Text className="text-white text-center text-lg font-semibold">
             Subir licencia
           </Text>
@@ -55,34 +50,23 @@ export default function A_Home() {
 
         {/* Navegación */}
         <View className="mt-6 space-y-3">
-          <TouchableOpacity
-            className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400"
-            onPress={() => navigation.navigate("SubirLicencia")}
-          >
+          <TouchableOpacity className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400">
             <Text className="text-white text-center font-semibold text-base">
               Estado de mis licencias
             </Text>
           </TouchableOpacity>
 
-          {/*
-          <TouchableOpacity
-            className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400"
-            onPress={() => navigation.navigate("Historial")}
-          >
+          <TouchableOpacity className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400">
             <Text className="text-white text-center font-semibold text-base">
               Historial
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400"
-            onPress={() => navigation.navigate("PreguntasFrecuentes")}
-          >
+          <TouchableOpacity className="bg-[#004AAD] py-3 rounded-full shadow border-2 border-yellow-400">
             <Text className="text-white text-center font-semibold text-base">
               Preguntas frecuentes
             </Text>
           </TouchableOpacity>
-          */}
         </View>
 
         {/* Información */}
@@ -102,6 +86,7 @@ export default function A_Home() {
           <MoreHorizontal color="#1E3A8A" size={22} />
         </View>
       </View>
+      <Footer />
     </ScrollView>
   );
 }

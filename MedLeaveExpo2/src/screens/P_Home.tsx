@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Mail, FileText, HelpCircle } from "lucide-react-native";
+import Footer from "../components/Footer";
 
 export default function P_Home() {
   return (
@@ -65,17 +66,7 @@ export default function P_Home() {
         </TouchableOpacity>
       </View>
 
-      {/* Footer */}
-      <View className="mt-8 items-center">
-        <Text className="text-[#0B3178] text-sm">Contáctanos</Text>
-        <Text className="text-[#0096D6] text-sm underline">medleave@gmail.com</Text>
-        <Text className="text-[#0B3178] text-sm">+56 9 1234 5678</Text>
-        <Image
-          source={require("../assets/logo.png")}
-          className="w-24 h-24 mt-4"
-          resizeMode="contain"
-        />
-      </View>
+      <Footer />
     </ScrollView>
   );
 }
