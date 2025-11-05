@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/", LicenciaController.getLicencias);
 router.get("/:id", LicenciaController.getLicencia);
-router.post("/", LicenciaController.createLicencia);
+router.post("/create", LicenciaController.createLicencia);
 
 export default router;

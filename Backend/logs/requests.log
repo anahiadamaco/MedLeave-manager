@@ -1,0 +1,8 @@
+[2025-11-05T07:46:00.963Z] POST /api/auth/login 404 - 789ms
+[2025-11-05T07:46:25.207Z] POST /api/auth/register 400 - 6ms
+[2025-11-05T07:47:23.009Z] POST /api/auth/register 201 - 1007ms
+[2025-11-05T07:48:14.457Z] POST /api/auth/login 400 - 4ms
+[2025-11-05T07:50:01.588Z] POST /api/auth/login 400 - 8ms
+[2025-11-05T07:50:12.989Z] POST /api/auth/login 401 - 264ms
+[2025-11-05T07:50:34.887Z] POST /api/auth/login 200 - 287ms
+[2025-11-05T07:54:46.951Z] POST /api/licencias/create 404 - 12ms

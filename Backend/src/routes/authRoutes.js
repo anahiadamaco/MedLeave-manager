@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { pool } from "../config/db.js"; // tu conexión MySQL
+import pool from "../config/db.js"; // tu conexión MySQL (default export)
 import { registerValidation, loginValidation } from "../validators/authValidators.js";
 
 const router = express.Router();
