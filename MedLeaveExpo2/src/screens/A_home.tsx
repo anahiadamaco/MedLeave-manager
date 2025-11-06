@@ -22,7 +22,7 @@ export default function A_Home() {
       {/* Fondo decorativo */}
       <View className="relative">
         <Image
-          source={require("../assets/licencia_fondo.png")}
+          source={require("../assets/licencia_fondo.jpg")}
           className="w-full h-32 opacity-60"
           resizeMode="cover"
         />

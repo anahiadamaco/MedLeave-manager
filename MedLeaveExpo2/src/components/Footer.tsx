@@ -9,17 +9,17 @@ export default function Footer() {
         <Text className="text-white font-semibold text-[15px] mb-3">Contáctanos</Text>
 
         <View className="flex-row items-center mb-2">
-          <Image source={require('./Imagenes/Gmail.png')} className="w-[22px] h-[22px] mr-2" />
+          <Image source={require('../assets/Gmail.png')} className="w-[22px] h-[22px] mr-2" />
           <Text className="text-white text-[14px] underline">medleave@gmail.com</Text>
         </View>
 
         <View className="flex-row items-center mb-2">
-          <Image source={require('./Imagenes/Telefono.png')} className="w-[22px] h-[22px] mr-2" />
+          <Image source={require('../assets/Telefono.png')} className="w-[22px] h-[22px] mr-2" />
           <Text className="text-white text-[14px] underline">+56 9 1234 5678</Text>
         </View>
 
         <View className="flex-row items-center">
-          <Image source={require('./Imagenes/Maps.png')} className="w-[22px] h-[22px] mr-2" />
+          <Image source={require('../assets/Maps.png')} className="w-[22px] h-[22px] mr-2" />
           <Text className="text-white text-[14px] underline">calle cualquiera #1234</Text>
         </View>
       </View>
@@ -27,7 +27,7 @@ export default function Footer() {
       {/* Sección derecha */}
       <View className="items-center justify-center">
         <Image
-          source={require('./assets/Logo.png')}
+          source={require('../assets/Logo.png')}
           className="w-[90px] h-[90px] mr-[10px]"
           resizeMode="contain"
         />

@@ -14,7 +14,7 @@ export default function LoginScreen() {
         <Text className="text-white text-2xl font-bold mb-4">Bienvenido</Text>
         <View className="w-[90px] h-[90px] rounded-full bg-white items-center justify-center">
           <Image
-            source={require("./Imagenes/Logo_normal.png")}
+            source={require("../assets/Logo_normal.png")}
             className="w-[50px] h-[50px] tint-[#0089E0]"
           />
         </View>
@@ -24,7 +24,7 @@ export default function LoginScreen() {
       <View className="bg-white border-2 border-[#FFB700] rounded-xl w-[85%] mt-8 p-5 items-center">
         <View className="bg-[#E6F2FF] rounded-full p-2.5 mb-3">
           <Image
-            source={require("./Imagenes/user.png")}
+            source={require("../assets/user.png")}
             className="w-10 h-10 tint-[#0089E0]"
           />
         </View>

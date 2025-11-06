@@ -7,7 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import A_Register from "../screens/A_Register";
 import A_Login from "../screens/A_Login";
 import A_Home from "../screens/A_home";
-import A_SubirLicencia from "../screens/A_Subir_Licencia";
+import A_SubirLicencia from "../screens/A_SubirLicencia";
 // import A_Historial from "../screens/A_Historial";
 // import A_PreguntasFrecuentes from "../screens/A_PreguntasFrecuentes";
 
