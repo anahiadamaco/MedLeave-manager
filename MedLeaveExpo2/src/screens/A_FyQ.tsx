@@ -1,6 +1,64 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import Footer from "../components/Footer";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  header: {
+    backgroundColor: '#0369a1',
+    alignItems: 'center',
+    paddingVertical: 32,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  questionsContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  questionButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
+    backgroundColor: '#ffffff',
+  },
+  questionText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000000',
+    flex: 1,
+  },
+  expandIcon: {
+    fontSize: 18,
+    color: '#facc15',
+  },
+  answerContainer: {
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
+    backgroundColor: '#ffffff',
+  },
+  answerText: {
+    fontSize: 14,
+    color: '#000000',
+    textAlign: 'justify',
+  },
+});
 
 export default function A_FyQ() {
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -9,29 +67,29 @@ export default function A_FyQ() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView style={styles.container}>
       {/* Titulo */}
-      <View className="items-center py-8 bg-blue-600">
-        <Text className="text-2xl font-bold text-white text-center">
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>
           Preguntas{"\n"}Frecuentes
         </Text>
       </View>
 
       {/* Preguntas */}
-      <View className="px-4 py-4">
+      <View style={styles.questionsContainer}>
         {/* Pregunta 1 */}
         <TouchableOpacity
-          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          style={styles.questionButton}
           onPress={() => toggleExpand(1)}
         >
-          <Text className="text-base font-semibold text-black">
+          <Text style={styles.questionText}>
             ¿Cómo subo mi licencia?
           </Text>
-          <Text className="text-lg text-yellow-500">▼</Text>
+          <Text style={styles.expandIcon}>▼</Text>
         </TouchableOpacity>
         {expanded === 1 && (
-          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
-            <Text className="text-sm text-black text-justify">
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerText}>
               Respuesta.
             </Text>
           </View>
@@ -39,17 +97,17 @@ export default function A_FyQ() {
 
         {/* Pregunta 2 */}
         <TouchableOpacity
-          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          style={styles.questionButton}
           onPress={() => toggleExpand(2)}
         >
-          <Text className="text-base font-semibold text-black">
+          <Text style={styles.questionText}>
             ¿Quién puede ver mi licencia médica?
           </Text>
-          <Text className="text-lg text-yellow-500">▼</Text>
+          <Text style={styles.expandIcon}>▼</Text>
         </TouchableOpacity>
         {expanded === 2 && (
-          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
-            <Text className="text-sm text-black text-justify">
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerText}>
               Tu licencia médica será revisada únicamente por la secretaria de carrera y 
               por los docentes de las asignaturas en las que solicites justificación, 
               garantizando confidencialidad y uso exclusivo para fines académicos.
@@ -59,17 +117,17 @@ export default function A_FyQ() {
 
         {/* Pregunta 3 */}
         <TouchableOpacity
-          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          style={styles.questionButton}
           onPress={() => toggleExpand(3)}
         >
-          <Text className="text-base font-semibold text-black">
+          <Text style={styles.questionText}>
             ¿Hay un plazo máximo para subir la licencia?
           </Text>
-          <Text className="text-lg text-yellow-500">▼</Text>
+          <Text style={styles.expandIcon}>▼</Text>
         </TouchableOpacity>
         {expanded === 3 && (
-          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
-            <Text className="text-sm text-black text-justify">
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerText}>
               Respuesta
             </Text>
           </View>
@@ -77,17 +135,17 @@ export default function A_FyQ() {
 
         {/* Pregunta 4 */}
         <TouchableOpacity
-          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          style={styles.questionButton}
           onPress={() => toggleExpand(4)}
         >
-          <Text className="text-base font-semibold text-black">
+          <Text style={styles.questionText}>
             ¿Qué significan los estados de mi solicitud?
           </Text>
-          <Text className="text-lg text-yellow-500">▼</Text>
+          <Text style={styles.expandIcon}>▼</Text>
         </TouchableOpacity>
         {expanded === 4 && (
-          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
-            <Text className="text-sm text-black text-justify">
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerText}>
               Respuesta
             </Text>
           </View>
@@ -95,17 +153,17 @@ export default function A_FyQ() {
 
         {/* Pregunta 5 */}
         <TouchableOpacity
-          className="flex-row justify-between items-center border border-blue-500 rounded-lg p-3 mb-3 bg-white"
+          style={styles.questionButton}
           onPress={() => toggleExpand(5)}
         >
-          <Text className="text-base font-semibold text-black">
+          <Text style={styles.questionText}>
             ¿Qué hago si mi licencia fue rechazada?
           </Text>
-          <Text className="text-lg text-yellow-500">▼</Text>
+          <Text style={styles.expandIcon}>▼</Text>
         </TouchableOpacity>
         {expanded === 5 && (
-          <View className="border border-blue-500 rounded-lg p-3 mb-3 bg-white">
-            <Text className="text-sm text-black text-justify">
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerText}>
               Respuesta
             </Text>
           </View>

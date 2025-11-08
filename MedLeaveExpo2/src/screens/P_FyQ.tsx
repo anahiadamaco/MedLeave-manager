@@ -1,64 +1,116 @@
-import React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Footer from "../components/Footer";
 
-export default function P_FyQ() {
-  return (
-    <View className="flex-1 bg-[#EBF5FF]">
-      {/* Imagen encabezado*/}
-      <Image
-        //source={require(")}
-        className="w-full h-10"
-        resizeMode="cover"
-      />
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#EBF5FF',
+  },
+  titleContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    backgroundColor: '#007ACC',
+  },
+  titleText: {
+    textAlign: 'center',
+    color: '#007ACC',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 0,
+  },
+  content: {
+    backgroundColor: '#ffffff',
+    marginHorizontal: 16,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    marginTop: 40,
+    marginBottom: 100,
+  },
+  questionContainer: {
+    marginBottom: 12,
+  },
+  questionButton: {
+    backgroundColor: '#C7E5FF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginTop: 8,
+  },
+  questionText: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: '#003366',
+  },
+  answerContainer: {
+    backgroundColor: '#E5F2FF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginTop: 4,
+  },
+  answerText: {
+    color: '#333333',
+    fontSize: 12,
+  },
+});
 
+export default function P_FyQ() {
+  const [expanded, setExpanded] = useState<number | null>(null);
+
+  const preguntas = [
+    {
+      id: 1,
+      pregunta: '¿Cómo puedo revisar si un estudiante tiene licencia médica aprobada?',
+      respuesta: 'A través del módulo de gestión, ingresando con su usuario y revisando la lista de estudiantes con licencia vigente.',
+    },
+    {
+      id: 2,
+      pregunta: '¿Recibiré una notificación cuando un estudiante presente licencia médica?',
+      respuesta: 'Sí, el sistema enviará una notificación automática al correo institucional y dentro de la plataforma.',
+    },
+    {
+      id: 3,
+      pregunta: '¿Puedo ver el tiempo de vigencia de la licencia?',
+      respuesta: 'Sí, en el detalle de la licencia aparece la fecha de inicio y término.',
+    },
+    {
+      id: 4,
+      pregunta: '¿Qué debo hacer si tengo dudas sobre la validez de una licencia médica?',
+      respuesta: 'El sistema permite contactar directamente a la unidad administrativa encargada, adjuntando la licencia en cuestión.',
+    },
+  ];
+
+  return (
+    <View style={styles.container}>
       {/* Título */}
-      <View className="items-center mt-5 mb-1">
-        <Text className="text-center text-[#007ACC] text-xl font-bold">
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>
           Preguntas{"\n"}Frecuentes
         </Text>
       </View>
 
       {/* Contenido */}
-      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-        <View className="bg-white mx-4 rounded-lg p-3 border border-[#BBD8EE] mt-10">
-          {/* Pregunta 1 */}
-          <Text className="bg-[#C7E5FF] rounded-md p-2 font-semibold mt-2 text-[#003366]">
-            ¿Cómo puedo revisar si un estudiante tiene licencia médica aprobada?
-          </Text>
-          <Text className="bg-[#E5F2FF] rounded-md p-2 mt-1 text-[#333] text-sm">
-            A través del módulo de gestión, ingresando con su usuario y revisando la lista de
-            estudiantes con licencia vigente.
-          </Text>
-
-          {/* Pregunta 2 */}
-          <Text className="bg-[#C7E5FF] rounded-md p-2 font-semibold mt-3 text-[#003366]">
-            ¿Recibiré una notificación cuando un estudiante presente licencia médica?
-          </Text>
-          <Text className="bg-[#E5F2FF] rounded-md p-2 mt-1 text-[#333] text-sm">
-            Sí, el sistema enviará una notificación automática al correo institucional y dentro de la
-            plataforma.
-          </Text>
-
-          {/* Pregunta 3 */}
-          <Text className="bg-[#C7E5FF] rounded-md p-2 font-semibold mt-3 text-[#003366]">
-            ¿Puedo ver el tiempo de vigencia de la licencia?
-          </Text>
-          <Text className="bg-[#E5F2FF] rounded-md p-2 mt-1 text-[#333] text-sm">
-            Sí, en el detalle de la licencia aparece la fecha de inicio y término.
-          </Text>
-
-          {/* Pregunta 4 */}
-          <Text className="bg-[#C7E5FF] rounded-md p-2 font-semibold mt-3 text-[#003366]">
-            ¿Qué debo hacer si tengo dudas sobre la validez de una licencia médica?
-          </Text>
-          <Text className="bg-[#E5F2FF] rounded-md p-2 mt-1 text-[#333] text-sm">
-            El sistema permite contactar directamente a la unidad administrativa encargada,
-            adjuntando la licencia en cuestión.
-          </Text>
-        </View>
-        <Footer />
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {preguntas.map((item) => (
+          <View key={item.id} style={styles.questionContainer}>
+            <TouchableOpacity
+              style={styles.questionButton}
+              onPress={() => setExpanded(expanded === item.id ? null : item.id)}
+            >
+              <Text style={styles.questionText}>{item.pregunta}</Text>
+            </TouchableOpacity>
+            {expanded === item.id && (
+              <View style={styles.answerContainer}>
+                <Text style={styles.answerText}>{item.respuesta}</Text>
+              </View>
+            )}
+          </View>
+        ))}
       </ScrollView>
+
+      <Footer />
     </View>
   );
 }

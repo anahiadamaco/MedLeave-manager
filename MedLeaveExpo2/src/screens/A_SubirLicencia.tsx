@@ -1,11 +1,22 @@
-import React from "react";
-import {View, Text, TextInput, TouchableOpacity, ScrollView, Image, StyleSheet} from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import Footer from "../components/Footer";
+import { LICENCIA_ROUTES } from "../config/api";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EBF5FF',
+    backgroundColor: '#ffffff',
   },
   headerImage: {
     width: '100%',
@@ -86,6 +97,86 @@ const styles = StyleSheet.create({
 });
 
 export default function A_SubirLicencia() {
+  const [formData, setFormData] = React.useState({
+    nombres: "",
+    apellidos: "",
+    fechaEmision: "",
+    inicioLicencia: "",
+    terminoLicencia: "",
+    cursosJustificar: "",
+    seccion: "",
+  });
+  const [loading, setLoading] = React.useState(false);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const handleSubmit = async () => {
+    // Validaciones
+    if (
+      !formData.nombres ||
+      !formData.apellidos ||
+      !formData.fechaEmision ||
+      !formData.inicioLicencia ||
+      !formData.terminoLicencia ||
+      !formData.cursosJustificar ||
+      !formData.seccion
+    ) {
+      Alert.alert("Error", "Por favor completa todos los campos");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(LICENCIA_ROUTES.CREATE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombres: formData.nombres,
+          apellidos: formData.apellidos,
+          fecha_emision: formData.fechaEmision,
+          inicio_licencia: formData.inicioLicencia,
+          termino_licencia: formData.terminoLicencia,
+          cursos_justificar: formData.cursosJustificar,
+          seccion: formData.seccion,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        Alert.alert("Error", data.message || "No se pudo enviar la licencia");
+        return;
+      }
+
+      // ✅ Envío exitoso
+      Alert.alert("Éxito", "Licencia enviada correctamente");
+      
+      // Limpiar formulario
+      setFormData({
+        nombres: "",
+        apellidos: "",
+        fechaEmision: "",
+        inicioLicencia: "",
+        terminoLicencia: "",
+        cursosJustificar: "",
+        seccion: "",
+      });
+    } catch (error: any) {
+      console.error("Error de conexión:", error);
+      Alert.alert(
+        "Error de conexión",
+        "No se pudo conectar con el servidor."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Imagen de encabezado */}
@@ -116,43 +207,81 @@ export default function A_SubirLicencia() {
         {/* Campo: Nombres */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Nombres:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.nombres}
+            onChangeText={(value) => handleInputChange("nombres", value)}
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Apellidos */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Apellidos:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.apellidos}
+            onChangeText={(value) => handleInputChange("apellidos", value)}
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Fecha de emisión */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Fecha de emisión:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.fechaEmision}
+            onChangeText={(value) => handleInputChange("fechaEmision", value)}
+            placeholder="YYYY-MM-DD"
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Inicio licencia */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Inicio licencia:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.inicioLicencia}
+            onChangeText={(value) => handleInputChange("inicioLicencia", value)}
+            placeholder="YYYY-MM-DD"
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Término licencia */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Término licencia:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.terminoLicencia}
+            onChangeText={(value) => handleInputChange("terminoLicencia", value)}
+            placeholder="YYYY-MM-DD"
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Cursos a justificar */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Cursos a justificar:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.cursosJustificar}
+            onChangeText={(value) => handleInputChange("cursosJustificar", value)}
+            editable={!loading}
+          />
         </View>
 
         {/* Campo: Sección */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Sección:</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            value={formData.seccion}
+            onChangeText={(value) => handleInputChange("seccion", value)}
+            editable={!loading}
+          />
         </View>
 
         {/* Botón de adjuntar */}
@@ -162,8 +291,16 @@ export default function A_SubirLicencia() {
         </TouchableOpacity>
 
         {/* Botón enviar */}
-        <TouchableOpacity style={styles.submitButton}>
-          <Text style={styles.submitButtonText}>Enviar</Text>
+        <TouchableOpacity 
+          style={styles.submitButton}
+          onPress={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Enviar</Text>
+          )}
         </TouchableOpacity>
         <Footer />
       </ScrollView>

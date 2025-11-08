@@ -1,52 +1,130 @@
-import {Menu, LogOut} from "lucide-react";
+import React from "react";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
 import Footer from "../components/Footer";
 
-export default function P_Historial() {
-  return (
-    <div className="min-h-screen flex flex-col bg-[#e6f1fb]">
-      {/* Header */}
-      <header className="bg-[#1c75bc] text-white flex justify-between items-center px-4 py-3">
-        <div className="flex items-center space-x-2">
-          <Menu className="w-6 h-6" />
-          <span className="font-semibold">MedLeave Manager</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm">Cuenta: Juan Pérez</span>
-          <LogOut className="w-5 h-5" />
-        </div>
-      </header>
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#e6f1fb',
+  },
+  header: {
+    backgroundColor: '#1c75bc',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  headerRight: {
+    fontSize: 12,
+    color: '#ffffff',
+  },
+  titleContainer: {
+    backgroundColor: '#1c75bc',
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  courseCard: {
+    backgroundColor: '#c9e0f7',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#a8c7e2',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  courseInfo: {
+    flex: 1,
+  },
+  courseName: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#000000',
+    marginBottom: 4,
+  },
+  courseCode: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: '#000000',
+  },
+});
 
-      {/* Fondo con título */}
-      <div
-        className="relative bg-cover bg-center h-32"
-        style={{
-          backgroundImage:
-            "url('https://upload.wikimedia.org/wikipedia/commons/d/d4/Licencia_medica_chile.jpg')",
-        }}
-      >
-        <div className="absolute inset-0 bg-[#1c75bc]/60 flex items-center justify-center">
-          <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-            Historial
-          </h1>
-        </div>
-      </div>
+export default function P_Historial() {
+  const navigation = useNavigation();
+
+  const cursos = [
+    { id: 1, codigo: 'INFO 1111', nombre: 'Teoría de sistemas' },
+    { id: 2, codigo: 'INFO 2222', nombre: 'Programación avanzada' },
+    { id: 3, codigo: 'INFO 3333', nombre: 'Bases de datos' },
+  ];
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ChevronLeft color="white" size={24} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>MedLeave Manager</Text>
+        </View>
+        <Text style={styles.headerRight}>Cuenta: Juan Pérez</Text>
+      </View>
+
+      {/* Título */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>Historial</Text>
+      </View>
 
       {/* Contenido principal */}
-      <main className="flex-1 px-6 py-4 space-y-3">
-        {Array(3)
-          .fill(0)
-          .map((_, i) => (
-            <div
-              key={i}
-              className="bg-[#c9e0f7] p-4 rounded-lg shadow-md border border-[#a8c7e2]"
-            >
-              <h2 className="font-bold text-lg text-black">INFO 1111</h2>
-              <p className="text-black font-semibold">Teoría de sistemas</p>
-            </div>
-          ))}
-      </main>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {cursos.map((curso) => (
+          <TouchableOpacity
+            key={curso.id}
+            style={styles.courseCard}
+            onPress={() => navigation.navigate('P_HistorialRamo', { curso })}
+          >
+            <View style={styles.courseInfo}>
+              <Text style={styles.courseName}>{curso.codigo}</Text>
+              <Text style={styles.courseCode}>{curso.nombre}</Text>
+            </View>
+            <ChevronRight color="#1c75bc" size={20} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       <Footer />
-    </div>
+    </View>
   );
 }

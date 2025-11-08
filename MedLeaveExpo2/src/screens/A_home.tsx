@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Alert } from "react-native";
 import { Bell, User, MoreHorizontal } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../components/Footer";
 
 const styles = StyleSheet.create({
@@ -132,7 +133,30 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function A_Home() {
+export default function A_Home({ navigation }: any) {
+  const handleLogout = async () => {
+    Alert.alert(
+      "Cerrar sesión",
+      "¿Estás seguro que deseas cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Cerrar sesión",
+          onPress: async () => {
+            await AsyncStorage.removeItem("user");
+            await AsyncStorage.removeItem("isLoggedIn");
+            navigation.navigate("A_Login");
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* NAVBAR */}
@@ -142,7 +166,7 @@ export default function A_Home() {
           <TouchableOpacity>
             <Bell color="white" size={22} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout}>
             <User color="white" size={22} />
           </TouchableOpacity>
         </View>
@@ -160,7 +184,10 @@ export default function A_Home() {
       {/* Contenido */}
       <View style={styles.contentContainer}>
         {/* Botón principal */}
-        <TouchableOpacity style={styles.uploadButton}>
+        <TouchableOpacity 
+          style={styles.uploadButton}
+          onPress={() => navigation.navigate("A_SubirLicencia")}
+        >
           <Text style={styles.uploadButtonText}>
             Subir licencia
           </Text>
@@ -179,19 +206,28 @@ export default function A_Home() {
 
         {/* Navegación */}
         <View style={styles.navigationContainer}>
-          <TouchableOpacity style={styles.navButton}>
+          <TouchableOpacity 
+            style={styles.navButton}
+            onPress={() => navigation.navigate("A_HistorialRamo")}
+          >
             <Text style={styles.navButtonText}>
               Estado de mis licencias
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navButton}>
+          <TouchableOpacity 
+            style={styles.navButton}
+            onPress={() => navigation.navigate("A_Historial")}
+          >
             <Text style={styles.navButtonText}>
               Historial
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navButton}>
+          <TouchableOpacity 
+            style={styles.navButton}
+            onPress={() => navigation.navigate("A_FyQ")}
+          >
             <Text style={styles.navButtonText}>
               Preguntas frecuentes
             </Text>
@@ -208,7 +244,10 @@ export default function A_Home() {
         </View>
 
         {/* Botón reglamentos */}
-        <TouchableOpacity style={styles.regulationsButton}>
+        <TouchableOpacity 
+          style={styles.regulationsButton}
+          onPress={() => navigation.navigate("A_FyQ")}
+        >
           <Text style={styles.regulationsButtonText}>
             Ver reglamentos
           </Text>
