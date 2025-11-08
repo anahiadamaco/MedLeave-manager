@@ -6,3 +6,5 @@
 [2025-11-05T07:50:12.989Z] POST /api/auth/login 401 - 264ms
 [2025-11-05T07:50:34.887Z] POST /api/auth/login 200 - 287ms
 [2025-11-05T07:54:46.951Z] POST /api/licencias/create 404 - 12ms
+[2025-11-08T00:17:09.797Z] GET /api/health 200 - 3ms
+[2025-11-08T00:17:18.087Z] POST /api/auth/login 200 - 2451ms
