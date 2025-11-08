@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../components/Footer";
+import { AUTH_ROUTES } from "../config/api";
 
 const styles = StyleSheet.create({
   container: {
@@ -137,8 +138,7 @@ export default function A_Register({ navigation }: any) {
     setLoading(true);
 
     try {
-      const API_BASE_URL = "http://192.168.100.223:3000"; // ← CAMBIAR A TU IP:PUERTO
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      const response = await fetch(AUTH_ROUTES.REGISTER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,7 +153,7 @@ export default function A_Register({ navigation }: any) {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         Alert.alert("Error en registro", data.message || "No se pudo registrar");
         return;
       }

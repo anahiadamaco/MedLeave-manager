@@ -1,8 +1,9 @@
 import * as React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../components/Footer";
+import { AUTH_ROUTES } from "../config/api";
 
 const styles = StyleSheet.create({
   container: {
@@ -92,6 +93,12 @@ export default function A_Login({ navigation }: any) {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
+  // Validar formato de email
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async () => {
     // Validación básica
     if (!email || !password) {
@@ -99,13 +106,20 @@ export default function A_Login({ navigation }: any) {
       return;
     }
 
+    if (!isValidEmail(email)) {
+      Alert.alert("Error", "El correo no tiene un formato válido");
+      return;
+    }
+
+    if (password.length < 8) {
+      Alert.alert("Error", "La contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // IMPORTANTE: Cambia esta URL a tu IP local y puerto del backend
-      // Ej: http://192.168.1.100:3000 (obtén tu IP con: ipconfig getifaddr en0)
-      const API_BASE_URL = "http://192.168.100.223:3000"; // ← CAMBIAR A TU IP:PUERTO
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(AUTH_ROUTES.LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,8 +132,14 @@ export default function A_Login({ navigation }: any) {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         Alert.alert("Error de autenticación", data.message || "Credenciales inválidas");
+        return;
+      }
+
+      // ✅ Validar que existan los datos del usuario
+      if (!data.data || !data.data.id_usuario) {
+        Alert.alert("Error", "Respuesta inválida del servidor");
         return;
       }
 
@@ -138,7 +158,7 @@ export default function A_Login({ navigation }: any) {
       console.error("Error de conexión:", error);
       Alert.alert(
         "Error de conexión",
-        "No se pudo conectar con el servidor. Verifica que el backend esté ejecutándose y la URL sea correcta."
+        "No se pudo conectar con el servidor. Verifica que el backend esté ejecutándose."
       );
     } finally {
       setLoading(false);
@@ -147,70 +167,72 @@ export default function A_Login({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <View style={styles.logoBorder}>
-          <Text style={styles.logoText}>
-            (aquí va el logo)
-          </Text>
-        </View>
-      </View>
-
-      {/* Formulario */}
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>
-          Bienvenido a{"\n"}MedLeave Manager
-        </Text>
-
-        <Text style={styles.label}>Correo:</Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Ingrese su correo"
-          placeholderTextColor="#999"
-          style={styles.input}
-          editable={!loading}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-
-        <Text style={styles.label}>Contraseña:</Text>
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholder="Ingrese su contraseña"
-          placeholderTextColor="#999"
-          style={styles.passwordInput}
-          editable={!loading}
-        />
-
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={styles.button}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#ffffff" />
-          ) : (
-            <Text style={styles.buttonText}>
-              Iniciar sesión
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <View style={styles.logoBorder}>
+            <Text style={styles.logoText}>
+              (aquí va el logo)
             </Text>
-          )}
-        </TouchableOpacity>
+          </View>
+        </View>
 
-        <TouchableOpacity
-          onPress={() => {
-            // Navegar a pantalla de registro
-            if (navigation) {
-              navigation.navigate("A_Register");
-            }
-          }}
-        >
-          <Text style={styles.registerLink}>¿No tienes cuenta? Regístrate</Text>
-        </TouchableOpacity>
-      </View>
-      <Footer />
+        {/* Formulario */}
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>
+            Bienvenido a{"\n"}MedLeave Manager
+          </Text>
+
+          <Text style={styles.label}>Correo:</Text>
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Ingrese su correo"
+            placeholderTextColor="#999"
+            style={styles.input}
+            editable={!loading}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          <Text style={styles.label}>Contraseña:</Text>
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="Ingrese su contraseña"
+            placeholderTextColor="#999"
+            style={styles.passwordInput}
+            editable={!loading}
+          />
+
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={styles.button}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text style={styles.buttonText}>
+                Iniciar sesión
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              // Navegar a pantalla de registro
+              if (navigation) {
+                navigation.navigate("A_Register");
+              }
+            }}
+          >
+            <Text style={styles.registerLink}>¿No tienes cuenta? Regístrate</Text>
+          </TouchableOpacity>
+        </View>
+        <Footer />
+      </ScrollView>
     </SafeAreaView>
   );
 }

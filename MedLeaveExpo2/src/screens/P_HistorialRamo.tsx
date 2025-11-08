@@ -1,52 +1,156 @@
-import { Menu, LogOut} from "lucide-react";
+import React from "react";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
 import Footer from "../components/Footer";
- 
-export default function P_HistorialRamo() { 
-  return ( 
-    <div className="min-h-screen flex flex-col bg-[#e6f1fb]"> 
-      {/* Header */} 
-      <header className="bg-[#1c75bc] text-white flex justify-between items-center px-4 py-3"> 
-        <div className="flex items-center space-x-2"> 
-          <Menu className="w-6 h-6" /> 
-          <h1 className="font-semibold text-lg">MedLeave Manager</h1> 
-        </div> 
-        <div className="flex items-center space-x-2"> 
-          <p className="text-sm">Cuenta: Juan Pérez</p> 
-          <LogOut className="w-5 h-5 cursor-pointer" /> 
-        </div> 
-      </header> 
- 
-      <div className="relative bg-cover bg-center h-32 flex flex-col justify-center items-center text-white" 
-           style={{ backgroundImage: "url('https://i.imgur.com/oG3aE1F.png')" }}> 
-        <h2 className="text-2xl font-bold">Historial</h2> 
-        <p className="text-lg font-semibold">INFO 1111</p> 
-      </div> 
- 
-      <main className="flex-grow flex justify-center py-6"> 
-        <div className="bg-[#cde2f8] w-[90%] max-w-md rounded-lg p-4 shadow-md"> 
-          <table className="w-full text-sm text-gray-800"> 
-            <thead className="border-b border-gray-400"> 
-              <tr> 
-                <th className="text-left py-1">Nombre alumno</th> 
-                <th className="text-left py-1">Fecha inicio</th> 
-                <th className="text-left py-1">Fecha fin</th> 
-                <th className="text-center py-1">Pdf</th> 
-              </tr> 
-            </thead> 
-            <tbody>
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <tr key={i} className="border-b border-gray-300">
-                    <td className="py-1 px-2">Juan Castro</td>
-                    <td className="py-1 px-2">12-08-2025</td>
-                    <td className="py-1 px-2">14-08-2025</td>
-                    </tr>
-                ))}
-            </tbody>
-          </table> 
-        </div> 
-      </main> 
- 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#e6f1fb",
+  },
+  header: {
+    backgroundColor: "#1c75bc",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#ffffff",
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  headerText: {
+    fontSize: 12,
+    color: "#ffffff",
+  },
+  titleContainer: {
+    backgroundColor: "#1c75bc",
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+  titleMain: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff",
+    marginBottom: 4,
+  },
+  titleSub: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#ffffff",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 24,
+  },
+  tableContainer: {
+    backgroundColor: "#cde2f8",
+    borderRadius: 8,
+    padding: 16,
+    width: "90%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#666666",
+    paddingBottom: 8,
+    marginBottom: 8,
+  },
+  headerCell: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#333333",
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#bbbbbb",
+    paddingVertical: 8,
+  },
+  cell: {
+    flex: 1,
+    fontSize: 12,
+    color: "#333333",
+  },
+});
+
+export default function P_HistorialRamo({ navigation }: any) {
+  const data = Array(4)
+    .fill(null)
+    .map((_, i) => ({
+      nombre: "Juan Castro",
+      inicio: "12-08-2025",
+      fin: "14-08-2025",
+    }));
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ChevronLeft color="white" size={24} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>MedLeave Manager</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <Text style={styles.headerText}>Cuenta: Juan Pérez</Text>
+        </View>
+      </View>
+
+      {/* Título */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleMain}>Historial</Text>
+        <Text style={styles.titleSub}>INFO 1111</Text>
+      </View>
+
+      {/* Contenido */}
+      <View style={styles.content}>
+        <View style={styles.tableContainer}>
+          {/* Encabezado */}
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerCell}>Nombre alumno</Text>
+            <Text style={styles.headerCell}>Fecha inicio</Text>
+            <Text style={styles.headerCell}>Fecha fin</Text>
+            <Text style={styles.headerCell}>PDF</Text>
+          </View>
+
+          {/* Filas */}
+          <ScrollView>
+            {data.map((row, index) => (
+              <View key={index} style={styles.tableRow}>
+                <Text style={styles.cell}>{row.nombre}</Text>
+                <Text style={styles.cell}>{row.inicio}</Text>
+                <Text style={styles.cell}>{row.fin}</Text>
+                <Text style={styles.cell}>📄</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+
       <Footer />
-    </div> 
-  ); 
+    </View>
+  );
 }
