@@ -1,4 +1,3 @@
-// 📝 Logger simplificado - solo consola, sin archivos
 const logger = (req, res, next) => {
   const start = Date.now();
 

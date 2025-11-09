@@ -33,7 +33,7 @@ export default function Navigation() {
         {/* Alumno */}
         <Stack.Screen name="A_Register" component={A_Register} />
         <Stack.Screen name="A_Login" component={A_Login} />
-        <Stack.Screen name="A_Home" component={A_Home} />
+        <Stack.Screen name="A_home" component={A_Home} />
         <Stack.Screen name="A_SubirLicencia" component={A_SubirLicencia} />
         <Stack.Screen name="A_Historial" component={A_Historial} />
         <Stack.Screen name="A_HistorialRamo" component={A_HistorialRamo} />
