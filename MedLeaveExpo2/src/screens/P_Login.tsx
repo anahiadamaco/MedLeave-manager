@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AUTH_ROUTES } from "../config/api";
-import Footer from "../components/Footer";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -268,6 +268,11 @@ export default function LoginScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{ backgroundColor: "red", padding: 8, width: "100%" }}>
+        <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>
+          🔐 ESTO ES P_LOGIN (SIN FOOTER)
+        </Text>
+      </View>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -333,7 +338,6 @@ export default function LoginScreen({ navigation }: any) {
             )}
           </TouchableOpacity>
         </View>
-        <Footer />
       </ScrollView>
     </SafeAreaView>
   );

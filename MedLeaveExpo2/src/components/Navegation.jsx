@@ -5,7 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 
 // Pantallas Alumno
 import A_Register from "../screens/A_Register";
-import A_Login from "../screens/A_Login";
 import A_Home from "../screens/A_home";
 import A_SubirLicencia from "../screens/A_SubirLicencia";
 import A_Historial from "../screens/A_Historial";
@@ -29,28 +28,85 @@ const Stack = createNativeStackNavigator();
 export default function Navigation() {
   return (
     <NavigationContainer>
-            <Stack.Navigator initialRouteName="P_Login" screenOptions={{ headerShown: false }}>
+            <Stack.Navigator 
+        initialRouteName="P_Login" 
+        screenOptions={{ 
+          headerShown: false,
+          contentStyle: { backgroundColor: '#E6F2FF' },
+        }}
+      >
         {/* Alumno */}
-        <Stack.Screen name="A_Register" component={A_Register} />
-        <Stack.Screen name="A_Login" component={A_Login} />
-        <Stack.Screen name="A_home" component={A_Home} />
-        <Stack.Screen name="A_SubirLicencia" component={A_SubirLicencia} />
-        <Stack.Screen name="A_Historial" component={A_Historial} />
-        <Stack.Screen name="A_HistorialRamo" component={A_HistorialRamo} />
-        <Stack.Screen name="A_FyQ" component={A_FyQ} />
+        <Stack.Screen 
+          name="A_Register" 
+          component={A_Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_home" 
+          component={A_Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_SubirLicencia" 
+          component={A_SubirLicencia}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_Historial" 
+          component={A_Historial}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_HistorialRamo" 
+          component={A_HistorialRamo}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_FyQ" 
+          component={A_FyQ}
+          options={{ headerShown: false }}
+        />
 
         {/* Profesor */}
-        <Stack.Screen name="P_Login" component={P_Login} />
-        <Stack.Screen name="P_Home" component={P_Home} />
-        <Stack.Screen name="P_Historial" component={P_Historial} />
-        <Stack.Screen name="P_HistorialRamo" component={P_HistorialRamo} />
-        <Stack.Screen name="P_FyQ" component={P_FyQ} />
+        <Stack.Screen 
+          name="P_Login" 
+          component={P_Login}
+          options={{ headerShown: false, cardStyle: { backgroundColor: '#E6F2FF' } }}
+        />
+        <Stack.Screen 
+          name="P_Home" 
+          component={P_Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="P_Historial" 
+          component={P_Historial}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="P_HistorialRamo" 
+          component={P_HistorialRamo}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="P_FyQ" 
+          component={P_FyQ}
+          options={{ headerShown: false }}
+        />
 
         {/* Funcionario */}
-        <Stack.Screen name="F_Home" component={F_Home} />
+        <Stack.Screen 
+          name="F_Home" 
+          component={F_Home}
+          options={{ headerShown: false }}
+        />
         
         {/* Admin */}
-        <Stack.Screen name="Admin_Home" component={Admin_Home} />
+        <Stack.Screen 
+          name="Admin_Home" 
+          component={Admin_Home}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
