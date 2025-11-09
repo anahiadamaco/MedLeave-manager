@@ -101,24 +101,38 @@ export default function A_Login({ navigation }: any) {
 
   const handleLogin = async () => {
     // Validación básica
+    console.log("📝 [1] Iniciando proceso de login...");
+    
     if (!email || !password) {
+      console.log("❌ [2] Campos vacíos:", { email, password });
       Alert.alert("Error", "Por favor ingresa correo y contraseña");
       return;
     }
+    
+    console.log("✅ [2] Campos no vacíos - Correo:", email);
 
     if (!isValidEmail(email)) {
+      console.log("❌ [3] Email inválido:", email);
       Alert.alert("Error", "El correo no tiene un formato válido");
       return;
     }
+    
+    console.log("✅ [3] Email válido");
 
     if (password.length < 8) {
+      console.log("❌ [4] Contraseña muy corta:", password.length, "caracteres");
       Alert.alert("Error", "La contraseña debe tener al menos 8 caracteres");
       return;
     }
+    
+    console.log("✅ [4] Contraseña válida");
 
     setLoading(true);
+    console.log("⏳ [5] Iniciando fetch a:", AUTH_ROUTES.LOGIN);
 
     try {
+      console.log("📡 [6] Enviando solicitud POST...");
+      
       const response = await fetch(AUTH_ROUTES.LOGIN, {
         method: "POST",
         headers: {
@@ -130,38 +144,56 @@ export default function A_Login({ navigation }: any) {
         }),
       });
 
+      console.log("📬 [7] Respuesta recibida - Status:", response.status);
+      
       const data = await response.json();
+      console.log("📦 [8] JSON parseado:", data);
 
       if (!response.ok || !data.success) {
+        console.log("❌ [9] Error en respuesta:", data.message);
         Alert.alert("Error de autenticación", data.message || "Credenciales inválidas");
         return;
       }
+      
+      console.log("✅ [9] Respuesta exitosa (success: true)");
 
       // ✅ Validar que existan los datos del usuario
       if (!data.data || !data.data.id_usuario) {
+        console.log("❌ [10] Datos del usuario inválidos:", data.data);
         Alert.alert("Error", "Respuesta inválida del servidor");
         return;
       }
+      
+      console.log("✅ [10] Datos del usuario válidos:", data.data);
 
       // ✅ Login exitoso — Guardar datos del usuario en AsyncStorage
+      console.log("💾 [11] Guardando usuario en AsyncStorage...");
       await AsyncStorage.setItem("user", JSON.stringify(data.data));
       await AsyncStorage.setItem("isLoggedIn", "true");
       
-      console.log("Usuario autenticado:", data.data);
+      console.log("✅ [12] Datos guardados en AsyncStorage");
+      console.log("👤 [13] Usuario autenticado:", data.data);
       Alert.alert("Éxito", `Bienvenido ${data.data.nombre}`);
       
+      console.log("🚀 [14] Navegando a A_Home...");
       // Navegar a pantalla principal después del login exitoso
       if (navigation) {
         navigation.navigate("A_Home");
+        console.log("✅ [15] Navegación completada");
       }
     } catch (error: any) {
-      console.error("Error de conexión:", error);
+      console.error("❌ [ERROR] Error de conexión:", error);
+      console.error("Error type:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+      
       Alert.alert(
         "Error de conexión",
         "No se pudo conectar con el servidor. Verifica que el backend esté ejecutándose."
       );
     } finally {
       setLoading(false);
+      console.log("🏁 [16] Proceso de login finalizado");
     }
   };
 
