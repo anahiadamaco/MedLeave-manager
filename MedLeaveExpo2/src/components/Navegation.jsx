@@ -19,12 +19,17 @@ import P_Historial from "../screens/P_Historial";
 import P_HistorialRamo from "../screens/P_HistorialRamo";
 import P_FyQ from "../screens/P_FyQ";
 
+// Pantallas Funcionario
+import F_Home from "../screens/F_Home";
+
+// Pantallas Admin
+import Admin_Home from "../screens/Admin_Home";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   return (
     <NavigationContainer>
-            <Stack.Navigator initialRouteName="A_Login" screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName="P_Login" screenOptions={{ headerShown: false }}>
         {/* Alumno */}
         <Stack.Screen name="A_Register" component={A_Register} />
         <Stack.Screen name="A_Login" component={A_Login} />
@@ -40,6 +45,12 @@ export default function Navigation() {
         <Stack.Screen name="P_Historial" component={P_Historial} />
         <Stack.Screen name="P_HistorialRamo" component={P_HistorialRamo} />
         <Stack.Screen name="P_FyQ" component={P_FyQ} />
+
+        {/* Funcionario */}
+        <Stack.Screen name="F_Home" component={F_Home} />
+        
+        {/* Admin */}
+        <Stack.Screen name="Admin_Home" component={Admin_Home} />
       </Stack.Navigator>
     </NavigationContainer>
   );
