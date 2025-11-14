@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity} from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import Footer from "../components/Footer";
 

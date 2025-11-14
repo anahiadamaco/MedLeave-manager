@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
-import Footer from "../components/Footer";
+import { useNavigation } from "expo-router";
 
 const styles = StyleSheet.create({
   container: {
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
 });
 
 export default function P_HistorialRamo({ navigation }: any) {
+  const navegation = useNavigation();
   const data = Array(4)
     .fill(null)
     .map((_, i) => ({
@@ -109,8 +110,9 @@ export default function P_HistorialRamo({ navigation }: any) {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ChevronLeft color="white" size={24} />
+        {/* Flecha de volver atrás */}
+          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+            <ChevronLeft size={24} color="#007ACC" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>MedLeave Manager</Text>
         </View>
@@ -149,8 +151,6 @@ export default function P_HistorialRamo({ navigation }: any) {
           </ScrollView>
         </View>
       </View>
-
-      <Footer />
     </View>
   );
 }

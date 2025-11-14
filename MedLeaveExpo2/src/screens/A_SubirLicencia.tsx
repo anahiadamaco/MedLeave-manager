@@ -1,16 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import Footer from "../components/Footer";
+import {View, Text, ScrollView, TouchableOpacity, TextInput, Image, StyleSheet, Alert, ActivityIndicator} from "react-native";
+import { ChevronLeft } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
 import { LICENCIA_ROUTES } from "../config/api";
 
 const styles = StyleSheet.create({
@@ -97,6 +88,8 @@ const styles = StyleSheet.create({
 });
 
 export default function A_SubirLicencia() {
+  const navigation = useNavigation();
+
   const [formData, setFormData] = React.useState({
     nombres: "",
     apellidos: "",
@@ -188,6 +181,11 @@ export default function A_SubirLicencia() {
 
       {/* Título superpuesto */}
       <View style={styles.titleContainer}>
+        {/* Flecha de volver atrás */}
+        <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+          <ChevronLeft size={24} color="#007ACC" />
+        </TouchableOpacity>
+
         <Text style={styles.title}>
           Subir licencia médica
         </Text>
@@ -302,7 +300,6 @@ export default function A_SubirLicencia() {
             <Text style={styles.submitButtonText}>Enviar</Text>
           )}
         </TouchableOpacity>
-        <Footer />
       </ScrollView>
     </View>
   );

@@ -1,10 +1,18 @@
-import * as React from "react";
-import { View, Text, ScrollView } from "react-native";
-import Footer from "../components/Footer";
+import * as React from "react"; 
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function A_HistorialRamo() {
+  const navigation = useNavigation();
+
   return (
     <View className="flex-1 bg-[#e6f0fa] p-4">
+      {/* Flecha de volver atrás */}
+      <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+        <ChevronLeft size={24} color="#007ACC" />
+      </TouchableOpacity>
+
       {/* Título */}
       <Text className="text-[#007ACC] text-xl font-semibold text-center mb-4">
         INFO 1111 - Integración III
@@ -53,7 +61,6 @@ export default function A_HistorialRamo() {
             ))}
         </ScrollView>
       </View>
-      <Footer />
     </View>
   );
 }

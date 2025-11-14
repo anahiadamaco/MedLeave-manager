@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Mail, FileText, HelpCircle } from "lucide-react-native";
-import Footer from "../components/Footer";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
 });
 
 export default function P_Home() {
+  const navigation = useNavigation();
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
@@ -117,11 +119,14 @@ export default function P_Home() {
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>Historial</Text>
           <Text style={styles.cardText}>
-            Consulta el historial de cada uno de tus ramos.
+            Revise el historial de licencias enviadas.
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.cardButton}>
+        <TouchableOpacity
+          style={styles.cardButton}
+          onPress={() => navigation.navigate("P_Historial")}
+        >
           <Text style={styles.cardButtonText}>{">"}</Text>
         </TouchableOpacity>
       </View>
@@ -139,12 +144,13 @@ export default function P_Home() {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.cardButton}>
+        <TouchableOpacity
+          style={styles.cardButton}
+          onPress={() => navigation.navigate("P_FyQ")}
+        >
           <Text style={styles.cardButtonText}>{">"}</Text>
         </TouchableOpacity>
       </View>
-
-      <Footer />
     </ScrollView>
   );
 }

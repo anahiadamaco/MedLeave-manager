@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Alert } from "react-native";
 import { Bell, User, MoreHorizontal } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Footer from "../components/Footer";
 
 const styles = StyleSheet.create({
   container: {
@@ -254,7 +253,6 @@ export default function A_Home({ navigation }: any) {
           <MoreHorizontal color="#1E3A8A" size={22} />
         </TouchableOpacity>
       </View>
-      <Footer />
     </ScrollView>
   );
 }

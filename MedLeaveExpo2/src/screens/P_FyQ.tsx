@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import Footer from "../components/Footer";
+import { useNavigation } from "@react-navigation/native";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -57,6 +58,8 @@ const styles = StyleSheet.create({
 });
 
 export default function P_FyQ() {
+  const navigation = useNavigation();
+
   const [expanded, setExpanded] = useState<number | null>(null);
 
   const preguntas = [
@@ -84,6 +87,10 @@ export default function P_FyQ() {
 
   return (
     <View style={styles.container}>
+      {/* Flecha de volver atrás */}
+      <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+        <ChevronLeft size={24} color="#007ACC" />
+      </TouchableOpacity>
       {/* Título */}
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>
@@ -109,8 +116,6 @@ export default function P_FyQ() {
           </View>
         ))}
       </ScrollView>
-
-      <Footer />
     </View>
   );
 }

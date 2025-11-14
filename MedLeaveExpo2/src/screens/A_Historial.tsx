@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
@@ -14,7 +7,7 @@ const A_Historial = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = React.useState(false);
 
-  // Mock data - Replace with real API call
+  // Datos de ejemplo
   const cursos = [
     { id: 1, nombre: "Matemáticas I", codigo: "MAT-101" },
     { id: 2, nombre: "Física General", codigo: "FIS-101" },
@@ -28,20 +21,25 @@ const A_Historial = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ChevronLeft size={24} color="#1F2937" />
+      {/* Barra superior fina */}
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <ChevronLeft size={20} color="#ffffff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Historial de Licencias</Text>
-        <View style={{ width: 24 }} />
+        <Text style={styles.topBarText}>Gerente de Licencia Médica</Text>
+        <Text style={styles.accountText}>Cuenta: Juan Pérez</Text>
       </View>
 
-      {/* Content */}
+      {/* Título centrado */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Histórico</Text>
+      </View>
+
+      {/* Contenido */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#3B82F6" />
+            <ActivityIndicator size="large" color="#0369a1" />
           </View>
         ) : (
           <View style={styles.cursosList}>
@@ -52,10 +50,10 @@ const A_Historial = () => {
                 onPress={() => handleSelectCurso(curso)}
               >
                 <View style={styles.cursoInfo}>
-                  <Text style={styles.cursoNombre}>{curso.nombre}</Text>
                   <Text style={styles.cursoCodigo}>{curso.codigo}</Text>
+                  <Text style={styles.cursoNombre}>{curso.nombre}</Text>
                 </View>
-                <ChevronRight size={20} color="#9CA3AF" />
+                <ChevronRight size={18} color="#0369a1" />
               </TouchableOpacity>
             ))}
           </View>
@@ -68,22 +66,39 @@ const A_Historial = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#e6f1fb",
   },
-  header: {
+  topBar: {
+    backgroundColor: "#0369a1",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
-  headerTitle: {
-    fontSize: 18,
+  backButton: {
+    marginRight: 8,
+  },
+  topBarText: {
+    color: "#ffffff",
     fontWeight: "600",
-    color: "#1F2937",
+    fontSize: 14,
+  },
+  accountText: {
+    color: "#ffffff",
+    fontSize: 12,
+  },
+  titleContainer: {
+    backgroundColor: "#0369a1",
+    paddingVertical: 14,
+    alignItems: "center",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffffff",
   },
   content: {
     flex: 1,
@@ -103,25 +118,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#cde2f6",
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+    paddingVertical: 14,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
   },
   cursoInfo: {
     flex: 1,
   },
-  cursoNombre: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1F2937",
-    marginBottom: 4,
-  },
   cursoCodigo: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#1f2937",
+    marginBottom: 3,
+  },
+  cursoNombre: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#1f2937",
   },
 });
 

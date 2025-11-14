@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
-import Footer from "../components/Footer";
+import { ChevronLeft } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#007ACC',
     textAlign: 'center',
   },
   questionsContainer: {
@@ -61,6 +62,8 @@ const styles = StyleSheet.create({
 });
 
 export default function A_FyQ() {
+  const navigation = useNavigation();
+  
   const [expanded, setExpanded] = useState<number | null>(null);
   const toggleExpand = (index: number) => {
     setExpanded(expanded === index ? null : index);
@@ -68,12 +71,13 @@ export default function A_FyQ() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Titulo */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          Preguntas{"\n"}Frecuentes
-        </Text>
-      </View>
+      {/* Flecha de volver atrás */}
+      <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+        <ChevronLeft size={24} color="#007ACC" />
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>
+        Preguntas Frecuentes
+      </Text>
 
       {/* Preguntas */}
       <View style={styles.questionsContainer}>
@@ -169,7 +173,6 @@ export default function A_FyQ() {
           </View>
         )}
       </View>
-      <Footer />
     </ScrollView>
   );
 }

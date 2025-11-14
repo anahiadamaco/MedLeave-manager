@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
-import Footer from "../components/Footer";
 
 const styles = StyleSheet.create({
   container: {
@@ -94,8 +93,9 @@ export default function P_Historial() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ChevronLeft color="white" size={24} />
+          {/* Flecha de volver atrás */}
+          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+            <ChevronLeft size={24} color="#007ACC" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>MedLeave Manager</Text>
         </View>
@@ -123,8 +123,6 @@ export default function P_Historial() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      <Footer />
     </View>
   );
 }
