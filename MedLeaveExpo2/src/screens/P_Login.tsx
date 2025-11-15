@@ -1,19 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
+import {View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView, ScrollView, Alert, ActivityIndicator} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AUTH_ROUTES } from "../config/api";
-
 
 const styles = StyleSheet.create({
   container: {

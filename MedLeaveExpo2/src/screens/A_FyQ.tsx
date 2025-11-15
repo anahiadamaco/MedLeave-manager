@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import A_Menu from "../components/A_Menu";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EBF5FF',
+    backgroundColor: "#ffffff",
+  },
+  header: {
+    backgroundColor: "#0369a1",
+    alignItems: "center",
+    paddingVertical: 32,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
   },
   titleContainer: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    backgroundColor: '#007ACC',
+    marginTop: 48,
+    marginBottom: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleText: {
-    textAlign: 'center',
-    color: '#007ACC',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 0,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#0369a1",
+    textAlign: "center",
   },
   content: {
     backgroundColor: '#ffffff',
@@ -33,32 +45,45 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   questionButton: {
-    backgroundColor: '#C7E5FF',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    marginTop: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#3b82f6",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
+    backgroundColor: "#ffffff",
   },
   questionText: {
-    fontWeight: '600',
-    fontSize: 14,
-    color: '#003366',
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000000",
+    flex: 1,
+  },
+  expandIcon: {
+    fontSize: 18,
+    color: "#facc15",
   },
   answerContainer: {
-    backgroundColor: '#E5F2FF',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    marginTop: 4,
+    borderWidth: 1,
+    borderColor: "#3b82f6",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
+    backgroundColor: "#ffffff",
   },
   answerText: {
-    color: '#333333',
-    fontSize: 12,
+    fontSize: 14,
+    color: "#000000",
+    textAlign: "justify",
   },
 });
 
 export default function A_FyQ() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const [expanded, setExpanded] = useState<number | null>(null);
 
@@ -166,6 +191,8 @@ export default function A_FyQ() {
           </View>
         ))}
       </ScrollView>
+      {/* 🔥 Menú fijo abajo, siempre visible */}
+      <A_Menu navigation={navigation} />
     </View>
   );
 }

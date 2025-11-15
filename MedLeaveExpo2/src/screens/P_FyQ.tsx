@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import P_Menu from "../components/P_Menu";
 
 const styles = StyleSheet.create({
   container: {
@@ -57,9 +57,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function P_FyQ() {
-  const navigation = useNavigation();
-
+export default function P_FyQ({ navigation }: any) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   const preguntas = [
@@ -161,6 +159,7 @@ export default function P_FyQ() {
           </View>
         ))}
       </ScrollView>
+      <P_Menu navigation={navigation} />
     </View>
   );
 }
