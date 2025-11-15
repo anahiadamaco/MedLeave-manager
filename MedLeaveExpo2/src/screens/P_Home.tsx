@@ -3,6 +3,11 @@ import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from "rea
 import { Mail, FileText, HelpCircle } from "lucide-react-native";
 import Footer from "../components/Footer";
 
+// Navegaciones
+
+import { NavigationRouteContext, useNavigation } from "@react-navigation/native";
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -82,6 +87,9 @@ const styles = StyleSheet.create({
 });
 
 export default function P_Home() {
+
+  const navigation = useNavigation<any>();
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
@@ -121,7 +129,7 @@ export default function P_Home() {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.cardButton}>
+        <TouchableOpacity style={styles.cardButton} onPress={()=> navigation.navigate("P_Historial")}>
           <Text style={styles.cardButtonText}>{">"}</Text>
         </TouchableOpacity>
       </View>
@@ -139,12 +147,11 @@ export default function P_Home() {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.cardButton}>
+        <TouchableOpacity style={styles.cardButton} onPress={()=> navigation.navigate("P_FyQ")}> 
           <Text style={styles.cardButtonText}>{">"}</Text>
         </TouchableOpacity>
       </View>
 
-      <Footer />
-    </ScrollView>
+          </ScrollView>
   );
 }

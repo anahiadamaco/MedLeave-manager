@@ -10,8 +10,10 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import Footer from "../components/Footer";
 import { LICENCIA_ROUTES } from "../config/api";
+
+import A_Menu from "../components/A_Menu";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function A_SubirLicencia() {
+export default function A_SubirLicencia({ navigation }: any) {
   const [formData, setFormData] = React.useState({
     nombres: "",
     apellidos: "",
@@ -153,10 +155,9 @@ export default function A_SubirLicencia() {
         return;
       }
 
-      // ✅ Envío exitoso
+     
       Alert.alert("Éxito", "Licencia enviada correctamente");
-      
-      // Limpiar formulario
+
       setFormData({
         nombres: "",
         apellidos: "",
@@ -302,8 +303,10 @@ export default function A_SubirLicencia() {
             <Text style={styles.submitButtonText}>Enviar</Text>
           )}
         </TouchableOpacity>
-        <Footer />
+        
       </ScrollView>
+      <A_Menu navigation={navigation} />
+       
     </View>
   );
 }
