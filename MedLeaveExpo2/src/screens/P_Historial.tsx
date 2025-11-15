@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
-import Footer from "../components/Footer";
+
+import P_Menu from "../components/P_Menu";
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#e6f1fb" },
@@ -252,7 +253,7 @@ export default function P_Historial() {
           </Text>
         )}
       </ScrollView>
-
+      <P_Menu navigation={navigation} />
       
     </View>
   );
