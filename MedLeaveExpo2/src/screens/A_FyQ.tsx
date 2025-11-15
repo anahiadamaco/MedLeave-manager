@@ -1,178 +1,171 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
-import { ChevronLeft } from "lucide-react-native";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#EBF5FF',
   },
-  header: {
-    backgroundColor: '#0369a1',
+  titleContainer: {
     alignItems: 'center',
-    paddingVertical: 32,
+    paddingVertical: 20,
+    backgroundColor: '#007ACC',
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#007ACC',
+  titleText: {
     textAlign: 'center',
+    color: '#007ACC',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 0,
   },
-  questionsContainer: {
-    paddingHorizontal: 16,
+  content: {
+    backgroundColor: '#ffffff',
+    marginHorizontal: 16,
+    borderRadius: 8,
+    paddingHorizontal: 12,
     paddingVertical: 16,
+    marginTop: 40,
+    marginBottom: 100,
+  },
+  questionContainer: {
+    marginBottom: 12,
   },
   questionButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#3b82f6',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginBottom: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#C7E5FF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginTop: 8,
   },
   questionText: {
-    fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
-    flex: 1,
-  },
-  expandIcon: {
-    fontSize: 18,
-    color: '#facc15',
+    fontSize: 14,
+    color: '#003366',
   },
   answerContainer: {
-    borderWidth: 1,
-    borderColor: '#3b82f6',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginBottom: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#E5F2FF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginTop: 4,
   },
   answerText: {
-    fontSize: 14,
-    color: '#000000',
-    textAlign: 'justify',
+    color: '#333333',
+    fontSize: 12,
   },
 });
 
 export default function A_FyQ() {
   const navigation = useNavigation();
-  
+
   const [expanded, setExpanded] = useState<number | null>(null);
-  const toggleExpand = (index: number) => {
-    setExpanded(expanded === index ? null : index);
-  };
+
+  const preguntas = [
+    {
+      id: 1,
+      pregunta: '¿Cómo subo mi licencia médica a la plataforma?',
+      respuesta: 'Puedes subirla desde el apartado "Subir licencia", adjuntando el archivo y completando los datos solicitados.',
+    },
+    {
+      id: 2,
+      pregunta: '¿Qué documentos necesito para subir mi licencia?',
+      respuesta: 'Debes adjuntar PDF legible de la licencia emitida por un médico.',
+    },
+    {
+      id: 3,
+      pregunta: '¿Cuántos días tengo para subir mi licencia desde que fui al médico?',
+      respuesta: 'La licencia debe ser subida dentro de 48 horas desde la fecha de emisión.',
+    },
+    {
+      id: 4,
+      pregunta: '¿Puedo subir una foto tomada con el celular?',
+      respuesta: 'No, debes transformar la foto a pdf para subirla.',
+    },
+    {
+      id: 5,
+      pregunta: '¿Qué hago si me equivoqué al subir la licencia?',
+      respuesta: 'Puedes eliminar la solicitud desde tu "Historial" y volver a subirla, siempre que no haya sido revisada.',
+    },
+    {
+      id: 6,
+      pregunta: '¿Cuánto demora en aprobarse una licencia médica?',
+      respuesta: 'El proceso puede tardar algunos días según la carga administrativa. Puedes revisar el estado en la sección "Historial".',
+    },
+    {
+      id: 7,
+      pregunta: '¿Cómo sé si mi licencia fue aprobada o rechazada?',
+      respuesta: 'En el historial podrás ver el estado actualizado, además de recibir una notificación dentro de la app.',
+    },
+    {
+      id: 8,
+      pregunta: '¿Qué pasa si tengo evaluaciones durante mi periodo de licencia?',
+      respuesta: 'Puedes solicitar al profesor la reprogramación de evaluaciones justificando con la licencia aprobada.',
+    },
+    {
+      id: 9,
+      pregunta: '¿La licencia médica afecta mi asistencia?',
+      respuesta: 'Las ausencias justificadas por licencia se registran como justificadas y no afectan tu asistencia.',
+    },
+    {
+      id: 10,
+      pregunta: '¿Puedo reprogramar una prueba o trabajo si coincide con mi licencia?',
+      respuesta: 'Sí, una vez aprobada la licencia, puedes solicitar la reposición de evaluaciones al profesor.',
+    },
+    {
+      id: 11,
+      pregunta: '¿Qué hago si mi licencia es rechazada?',
+      respuesta: 'Lo ideal es ir a hablar de forma presencial con la secretaria de carrera.',
+    },
+    {
+      id: 12,
+      pregunta: '¿Qué pasa si subo la licencia fuera de plazo?',
+      respuesta: 'Podría no ser aceptada por la universidad. Es recomendable subirla lo antes posible.',
+    },
+    {
+      id: 13,
+      pregunta: '¿Puedo subir licencias emitidas fuera del país?',
+      respuesta: 'Sí, siempre que el documento sea oficial y esté en un formato legible.',
+    },
+    {
+      id: 14,
+      pregunta: '¿Quién puede ver mi licencia médica?',
+      respuesta: 'Solo la encargada de revisión y, cuando corresponda, tus profesores para efectos académicos.',
+    }
+  ];
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Flecha de volver atrás */}
       <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
         <ChevronLeft size={24} color="#007ACC" />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>
-        Preguntas Frecuentes
-      </Text>
-
-      {/* Preguntas */}
-      <View style={styles.questionsContainer}>
-        {/* Pregunta 1 */}
-        <TouchableOpacity
-          style={styles.questionButton}
-          onPress={() => toggleExpand(1)}
-        >
-          <Text style={styles.questionText}>
-            ¿Cómo subo mi licencia?
-          </Text>
-          <Text style={styles.expandIcon}>▼</Text>
-        </TouchableOpacity>
-        {expanded === 1 && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerText}>
-              Respuesta.
-            </Text>
-          </View>
-        )}
-
-        {/* Pregunta 2 */}
-        <TouchableOpacity
-          style={styles.questionButton}
-          onPress={() => toggleExpand(2)}
-        >
-          <Text style={styles.questionText}>
-            ¿Quién puede ver mi licencia médica?
-          </Text>
-          <Text style={styles.expandIcon}>▼</Text>
-        </TouchableOpacity>
-        {expanded === 2 && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerText}>
-              Tu licencia médica será revisada únicamente por la secretaria de carrera y 
-              por los docentes de las asignaturas en las que solicites justificación, 
-              garantizando confidencialidad y uso exclusivo para fines académicos.
-            </Text>
-          </View>
-        )}
-
-        {/* Pregunta 3 */}
-        <TouchableOpacity
-          style={styles.questionButton}
-          onPress={() => toggleExpand(3)}
-        >
-          <Text style={styles.questionText}>
-            ¿Hay un plazo máximo para subir la licencia?
-          </Text>
-          <Text style={styles.expandIcon}>▼</Text>
-        </TouchableOpacity>
-        {expanded === 3 && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerText}>
-              Respuesta
-            </Text>
-          </View>
-        )}
-
-        {/* Pregunta 4 */}
-        <TouchableOpacity
-          style={styles.questionButton}
-          onPress={() => toggleExpand(4)}
-        >
-          <Text style={styles.questionText}>
-            ¿Qué significan los estados de mi solicitud?
-          </Text>
-          <Text style={styles.expandIcon}>▼</Text>
-        </TouchableOpacity>
-        {expanded === 4 && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerText}>
-              Respuesta
-            </Text>
-          </View>
-        )}
-
-        {/* Pregunta 5 */}
-        <TouchableOpacity
-          style={styles.questionButton}
-          onPress={() => toggleExpand(5)}
-        >
-          <Text style={styles.questionText}>
-            ¿Qué hago si mi licencia fue rechazada?
-          </Text>
-          <Text style={styles.expandIcon}>▼</Text>
-        </TouchableOpacity>
-        {expanded === 5 && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerText}>
-              Respuesta
-            </Text>
-          </View>
-        )}
+      {/* Título */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>
+          Preguntas Frecuentes
+        </Text>
       </View>
-    </ScrollView>
+
+      {/* Contenido */}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {preguntas.map((item) => (
+          <View key={item.id} style={styles.questionContainer}>
+            <TouchableOpacity
+              style={styles.questionButton}
+              onPress={() => setExpanded(expanded === item.id ? null : item.id)}
+            >
+              <Text style={styles.questionText}>{item.pregunta}</Text>
+            </TouchableOpacity>
+            {expanded === item.id && (
+              <View style={styles.answerContainer}>
+                <Text style={styles.answerText}>{item.respuesta}</Text>
+              </View>
+            )}
+          </View>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
