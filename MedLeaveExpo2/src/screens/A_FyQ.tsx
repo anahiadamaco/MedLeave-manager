@@ -1,86 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { ChevronLeft } from "lucide-react-native";
+import { styles } from "../styles/A_FyQ.styles";
 import A_Menu from "../components/A_Menu";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  header: {
-    backgroundColor: "#0369a1",
-    alignItems: "center",
-    paddingVertical: 32,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#ffffff",
-    textAlign: "center",
-  },
-  titleContainer: {
-    marginTop: 48,
-    marginBottom: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#0369a1",
-    textAlign: "center",
-  },
-  content: {
-    backgroundColor: '#ffffff',
-    marginHorizontal: 16,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    marginTop: 40,
-    marginBottom: 100,
-  },
-  questionContainer: {
-    marginBottom: 12,
-  },
-  questionButton: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#3b82f6",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginBottom: 12,
-    backgroundColor: "#ffffff",
-  },
-  questionText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000000",
-    flex: 1,
-  },
-  expandIcon: {
-    fontSize: 18,
-    color: "#facc15",
-  },
-  answerContainer: {
-    borderWidth: 1,
-    borderColor: "#3b82f6",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginBottom: 12,
-    backgroundColor: "#ffffff",
-  },
-  answerText: {
-    fontSize: 14,
-    color: "#000000",
-    textAlign: "justify",
-  },
-});
 
 export default function A_FyQ() {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -163,9 +86,13 @@ export default function A_FyQ() {
   return (
     <View style={styles.container}>
       {/* Flecha de volver atrás */}
-      <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-2 top-2">
+      <TouchableOpacity 
+        onPress={() => navigation.goBack()} 
+        style={styles.backButton}
+      >
         <ChevronLeft size={24} color="#007ACC" />
       </TouchableOpacity>
+
       {/* Título */}
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>
@@ -174,7 +101,10 @@ export default function A_FyQ() {
       </View>
 
       {/* Contenido */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+      >
         {preguntas.map((item) => (
           <View key={item.id} style={styles.questionContainer}>
             <TouchableOpacity
@@ -191,7 +121,8 @@ export default function A_FyQ() {
           </View>
         ))}
       </ScrollView>
-      {/* 🔥 Menú fijo abajo, siempre visible */}
+
+      {/* Menú fijo abajo */}
       <A_Menu navigation={navigation} />
     </View>
   );

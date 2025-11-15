@@ -1,0 +1,133 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  navbar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#004AAD",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  navbarTitle: {
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  navbarIcons: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  decorativeBg: {
+    position: "relative",
+  },
+  backgroundImage: {
+    width: "100%",
+    height: 128,
+    opacity: 0.6,
+  },
+  contentContainer: {
+    paddingHorizontal: 20,
+    marginTop: 16,
+  },
+  uploadButton: {
+    backgroundColor: "#0078D4",
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: "#facc15",
+  },
+  uploadButtonText: {
+    color: "#ffffff",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  reminder: {
+    backgroundColor: "#FEE2E2",
+    borderWidth: 1,
+    borderColor: "#DC2626",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  reminderTitle: {
+    color: "#DC2626",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  reminderText: {
+    textAlign: "center",
+    fontSize: 12,
+    color: "#4B5563",
+    marginTop: 4,
+  },
+  navigationContainer: {
+    marginTop: 24,
+    gap: 12,
+  },
+  navButton: {
+    backgroundColor: "#004AAD",
+    paddingVertical: 12,
+    borderRadius: 999,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: "#facc15",
+  },
+  navButtonText: {
+    color: "#ffffff",
+    textAlign: "center",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  infoContainer: {
+    marginTop: 24,
+    backgroundColor: "#ffffff",
+    padding: 8,
+  },
+  infoText: {
+    textAlign: "justify",
+    color: "#666666",
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  regulationsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFD700",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 999,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    marginTop: 16,
+  },
+  regulationsButtonText: {
+    textAlign: "center",
+    color: "#1E3A8A",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  navFijo: {
+    position: "fixed",
+  }
+});
