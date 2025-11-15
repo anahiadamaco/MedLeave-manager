@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  TextInput,
-  Modal,
-} from "react-native";
+import {View, ScrollView, TouchableOpacity, Text, StyleSheet, ActivityIndicator, TextInput, Modal,} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
+
+import A_Menu from "../components/A_Menu";
+
 
 const A_Historial = () => {
   const navigation = useNavigation(); // si usas TS y te molesta el tipado: useNavigation<any>()
@@ -157,7 +151,10 @@ const A_Historial = () => {
             )}
           </View>
         )}
+        
       </ScrollView>
+      <A_Menu navigation={navigation} />
+      
     </View>
   );
 };

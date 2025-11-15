@@ -116,7 +116,8 @@ const getRoleHomeScreen = (id_rol: number): string => {
     case 1: // Profesor
       return "P_Home";
     case 2: // Estudiante
-      return "A_Home";
+    
+      return "A_home";
     case 3: // Funcionario
       return "F_Home";
     case 4: // Admin
