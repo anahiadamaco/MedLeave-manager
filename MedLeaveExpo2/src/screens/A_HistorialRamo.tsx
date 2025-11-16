@@ -1,61 +1,81 @@
 import * as React from "react";
-import { View, Text, ScrollView } from "react-native";
-import Footer from "../components/Footer";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { styles } from "../styles/A_HistorialRamo.styles";
+import A_Menu from "../components/A_Menu";
 
 export default function A_HistorialRamo() {
+  const navigation = useNavigation<any>();
+
   return (
-    <View className="flex-1 bg-[#e6f0fa] p-4">
-      {/* Título */}
-      <Text className="text-[#007ACC] text-xl font-semibold text-center mb-4">
-        INFO 1111 - Integración III
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>
+          Historial por ramo
+        </Text>
+      </View>
+
+      {/* Título subtítulo */}
+      <Text style={styles.title}>
+        Historial
       </Text>
 
       {/* Contenedor de tabla */}
-      <View className="bg-[#b5d9ef] rounded-xl p-3 shadow-md shadow-black/20">
+      <View style={styles.tableContainer}>
         {/* Encabezado */}
-        <View className="flex-row items-center justify-between border-b-2 border-[#007ACC] pb-2">
-          <Text className="flex-[1.5] text-center font-bold text-[#003f66] text-sm">
+        <View style={styles.tableHeader}>
+          <Text style={[styles.headerCell, styles.headerCellLarge]}>
             Nombre alumno
           </Text>
-          <Text className="flex-1 text-center font-bold text-[#003f66] text-sm">
+          <Text style={[styles.headerCell, styles.headerCellMedium]}>
             Fecha inicio
           </Text>
-          <Text className="flex-1 text-center font-bold text-[#003f66] text-sm">
+          <Text style={[styles.headerCell, styles.headerCellMedium]}>
             Fecha fin
           </Text>
-          <Text className="flex-[0.5] text-center font-bold text-[#003f66] text-sm">
+          <Text style={[styles.headerCell, styles.headerCellSmall]}>
             PDF
           </Text>
         </View>
 
         {/* Filas */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollContent}
+        >
           {Array(4)
             .fill(null)
             .map((_, i) => (
               <View
                 key={i}
-                className="flex-row items-center justify-between border-b border-[#aad4e6] py-2"
+                style={styles.tableRow}
               >
-                <Text className="flex-[1.5] text-center text-[#003f66] text-sm">
+                <Text style={[styles.rowCell, styles.rowCellLarge]}>
                   Juan Castro
                 </Text>
-                <Text className="flex-1 text-center text-[#003f66] text-sm">
+                <Text style={[styles.rowCell, styles.rowCellMedium]}>
                   12-08-2025
                 </Text>
-                <Text className="flex-1 text-center text-[#003f66] text-sm">
+                <Text style={[styles.rowCell, styles.rowCellMedium]}>
                   14-08-2025
                 </Text>
-                <Text className="flex-[0.5] text-center text-[#003f66] text-sm">
+                <Text style={[styles.rowCell, styles.rowCellSmall]}>
                   📄
                 </Text>
               </View>
             ))}
         </ScrollView>
       </View>
-      <Footer />
+
+      {/* Menú fijo abajo */}
+      <A_Menu navigation={navigation} />
     </View>
   );
 }
-
-
