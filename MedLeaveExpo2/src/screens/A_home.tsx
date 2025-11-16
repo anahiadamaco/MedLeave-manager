@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, ScrollView, Image, Alert} from "react-nati
 import { Bell, User, MoreHorizontal } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import A_Menu from "../components/A_Menu";
-import { styles } from "../styles/A_home.styles";
+import { styles } from "../styles/A_Home.styles";
 
 export default function A_Home({ navigation }: any) {
   const handleLogout = async () => {

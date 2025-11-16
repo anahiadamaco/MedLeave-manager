@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { LICENCIA_ROUTES } from "../config/api";
-import { styles } from "../styles/A_subirLicencia.styles";
+import { styles } from "../styles/A_SubirLicencia.styles";
 import A_Menu from "../components/A_Menu";
 
 export default function A_SubirLicencia({ navigation }: any) {

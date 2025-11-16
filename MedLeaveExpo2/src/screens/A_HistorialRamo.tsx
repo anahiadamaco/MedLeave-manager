@@ -71,7 +71,7 @@ export default function A_HistorialRamo() {
       </View>
 
       {/* Menú fijo abajo */}
-      <A_Menu navigation={navigation} />
+      <A_Menu navigation={navigation as any} />
     </View>
   );
 }
