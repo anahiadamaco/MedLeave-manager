@@ -1,60 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
+import { styles } from "../styles/P_FyQ.styles";
 import P_Menu from "../components/P_Menu";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#EBF5FF',
-  },
-  titleContainer: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    backgroundColor: '#007ACC',
-  },
-  titleText: {
-    textAlign: 'center',
-    color: '#007ACC',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 0,
-  },
-  content: {
-    backgroundColor: '#ffffff',
-    marginHorizontal: 16,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    marginTop: 40,
-    marginBottom: 100,
-  },
-  questionContainer: {
-    marginBottom: 12,
-  },
-  questionButton: {
-    backgroundColor: '#C7E5FF',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    marginTop: 8,
-  },
-  questionText: {
-    fontWeight: '600',
-    fontSize: 14,
-    color: '#003366',
-  },
-  answerContainer: {
-    backgroundColor: '#E5F2FF',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    marginTop: 4,
-  },
-  answerText: {
-    color: '#333333',
-    fontSize: 12,
-  },
-});
 
 export default function P_FyQ({ navigation }: any) {
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -62,37 +10,91 @@ export default function P_FyQ({ navigation }: any) {
   const preguntas = [
     {
       id: 1,
-      pregunta: '¿Cómo puedo revisar si un estudiante tiene licencia médica aprobada?',
-      respuesta: 'A través del módulo de gestión, ingresando con su usuario y revisando la lista de estudiantes con licencia vigente.',
+      pregunta: '¿Cómo puedo revisar si un estudiante tiene una licencia médica aprobada?',
+      respuesta: 'Puedes revisarlo en "Historial" y luego accediendo al ramo, allí se muestra la lista de estudiantes con licencias y su detalle.',
     },
     {
       id: 2,
       pregunta: '¿Recibiré una notificación cuando un estudiante presente licencia médica?',
-      respuesta: 'Sí, el sistema enviará una notificación automática al correo institucional y dentro de la plataforma.',
+      respuesta: 'Sí, recibirás una notificación indicando que se ha presentado una licencia.',
     },
     {
       id: 3,
-      pregunta: '¿Puedo ver el tiempo de vigencia de la licencia?',
-      respuesta: 'Sí, en el detalle de la licencia aparece la fecha de inicio y término.',
+      pregunta: '¿Dónde puedo ver la fecha de inicio y término de la licencia?',
+      respuesta: 'En el detalle de la licencia, dentro del historial y seleccionando el ramo.',
     },
     {
       id: 4,
       pregunta: '¿Qué debo hacer si tengo dudas sobre la validez de una licencia médica?',
-      respuesta: 'El sistema permite contactar directamente a la unidad administrativa encargada, adjuntando la licencia en cuestión.',
+      respuesta: 'Puedes derigirte hacía donde la persona encargada de la revisión de licencias.',
+    },
+    {
+      id: 5,
+      pregunta: '¿Qué pasa si un estudiante tiene una evaluación durante el periodo de su licencia médica?',
+      respuesta: 'Debes ofrecer una instancia de reposición acorde al reglamento académico.',
+    },
+    {
+      id: 6,
+      pregunta: '¿Puedo ver las licencias anteriores de un estudiante?',
+      respuesta: 'Sí, en el "Historial" podrás ver todas las licencias previas por ramo.',
+    },
+    {
+      id: 7,
+      pregunta: '¿Qué hago si un estudiante alega haber subido una licencia pero no aparece en el sistema?',
+      respuesta: 'Debes derivar el caso a la encargada de revisión para verificación.',
+    },
+    {
+      id: 8,
+      pregunta: '¿La plataforma me avisa si una licencia fue rechazada?',
+      respuesta: 'Sí, recibirás una notificación indicando el estado actualizado del estudiante.',
+    },
+    {
+      id: 9,
+      pregunta: '¿Puedo subir yo una licencia médica por un estudiante?',
+      respuesta: 'No, las licencias deben ser subidas únicamente por el estudiante.',
+    },
+    {
+      id: 10,
+      pregunta: '¿Las ausencias por licencia afectan el porcentaje de asistencia del estudiante?',
+      respuesta: 'No, las inasistencias justificadas por licencia se consideran justificadas.',
+    },
+    {
+      id: 11,
+      pregunta: '¿Qué hago si no puedo visualizar el archivo de la licencia?',
+      respuesta: 'Puedes intentar descargarlo nuevamente, si el problema persiste contacte a los desarrolladores.',
+    },
+    {
+      id: 12,
+      pregunta: '¿Puedo ver los días que justificó un estudiante por cada licencia?',
+      respuesta: 'Sí, dentro del detalle de la licencia se muestra la cantidad de días justificados según las fechas ingresadas.',
+    },
+    {
+      id: 13,
+      pregunta: '¿Qué indica el color o estado que aparece junto al nombre del estudiante?',
+      respuesta: 'El color refleja el estado de su licencia: pendiente, aprobada o rechazada, para facilitar la revisión rápida.',
     },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Título */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>
-          Preguntas{"\n"}Frecuentes
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()} 
+          style={styles.backButton}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </TouchableOpacity>
+
+        <Text style={styles.headerTitle}>
+          Preguntas Frecuentes
         </Text>
       </View>
 
       {/* Contenido */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+      >
         {preguntas.map((item) => (
           <View key={item.id} style={styles.questionContainer}>
             <TouchableOpacity
@@ -101,6 +103,7 @@ export default function P_FyQ({ navigation }: any) {
             >
               <Text style={styles.questionText}>{item.pregunta}</Text>
             </TouchableOpacity>
+
             {expanded === item.id && (
               <View style={styles.answerContainer}>
                 <Text style={styles.answerText}>{item.respuesta}</Text>
@@ -109,8 +112,8 @@ export default function P_FyQ({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
+
       <P_Menu navigation={navigation} />
-  
     </View>
   );
 }
