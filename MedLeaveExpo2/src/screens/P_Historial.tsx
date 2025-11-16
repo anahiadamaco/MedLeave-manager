@@ -8,7 +8,6 @@ import P_Menu from "../components/P_Menu";
 export default function P_Historial() {
   const navigation = useNavigation<any>();
 
-  // Datos
   const cursos = [
     { id: 1, codigo: "INFO 1111", nombre: "Teoría de sistemas", semestre: "2024-1" },
     { id: 2, codigo: "INFO 2222", nombre: "Programación avanzada", semestre: "2024-2" },
@@ -16,7 +15,6 @@ export default function P_Historial() {
     { id: 4, codigo: "INFO 4444", nombre: "Inteligencia artificial", semestre: "2024-2" },
   ];
 
-  // Estados
   const [query, setQuery] = useState("");
   const [orden, setOrden] = useState<"az" | "za">("az");
   const [semestre, setSemestre] = useState<string>("");
@@ -24,7 +22,6 @@ export default function P_Historial() {
 
   const semestres = ["", "2024-2", "2024-1", "2023-2"];
 
-  // Filtro y orden
   const cursosFiltrados = useMemo(() => {
     const q = query.toLowerCase();
     let out = cursos.filter(
@@ -42,25 +39,13 @@ export default function P_Historial() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+
+      {/* Nuevo Header unificado */}
       <View style={styles.header}>
-        {/* Flecha de volver atrás */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
-          style={styles.backButton}
-        >
-          <ChevronLeft size={24} color="#007ACC" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerTitle}>MedLeave Manager</Text>
-        </View>
-        <Text style={styles.headerRight}>Cuenta: Juan Pérez</Text>
-      </View>
-
-      {/* Título */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>Historial</Text>
+        <Text style={styles.headerTitle}>Historial</Text>
       </View>
 
       {/* Barra de filtros */}
@@ -73,17 +58,10 @@ export default function P_Historial() {
           onChangeText={setQuery}
         />
 
-        {/* Selector de semestre */}
-        <TouchableOpacity
-          style={styles.selector}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text>
-            {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
-          </Text>
+        <TouchableOpacity style={styles.selector} onPress={() => setModalVisible(true)}>
+          <Text>{semestre ? `Semestre: ${semestre}` : "Todos los semestres"}</Text>
         </TouchableOpacity>
 
-        {/* Botón de orden */}
         <TouchableOpacity
           style={styles.sortBtn}
           onPress={() => setOrden(orden === "az" ? "za" : "az")}
@@ -94,7 +72,7 @@ export default function P_Historial() {
         </TouchableOpacity>
       </View>
 
-      {/* Modal para elegir semestre */}
+      {/* Modal */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalBackground}>
           <View style={styles.modalBox}>
@@ -108,9 +86,7 @@ export default function P_Historial() {
                   }}
                   style={styles.modalItem}
                 >
-                  <Text>
-                    {s ? s : "Todos los semestres"}
-                  </Text>
+                  <Text>{s ? s : "Todos los semestres"}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -144,11 +120,10 @@ export default function P_Historial() {
             </TouchableOpacity>
           ))
         ) : (
-          <Text style={styles.emptyText}>
-            No existe ningun ramo relacionado.
-          </Text>
+          <Text style={styles.emptyText}>No existe ningun ramo relacionado.</Text>
         )}
       </ScrollView>
+
       <P_Menu navigation={navigation} />
     </View>
   );

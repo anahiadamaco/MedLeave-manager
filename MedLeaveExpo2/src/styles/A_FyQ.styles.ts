@@ -6,15 +6,24 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   header: {
-    backgroundColor: "#0369a1",
+    backgroundColor: "#048ED4",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 32,
+    justifyContent: "center",
+  },
+  backButton: {
+    position: "absolute",
+    left: 16,
+    zIndex: 10,
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
     color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "600",
     textAlign: "center",
+    flex: 1,
   },
   titleContainer: {
     marginTop: 48,
@@ -25,11 +34,11 @@ export const styles = StyleSheet.create({
   titleText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#0369a1",
+    color: "#048ED4",
     textAlign: "center",
   },
   content: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     marginHorizontal: 16,
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -75,11 +84,5 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000000",
     textAlign: "justify",
-  },
-  backButton: {
-    position: "absolute",
-    left: 8,
-    top: 8,
-    zIndex: 10,
   },
 });

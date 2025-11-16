@@ -5,45 +5,24 @@ export const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: "#e6f1fb" 
   },
-
-  // Header
   header: {
-    backgroundColor: "#1c75bc",
-    height: 56,
+    backgroundColor: "#048ED4",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 30,
+    justifyContent: "center",
   },
-  headerLeft: { 
-    flexDirection: "row", 
-    alignItems: "center", 
-    gap: 8 
+  backButton: {
+    position: "absolute",
+    left: 16,
   },
-  headerTitle: { 
-    color: "#ffffff", 
-    fontSize: 16, 
-    fontWeight: "600" 
+  headerTitle: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "600",
+    textAlign: "center",
   },
-  headerRight: { 
-    fontSize: 12, 
-    color: "#ffffff" 
-  },
-
-  // Título
-  titleContainer: {
-    backgroundColor: "#1c75bc",
-    paddingVertical: 32,
-    alignItems: "center",
-  },
-  titleText: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    color: "#ffffff" 
-  },
-
-  // Barra de filtros
   filterBar: {
     backgroundColor: "#c9e0f7",
     padding: 12,
@@ -59,6 +38,14 @@ export const styles = StyleSheet.create({
     height: 40,
     color: "#000000",
   },
+  selector: {
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#a8c7e2",
+    padding: 10,
+    marginTop: 8,
+  },
   sortBtn: {
     marginTop: 8,
     backgroundColor: "#0096D6",
@@ -70,18 +57,6 @@ export const styles = StyleSheet.create({
     color: "#ffffff", 
     fontWeight: "bold" 
   },
-
-  // Selector personalizado
-  selector: {
-    backgroundColor: "#ffffff",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#a8c7e2",
-    padding: 10,
-    marginTop: 8,
-  },
-
-  // Modal
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
@@ -106,16 +81,6 @@ export const styles = StyleSheet.create({
     color: "#1c75bc", 
     fontWeight: "bold" 
   },
-
-  // Botón volver atrás
-  backButton: {
-    position: "absolute",
-    left: 8,
-    top: 8,
-    zIndex: 10,
-  },
-
-  // Lista
   content: { 
     flex: 1, 
     paddingHorizontal: 24, 
@@ -139,22 +104,22 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   courseInfo: { 
-    flex: 1 
+    flex: 1
   },
-  courseName: { 
-    fontWeight: "bold", 
-    fontSize: 16, 
-    color: "#000", 
-    marginBottom: 4 
+  courseName: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#000",
+    marginBottom: 4
   },
-  courseCode: { 
-    fontWeight: "600", 
-    fontSize: 14, 
-    color: "#000" 
+  courseCode: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#000"
   },
   emptyText: {
-    textAlign: "center", 
-    color: "#0B3178", 
-    marginTop: 16 
+    textAlign: "center",
+    color: "#0B3178",
+    marginTop: 16
   },
 });

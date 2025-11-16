@@ -86,23 +86,14 @@ export default function A_SubirLicencia({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      {/* Imagen de encabezado */}
-      <Image
-        style={styles.headerImage}
-        resizeMode="cover"
-      />
-
-      {/* Título superpuesto */}
-      <View style={styles.titleContainer}>
-        {/* Flecha de volver atrás */}
+      <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <ChevronLeft size={24} color="#007ACC" />
+          <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-
-        <Text style={styles.title}>
+        <Text style={styles.headerTitle}>
           Subir licencia médica
         </Text>
       </View>

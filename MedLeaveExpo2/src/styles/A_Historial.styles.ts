@@ -3,43 +3,28 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#F9FAFB" 
+    backgroundColor: "#ffffff" 
   },
-
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#0369a1",
+  header: {
+    backgroundColor: "#048ED4",
     paddingVertical: 12,
     paddingHorizontal: 16,
-  },
-  topBarText: { 
-    fontSize: 16, 
-    fontWeight: "600", 
-    color: "#ffffff" 
-  },
-  accountText: { 
-    fontSize: 12, 
-    color: "#ffffff" 
-  },
-  backButton: { 
-    paddingRight: 8 
-  },
-
-  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    justifyContent: "center",
   },
-  headerTitle: { 
-    fontSize: 18, 
-    fontWeight: "600", 
-    color: "#1F2937" 
+  backButton: {
+    position: "absolute",
+    left: 16,
+    zIndex: 10,
   },
-
+  headerTitle: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "600",
+    textAlign: "center",
+    flex: 1,
+  },
   filterBar: {
     backgroundColor: "#F3F4F6",
     paddingHorizontal: 16,
@@ -75,7 +60,6 @@ export const styles = StyleSheet.create({
   selectorText: { 
     color: "#111827" 
   },
-
   sortBtn: {
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -88,7 +72,6 @@ export const styles = StyleSheet.create({
     color: "#FFFFFF", 
     fontWeight: "700" 
   },
-
   modalBackdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
@@ -113,7 +96,6 @@ export const styles = StyleSheet.create({
     color: "#2563EB", 
     fontWeight: "700" 
   },
-
   content: { 
     flex: 1, 
     paddingVertical: 16, 

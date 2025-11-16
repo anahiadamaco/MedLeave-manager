@@ -3,22 +3,35 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e6f0fa",
-    padding: 16,
+    backgroundColor: "#ffffff",
+  },
+  header: {
+    backgroundColor: "#048ED4",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   backButton: {
     position: "absolute",
-    left: 8,
-    top: 8,
+    left: 16,
     zIndex: 10,
   },
-  title: {
-    color: "#007ACC",
+  headerTitle: {
+    color: "#ffffff",
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
+    flex: 1,
+  },
+  title: {
+    color: "#048ED4",
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
     marginBottom: 16,
-    marginTop: 32,
+    marginTop: 20,
   },
   tableContainer: {
     backgroundColor: "#b5d9ef",

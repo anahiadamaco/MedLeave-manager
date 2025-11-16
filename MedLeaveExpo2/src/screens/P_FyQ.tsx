@@ -72,22 +72,20 @@ export default function P_FyQ({ navigation }: any) {
       id: 13,
       pregunta: '¿Qué indica el color o estado que aparece junto al nombre del estudiante?',
       respuesta: 'El color refleja el estado de su licencia: pendiente, aprobada o rechazada, para facilitar la revisión rápida.',
-    }
+    },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Flecha de volver atrás */}
-      <TouchableOpacity 
-        onPress={() => navigation.goBack()} 
-        style={styles.backButton}
-      >
-        <ChevronLeft size={24} color="#007ACC" />
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()} 
+          style={styles.backButton}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </TouchableOpacity>
 
-      {/* Título */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>
+        <Text style={styles.headerTitle}>
           Preguntas Frecuentes
         </Text>
       </View>
@@ -105,6 +103,7 @@ export default function P_FyQ({ navigation }: any) {
             >
               <Text style={styles.questionText}>{item.pregunta}</Text>
             </TouchableOpacity>
+
             {expanded === item.id && (
               <View style={styles.answerContainer}>
                 <Text style={styles.answerText}>{item.respuesta}</Text>
@@ -113,6 +112,7 @@ export default function P_FyQ({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
+
       <P_Menu navigation={navigation} />
     </View>
   );

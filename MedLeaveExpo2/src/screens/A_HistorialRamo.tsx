@@ -6,21 +6,25 @@ import { styles } from "../styles/A_HistorialRamo.styles";
 import A_Menu from "../components/A_Menu";
 
 export default function A_HistorialRamo() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.container}>
-      {/* Flecha de volver atrás */}
-      <TouchableOpacity 
-        onPress={() => navigation.goBack()} 
-        style={styles.backButton}
-      >
-        <ChevronLeft size={24} color="#007ACC" />
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>
+          Historial por ramo
+        </Text>
+      </View>
 
-      {/* Título */}
+      {/* Título subtítulo */}
       <Text style={styles.title}>
-        INFO 1111 - Integración III
+        Historial
       </Text>
 
       {/* Contenedor de tabla */}
@@ -71,7 +75,7 @@ export default function A_HistorialRamo() {
       </View>
 
       {/* Menú fijo abajo */}
-      <A_Menu navigation={navigation as any} />
+      <A_Menu navigation={navigation} />
     </View>
   );
 }

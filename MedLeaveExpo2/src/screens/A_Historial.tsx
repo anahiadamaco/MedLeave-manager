@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
@@ -56,16 +56,14 @@ const A_Historial = () => {
 
   return (
     <View style={styles.container}>
-      {/* Barra superior fina */}
-      <View style={styles.topBar}>
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <ChevronLeft size={20} color="#ffffff" />
+          <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-        <Text style={styles.topBarText}>Gerente de Licencia Médica</Text>
-        <Text style={styles.accountText}>Cuenta: Juan Pérez</Text>
+        <Text style={styles.headerTitle}>Historial</Text>
       </View>
 
       {/* Filtros */}
@@ -96,7 +94,7 @@ const A_Historial = () => {
             }
           >
             <Text style={styles.sortText}>
-              {orden === "az" ? "Ordenar de A a Z" : "Ordenar de Z a A"}
+              {orden === "az" ? "A-Z" : "Z-A"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -138,7 +136,7 @@ const A_Historial = () => {
       >
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#0369a1" />
+            <ActivityIndicator size="large" color="#048ED4" />
           </View>
         ) : (
           <View style={styles.cursosList}>

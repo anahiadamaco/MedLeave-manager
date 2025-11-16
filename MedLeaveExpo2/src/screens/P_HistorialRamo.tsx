@@ -6,10 +6,9 @@ import { styles } from "../styles/P_HistorialRamo.styles";
 import P_Menu from "../components/P_Menu";
 
 export default function P_HistorialRamo({ navigation }: any) {
-  const navegation = useNavigation();
   const data = Array(4)
     .fill(null)
-    .map((_, i) => ({
+    .map(() => ({
       nombre: "Juan Castro",
       inicio: "12-08-2025",
       fin: "14-08-2025",
@@ -19,26 +18,16 @@ export default function P_HistorialRamo({ navigation }: any) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        {/* Flecha de volver atrás */}
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           style={styles.backButton}
         >
-          <ChevronLeft size={24} color="#007ACC" />
+          <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
 
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerTitle}>MedLeave Manager</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <Text style={styles.headerText}>Cuenta: Juan Pérez</Text>
-        </View>
-      </View>
-
-      {/* Título */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleMain}>Historial</Text>
-        <Text style={styles.titleSub}>INFO 1111</Text>
+        <Text style={styles.headerTitle}>
+          Historial por ramo
+        </Text>
       </View>
 
       {/* Contenido */}
@@ -53,7 +42,7 @@ export default function P_HistorialRamo({ navigation }: any) {
           </View>
 
           {/* Filas */}
-          <ScrollView>
+          <ScrollView style={{ maxHeight: 250 }}>
             {data.map((row, index) => (
               <View key={index} style={styles.tableRow}>
                 <Text style={styles.cell}>{row.nombre}</Text>

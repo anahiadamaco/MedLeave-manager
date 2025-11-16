@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { ChevronLeft } from "lucide-react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { styles } from "../styles/A_FyQ.styles";
 import A_Menu from "../components/A_Menu";
 
@@ -85,17 +85,15 @@ export default function A_FyQ() {
 
   return (
     <View style={styles.container}>
-      {/* Flecha de volver atrás */}
-      <TouchableOpacity 
-        onPress={() => navigation.goBack()} 
-        style={styles.backButton}
-      >
-        <ChevronLeft size={24} color="#007ACC" />
-      </TouchableOpacity>
-
-      {/* Título */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>
+      {/* Header con flecha y título */}
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()} 
+          style={styles.backButton}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>
           Preguntas Frecuentes
         </Text>
       </View>

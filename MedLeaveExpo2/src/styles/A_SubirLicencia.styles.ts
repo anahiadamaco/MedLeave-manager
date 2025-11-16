@@ -5,25 +5,25 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  headerImage: {
-    width: '100%',
-    height: 130,
-  },
-  titleContainer: {
-    position: 'absolute',
-    top: 90,
-    left: 0,
-    right: 0,
+  header: {
+    backgroundColor: '#048ED4',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  title: {
+  backButton: {
+    position: 'absolute',
+    left: 16,
+    zIndex: 10,
+  },
+  headerTitle: {
     color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '600',
     textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    flex: 1,
   },
   scrollContent: {
     paddingBottom: 100,
@@ -80,11 +80,5 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
-  },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 10,
-    zIndex: 10,
   },
 });
