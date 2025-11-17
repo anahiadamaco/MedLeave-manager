@@ -17,11 +17,27 @@ export const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     zIndex: 10,
+    marginTop: 30,
   },
   headerTitle: {
     color: "#ffffff",
-    fontSize: 22,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: "600",
+    textAlign: "center",
+    flex: 1,
+    marginTop: 30,
+  },
+  titleContainer: {
+    marginTop: 48,
+    marginBottom: 8,
+    alignItems: "center",
+    justifyContent: "center",
+
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#048ED4",
     textAlign: "center",
   },
   content: {
