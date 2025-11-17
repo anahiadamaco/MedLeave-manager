@@ -10,6 +10,7 @@ import A_SubirLicencia from "../screens/A_SubirLicencia";
 import A_Historial from "../screens/A_Historial";
 import A_HistorialRamo from "../screens/A_HistorialRamo";
 import A_FyQ from "../screens/A_FyQ";
+import A_Mensajes from "../screens/A_Mensajes";
 
 // Pantallas Profesor
 import P_Login from "../screens/P_Login";
@@ -64,6 +65,11 @@ export default function Navigation() {
         <Stack.Screen 
           name="A_FyQ" 
           component={A_FyQ}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="A_Mensajes" 
+          component={A_Mensajes}
           options={{ headerShown: false }}
         />
 
