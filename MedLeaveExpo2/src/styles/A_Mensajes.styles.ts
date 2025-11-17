@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#048ED4",
-    paddingVertical: 14,
+    paddingVertical: 20,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
@@ -17,12 +17,15 @@ export const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     zIndex: 10,
+    marginTop: 30,
   },
   headerTitle: {
     color: "#ffffff",
-    fontSize: 22,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: "600",
     textAlign: "center",
+    flex: 1,
+    marginTop: 30,
   },
   content: {
     marginTop: 10,
