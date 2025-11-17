@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   navbar: {
     backgroundColor: "#048ED4",
-    paddingVertical: 14,
+    paddingVertical: 20,
     paddingHorizontal: 16,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -13,10 +13,12 @@ export const styles = StyleSheet.create({
     color: "#048ED4",
     fontSize: 16,
     fontWeight: "bold",
+    
   },
   navbarIcons: {
     flexDirection: "row",
     gap: 16,
+    marginTop: 30,
   },
   headerBg: {
     height: 160,
