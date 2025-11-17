@@ -5,9 +5,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { styles } from "../styles/A_Historial.styles";
 import A_Menu from "../components/A_Menu";
 
-import A_Menu from "../components/A_Menu";
-
-
 const A_Historial = () => {
   const navigation = useNavigation<any>();
   const [loading, setLoading] = React.useState(false);

@@ -10,7 +10,7 @@ export default function A_ProfileUser() {
   const navigation = useNavigation<any>();
   const { isDark, toggleTheme } = useTheme();  
 
-  // Datos de ejemplo (luego los traes de tu API / contexto)
+  // Datos de ejemplo
   const user = {
     nombre: "Juan Castro",
     rut: "12.345.678-9",
