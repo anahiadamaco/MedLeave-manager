@@ -44,7 +44,7 @@ export default function A_Menu({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("A_Perfil")}
+        onPress={() => navigation.navigate("A_ProfileUser")}
       >
         <User color="#ffffff" size={26} />
         <Text style={styles.label}>Usuario</Text>

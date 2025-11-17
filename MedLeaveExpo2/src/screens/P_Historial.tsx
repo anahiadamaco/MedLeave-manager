@@ -8,6 +8,7 @@ import P_Menu from "../components/P_Menu";
 export default function P_Historial() {
   const navigation = useNavigation<any>();
 
+  //Datos
   const cursos = [
     { id: 1, codigo: "INFO 1111", nombre: "Teoría de sistemas", semestre: "2024-1" },
     { id: 2, codigo: "INFO 2222", nombre: "Programación avanzada", semestre: "2024-2" },

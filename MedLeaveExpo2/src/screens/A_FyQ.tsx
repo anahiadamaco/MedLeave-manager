@@ -108,8 +108,12 @@ export default function A_FyQ() {
             <TouchableOpacity
               style={styles.questionButton}
               onPress={() => setExpanded(expanded === item.id ? null : item.id)}
+              activeOpacity={0.7}
             >
               <Text style={styles.questionText}>{item.pregunta}</Text>
+              <Text style={styles.expandIcon}>
+                {expanded === item.id ? "▲" : "▼"}
+              </Text>
             </TouchableOpacity>
             {expanded === item.id && (
               <View style={styles.answerContainer}>

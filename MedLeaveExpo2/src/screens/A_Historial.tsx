@@ -163,6 +163,7 @@ const A_Historial = () => {
             )}
           </View>
         )}
+        
       </ScrollView>
       <A_Menu navigation={navigation} />
     </View>

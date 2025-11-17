@@ -10,6 +10,8 @@ import A_SubirLicencia from "../screens/A_SubirLicencia";
 import A_Historial from "../screens/A_Historial";
 import A_HistorialRamo from "../screens/A_HistorialRamo";
 import A_FyQ from "../screens/A_FyQ";
+import A_Mensajes from "../screens/A_Mensajes";
+import A_ProfileUser from "../screens/A_ProfileUser";
 
 // Pantallas Profesor
 import P_Login from "../screens/P_Login";
@@ -17,6 +19,7 @@ import P_Home from "../screens/P_Home";
 import P_Historial from "../screens/P_Historial";
 import P_HistorialRamo from "../screens/P_HistorialRamo";
 import P_FyQ from "../screens/P_FyQ";
+import P_Mensajes from "../screens/P_Mensajes";
 
 // Pantallas Funcionario
 import F_Home from "../screens/F_Home";
@@ -66,6 +69,16 @@ export default function Navigation() {
           component={A_FyQ}
           options={{ headerShown: false }}
         />
+        <Stack.Screen 
+          name="A_Mensajes" 
+          component={A_Mensajes}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="A_ProfileUser" 
+          component={A_ProfileUser}
+          options={{ headerShown: false }}
+        />
 
         {/* Profesor */}
         <Stack.Screen 
@@ -91,6 +104,11 @@ export default function Navigation() {
         <Stack.Screen 
           name="P_FyQ" 
           component={P_FyQ}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="P_Mensajes" 
+          component={P_Mensajes}
           options={{ headerShown: false }}
         />
 
