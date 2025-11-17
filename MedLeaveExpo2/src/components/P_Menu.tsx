@@ -20,7 +20,7 @@ export default function A_Menu({ navigation }: Props) {
 
        <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("P_Messajes")}
+        onPress={() => navigation.navigate("P_Mensajes")}
       >
         <Mail color="#ffffff" size={26} />
         <Text style={styles.label}>Mensajes</Text>
