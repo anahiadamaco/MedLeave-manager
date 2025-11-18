@@ -6,9 +6,6 @@ import { styles } from "../styles/A_Historial.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
 
-
-
-
 const A_Historial = () => {
   const navigation = useNavigation<any>();
   const [loading, setLoading] = React.useState(false);
@@ -89,7 +86,6 @@ const A_Historial = () => {
           >
             <Text style={[styles.selectorText, isDark && styles.blackSelectorText]}>
               {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
-
             </Text>
           </TouchableOpacity>
 
@@ -169,7 +165,6 @@ const A_Historial = () => {
             )}
           </View>
         )}
-        
       </ScrollView>
       <A_Menu navigation={navigation} />
     </View>

@@ -76,7 +76,6 @@ export default function P_Home() {
             <Text style={styles.cardButtonText}>{">"}</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
       <P_Menu navigation={navigation} />
     </View>

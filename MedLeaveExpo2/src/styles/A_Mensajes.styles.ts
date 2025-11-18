@@ -5,11 +5,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-
   blackContainer: {
     backgroundColor: "#020617",
   },
-
   header: {
     backgroundColor: "#048ED4",
     paddingVertical: 20,
@@ -18,18 +16,15 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   blackHeader: {
     backgroundColor: "#0f172a",
   },
-
   backButton: {
     position: "absolute",
     left: 16,
     zIndex: 10,
     marginTop: 30,
   },
-
   headerTitle: {
     color: "#ffffff",
     fontSize: 20,
@@ -38,13 +33,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
   },
-
   content: {
     marginTop: 10,
     padding: 16,
     marginBottom: 100,
   },
-
   card: {
     backgroundColor: "#CEEDFFFF",
     borderRadius: 12,
@@ -52,11 +45,9 @@ export const styles = StyleSheet.create({
     marginBottom: 14,
     borderWidth: 1,
   },
-
   blackCard: {
     backgroundColor: "#1e293b",
   },
-
   cardNoLeido: {
     borderColor: "#048ED4",
   },
@@ -95,30 +86,24 @@ export const styles = StyleSheet.create({
     color: "#048ED4",
     marginBottom: 4,
   },
-
   blackTitulo: {
     color: "white",
   },
-
   mensaje: {
     fontSize: 14,
     color: "#048ED4",
     marginBottom: 8,
   },
-
   blackMensaje: {
     color: "white",
   },
-
   fecha: {
     marginTop: 6,
     fontSize: 12,
     color: "#3b82f6",
     textAlign: "right",
   },
-
   blackFecha: {
     color: "white",
   },
-
 });

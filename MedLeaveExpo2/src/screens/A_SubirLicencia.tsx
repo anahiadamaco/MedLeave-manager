@@ -7,7 +7,6 @@ import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
 
 export default function A_SubirLicencia({ navigation }: any) {
-
   const { isDark } = useTheme();
 
   const [formData, setFormData] = React.useState({

@@ -24,7 +24,6 @@ export default function P_HistorialRamo({ navigation }: any) {
         >
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-
         <Text style={styles.headerTitle}>
           Historial por ramo
         </Text>
@@ -40,7 +39,6 @@ export default function P_HistorialRamo({ navigation }: any) {
             <Text style={styles.headerCell}>Fecha fin</Text>
             <Text style={styles.headerCell}>PDF</Text>
           </View>
-
           {/* Filas */}
           <ScrollView style={{ maxHeight: 250 }}>
             {data.map((row, index) => (
@@ -54,7 +52,6 @@ export default function P_HistorialRamo({ navigation }: any) {
           </ScrollView>
         </View>
       </View>
-
       <P_Menu navigation={navigation} />
     </View>
   );

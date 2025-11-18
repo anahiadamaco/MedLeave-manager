@@ -6,8 +6,6 @@ import { useTheme } from "../components/ThemeContext";
 
 type Props = {
   navigation: NavigationProp<any>;
-  
-
 };
 
 export default function A_Menu({ navigation }: Props) {
@@ -72,7 +70,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-
   containerDark: {
     backgroundColor: "#0f172a",
   },

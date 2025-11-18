@@ -4,7 +4,6 @@ import { ChevronLeft } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../styles/A_HistorialRamo.styles";
 import A_Menu from "../components/A_Menu";
-
 import { useTheme } from "../components/ThemeContext";
 
 type HistorialItem = {
@@ -65,8 +64,6 @@ export default function A_HistorialRamo() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Historial por ramo</Text>
       </View>
-
-
       <View style={{ flex: 1, paddingHorizontal: 12, paddingTop: 20 }}>
         <View style={styles.tableContainer}>
           <FlatList
@@ -78,7 +75,6 @@ export default function A_HistorialRamo() {
           />
         </View>
       </View>
-
       {/* Menú fijo abajo */}
       <A_Menu navigation={navigation} />
     </View>

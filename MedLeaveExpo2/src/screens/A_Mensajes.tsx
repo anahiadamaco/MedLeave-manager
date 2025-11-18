@@ -3,13 +3,10 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { styles } from "../styles/A_Mensajes.styles";
 import A_Menu from "../components/A_Menu";
-
 import { useTheme } from "../components/ThemeContext";
 
 export default function A_Mensajes({ navigation }: any) {
-
   const { isDark } = useTheme();
-
   const [notificaciones, setNotificaciones] = useState([
     {
       id: "1",

@@ -4,14 +4,11 @@ import { ChevronLeft } from "lucide-react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { styles } from "../styles/A_FyQ.styles";
 import A_Menu from "../components/A_Menu";
-
 import { useTheme } from "../components/ThemeContext";
 
 export default function A_FyQ() {
   const navigation = useNavigation<NavigationProp<any>>();
-
   const [expanded, setExpanded] = useState<number | null>(null);
-
   const { isDark } = useTheme();
 
   const preguntas = [
@@ -127,7 +124,6 @@ export default function A_FyQ() {
           </View>
         ))}
       </ScrollView>
-
       {/* Menú fijo abajo */}
       <A_Menu navigation={navigation} />
     </View>

@@ -8,7 +8,6 @@ export const styles = StyleSheet.create({
   containerDark: {
     backgroundColor: "#020617",
   },
-
   header: {
     backgroundColor: "#048ED4",
     paddingVertical: 20,
@@ -34,15 +33,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
   },
-
   content: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 12,
   },
-
-
   avatarContainer: {
     alignItems: "center",
     marginBottom: 20,
@@ -56,14 +52,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 8,
   },
-
   blackAvatarCircle: {
     backgroundColor: "#1e293b",
     borderColor: "#475569",
     borderWidth: 1,
   },
-  
-
   userName: {
     fontSize: 18,
     fontWeight: "600",
@@ -98,7 +91,6 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#0f172a",
   },
-
   row: {
     flexDirection: "row",
     marginBottom: 6,
@@ -119,14 +111,12 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: "#0f172a",
   },
-
   infoText: {
     fontSize: 11,
     color: "#6b7280",
     marginTop: 10,
     marginBottom: 10,
   },
-
   webButton: {
     alignSelf: "flex-start",
     backgroundColor: "#048ED4",
@@ -139,7 +129,6 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
   },
-
   // Textos para modo oscuro
   textDarkPrimary: {
     color: "#e5e7eb",
