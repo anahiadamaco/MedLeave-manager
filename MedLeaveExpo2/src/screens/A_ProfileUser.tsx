@@ -37,7 +37,7 @@ export default function A_ProfileUser() {
        
         <View style={styles.avatarContainer}>
           {/* En daDO CASO de que importemos foto usar foto*/}
-          <View style={styles.avatarCircle}>
+          <View style={[styles.avatarCircle, isDark && styles.blackAvatarCircle]}>
             <UserIcon size={36} color="#ffffff" />
           </View>
           <Text style={[styles.userName, isDark && styles.textDarkPrimary]}>

@@ -5,10 +5,14 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { styles } from "../styles/A_FyQ.styles";
 import A_Menu from "../components/A_Menu";
 
+import { useTheme } from "../components/ThemeContext";
+
 export default function A_FyQ() {
   const navigation = useNavigation<NavigationProp<any>>();
 
   const [expanded, setExpanded] = useState<number | null>(null);
+
+  const { isDark } = useTheme();
 
   const preguntas = [
     {
@@ -84,9 +88,9 @@ export default function A_FyQ() {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
       {/* Header con flecha y título */}
-      <View style={styles.header}>
+      <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           style={styles.backButton}
@@ -106,18 +110,18 @@ export default function A_FyQ() {
         {preguntas.map((item) => (
           <View key={item.id} style={styles.questionContainer}>
             <TouchableOpacity
-              style={styles.questionButton}
+              style={[styles.questionButton, isDark && styles.questionButtonDark]}
               onPress={() => setExpanded(expanded === item.id ? null : item.id)}
               activeOpacity={0.7}
             >
-              <Text style={styles.questionText}>{item.pregunta}</Text>
-              <Text style={styles.expandIcon}>
+              <Text style={[styles.questionText, isDark && styles.questionTextDark]}>{item.pregunta}</Text>
+              <Text style={[styles.expandIcon, isDark && styles.expandIcondark]}>
                 {expanded === item.id ? "▲" : "▼"}
               </Text>
             </TouchableOpacity>
             {expanded === item.id && (
-              <View style={styles.answerContainer}>
-                <Text style={styles.answerText}>{item.respuesta}</Text>
+              <View style={[styles.answerContainer, isDark && styles.answerContainerDark]}>
+                <Text style={[styles.answerText, isDark && styles.answerTextDark]}>{item.respuesta}</Text>
               </View>
             )}
           </View>

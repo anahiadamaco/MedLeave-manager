@@ -5,6 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { styles } from "../styles/A_HistorialRamo.styles";
 import A_Menu from "../components/A_Menu";
 
+import { useTheme } from "../components/ThemeContext";
+
 type HistorialItem = {
   id: string;
   nombre: string;
@@ -15,6 +17,7 @@ type HistorialItem = {
 
 export default function A_HistorialRamo() {
   const navigation = useNavigation<any>();
+  const { isDark } = useTheme();
 
   const historial: HistorialItem[] = [
     { id: "1", nombre: "Juan Castro", fechaInicio: "12-08-2025", fechaFin: "14-08-2025" },
@@ -28,19 +31,19 @@ export default function A_HistorialRamo() {
   };
 
   const renderItem = ({ item }: { item: HistorialItem }) => (
-    <View style={styles.card}>
+    <View style={[styles.card, isDark && styles.blackCard]}>
       <View style={styles.cardHeaderRow}>
-        <Text style={styles.cardName}>{item.nombre}</Text>
+        <Text style={[styles.cardName, isDark && styles.blackCardName]}>{item.nombre}</Text>
       </View>
 
-      <Text style={styles.cardLabel}>Período licencia</Text>
-      <Text style={styles.cardDates}>
+      <Text style={[styles.cardLabel, isDark && styles.blackCardLabel]}>Período licencia</Text>
+      <Text style={[styles.cardDates, isDark && styles.blackCardDates]}>
         {item.fechaInicio} - {item.fechaFin}
       </Text>
 
       <View style={styles.cardFooterRow}>
         <TouchableOpacity
-          style={styles.pdfButton}
+          style={[styles.pdfButton, isDark && styles.blackPdfButton]}
           onPress={() => handleOpenPdf(item)}
         >
           <Text style={styles.pdfButtonText}>Ver PDF</Text>
@@ -51,9 +54,9 @@ export default function A_HistorialRamo() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
       {/* Header fijo */}
-      <View style={styles.header}>
+      <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}

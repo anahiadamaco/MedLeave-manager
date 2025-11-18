@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 12,
   },
 
-  // Avatar / encabezado de usuario
+
   avatarContainer: {
     alignItems: "center",
     marginBottom: 20,
@@ -56,6 +56,14 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 8,
   },
+
+  blackAvatarCircle: {
+    backgroundColor: "#1e293b",
+    borderColor: "#475569",
+    borderWidth: 1,
+  },
+  
+
   userName: {
     fontSize: 18,
     fontWeight: "600",
@@ -80,9 +88,9 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   cardDark: {
-    backgroundColor: "#020617",
+    backgroundColor: "#1E293B",
     borderWidth: 1,
-    borderColor: "#1e293b",
+    borderColor: "#475569",
   },
   cardTitle: {
     fontSize: 15,

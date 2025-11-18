@@ -7,6 +7,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
 
+  blackContainer: {
+    backgroundColor: "#020617",
+  },
+
   //HEADER
   header: {
     backgroundColor: "#048ED4",
@@ -16,12 +20,18 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  blackHeader: {
+    backgroundColor: "#0f172a",
+  },
+
   backButton: {
     position: "absolute",
     left: 16,
     zIndex: 10,
     marginTop: 30,
   },
+
   headerTitle: {
     color: "#ffffff",
     fontSize: 20,
@@ -31,9 +41,9 @@ export const styles = StyleSheet.create({
     marginTop: 30,
   },
 
-  // Fondo celeste que contiene las tarjetas
+  //Fondo que contiene las tarjetas
   tableContainer: {
-    backgroundColor: "#b5d9ef",
+    backgroundColor: "transparent",
     borderRadius: 12,
     padding: 12,
     shadowColor: "#000",
@@ -64,27 +74,51 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 2,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
+
+  blackCard: {
+    backgroundColor: "#1E293B",
+    borderColor: "#334155",
+  },
+
   cardHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 6,
   },
+
   cardName: {
     fontSize: 14,
     fontWeight: "600",
     color: "#003f66",
   },
+
+  blackCardName: {
+    color: "white",
+  },
+
   cardLabel: {
     fontSize: 11,
     color: "#6b7280",
   },
+
+  blackCardLabel: {
+    color: "white",
+  },
+
   cardDates: {
     fontSize: 13,
     color: "#003f66",
     marginBottom: 8,
   },
+
+  blackCardDates: {
+    color: "white",
+  },
+
   cardFooterRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -99,6 +133,11 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "#048ED4",
   },
+
+  blackPdfButton: {
+    backgroundColor: "#0f172a",
+  },
+
   pdfButtonText: {
     color: "#ffffff",
     fontSize: 12,
@@ -109,4 +148,5 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "#ffffff",
   },
+
 });

@@ -5,6 +5,11 @@ export const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: "#ffffff" 
   },
+
+  blackContainer: { 
+    backgroundColor: "#020617", 
+  },
+
   header: {
     backgroundColor: "#048ED4",
     paddingVertical: 20,
@@ -14,6 +19,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     
   },
+
+  blackHeader: {
+    backgroundColor: "#0f172a",
+  },
+  
   backButton: {
     position: "absolute",
     left: 16,
@@ -36,6 +46,12 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
   },
+
+  blackFilterBar: {
+    backgroundColor: "#020617",
+    borderBottomColor: "#334155",
+  },
+
   input: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
@@ -45,11 +61,19 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     color: "#111827",
   },
+
+  blackInput: {
+    backgroundColor: "#334155",
+    borderColor: "#475569",
+    color: "#F1F5F9",
+  },
+
   filterRow: {
     flexDirection: "row",
     gap: 8,
     marginTop: 8,
   },
+
   selector: {
     flex: 1,
     backgroundColor: "#FFFFFF",
@@ -60,9 +84,20 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 12,
   },
+
+  blackSelector: {
+    backgroundColor: "#334155",
+    borderColor: "#475569",
+  },
+
   selectorText: { 
     color: "#111827" 
   },
+
+  blackSelectorText: { 
+    color: "#F1F5F9" 
+  },
+
   sortBtn: {
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -71,6 +106,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     height: 40,
   },
+
+  blackSortBtn: {
+    backgroundColor: "#1E293B",
+    borderColor: "#334155",
+    borderWidth: 1,
+  },
+
   sortText: { 
     color: "#FFFFFF", 
     fontWeight: "700" 
@@ -81,24 +123,44 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 24,
   },
+
   modalBox: {
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
   },
+
+  blackModalBox: {
+    backgroundColor: "#1E293B",
+    borderWidth: 1,
+    borderColor: "#334155",
+  },
+
   modalItem: {
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
   },
+
+  blackModalItem: {
+    borderBottomColor: "#475569",
+  },
+
+
   modalClose: { 
     alignSelf: "flex-end", 
     padding: 10 
   },
+  
   modalCloseText: { 
     color: "#2563EB", 
     fontWeight: "700" 
   },
+
+  blackModalCloseText: {
+    color: "white",
+  },
+
   content: { 
     flex: 1, 
     paddingVertical: 16, 
@@ -127,19 +189,38 @@ export const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+
+  blackCursoCard: {
+    backgroundColor: "#1E293B",
+    borderColor: "#475569",
+    borderWidth: 1,
+  },
+
   cursoInfo: { 
     flex: 1 
   },
+
+  
   cursoNombre: { 
     fontSize: 16, 
     fontWeight: "600", 
     color: "#1F2937", 
     marginBottom: 4 
   },
+
+  cursoNombreDark: { 
+    color: "white", 
+  },
+
   cursoCodigo: { 
     fontSize: 14, 
     color: "#6B7280" 
   },
+
+  blackCursoCodigo: { 
+    color: "white"
+  },
+  
   emptyText: { 
     textAlign: "center", 
     color: "#6B7280", 

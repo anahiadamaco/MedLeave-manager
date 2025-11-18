@@ -1,25 +1,29 @@
 import { StyleSheet } from "react-native";
+import { blue } from "react-native-reanimated/lib/typescript/Colors";
 
 export const styles = StyleSheet.create({
+
+  
+
   navbar: {
     backgroundColor: "#048ED4",
     paddingVertical: 20,
     paddingHorizontal: 16,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
-  navbarTitle: {
-    color: "#048ED4",
-    fontSize: 16,
-    fontWeight: "bold",
-    
+
+  blackNavbar: {
+    backgroundColor: "#0f172a",
   },
+  
   navbarIcons: {
     flexDirection: "row",
     gap: 16,
     marginTop: 30,
   },
+
   headerBg: {
     height: 160,
     width: "100%",
@@ -28,17 +32,20 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 10,
   },
+
   headerImage: {
     position: "absolute",
     width: "100%",
     height: "100%",
     opacity: 0.55,
   },
+
   gradientOverlay: {
     position: "absolute",
     width: "100%",
     height: "100%",
   },
+
     headerContent: {
     zIndex: 10,
     justifyContent: "center",
@@ -47,6 +54,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+
   title: {
     color: "#ffffff",
     fontSize: 30,
@@ -57,6 +65,12 @@ export const styles = StyleSheet.create({
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 3,
   },
+
+  blackTitle: {
+    color: "white",
+    textShadowColor: "black",
+  },
+  
   title2: {
     color: "#ffffff",
     fontSize: 34,
@@ -68,6 +82,13 @@ export const styles = StyleSheet.create({
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 3,
   },
+
+  blackTitle2: {
+    color: "white",
+    textShadowColor: "black",
+    
+  },
+
   overlay: {
     position: "absolute",
     width: "100%",
@@ -75,28 +96,33 @@ export const styles = StyleSheet.create({
     backgroundColor: "#048ED4",
     opacity: 0.45,
   },
+
   headerBienvenida: {
     color: "#048ED4",
     fontSize: 22,
     fontWeight: "700",
   },
+
   headerSub: {
     color: "#048ED4",
     fontSize: 22,
     fontWeight: "700",
     marginTop: -2,
   },
+
   headerApp: {
     color: "#048ED4",
     fontSize: 22,
     fontWeight: "700",
     marginTop: -2,
   },
+
   content: {
     paddingHorizontal: 24,
     marginTop: 14,
     alignItems: "center",
   },
+
   reminder: {
     width: "95%",
     backgroundColor: "#F8BABA",
@@ -106,12 +132,19 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 12,
   },
+
+  blackReminder: {
+    backgroundColor: "transparent",
+   
+  },
+
   reminderTitle: {
     textAlign: "center",
     fontSize: 18,
     color: "#C62828",
     fontWeight: "800",
   },
+
   reminderText: {
     marginTop: 6,
     textAlign: "center",
@@ -119,6 +152,7 @@ export const styles = StyleSheet.create({
     lineHeight: 18,
     color: "#C62828",
   },
+
   infoText: {
     marginTop: 22,
     textAlign: "center",
@@ -127,6 +161,11 @@ export const styles = StyleSheet.create({
     lineHeight: 18,
     paddingHorizontal: 10,
   },
+
+  blackInfoText: {
+    color: "white",
+  },
+
   regButton: {
     marginTop: 20,
     backgroundColor: "#FFD75B",
@@ -141,6 +180,14 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+
+  blackRegButton: {
+    backgroundColor: "#334155",
+    shadowColor: "black",
+    borderColor: "#475569",
+    borderWidth: 2,
+  },
+
   regButtonText: {
     color: "#048ED4",
     fontWeight: "700",
@@ -150,4 +197,9 @@ export const styles = StyleSheet.create({
     textDecorationLine: "underline",
     textDecorationColor: "#048ED4",
   },
+
+  blackRegButtonText: {
+    color: "white",
+  },
+
 });
