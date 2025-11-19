@@ -319,7 +319,9 @@ export default function LoginScreen({ navigation }: any) {
             editable={!loading}
           />
 
-          <Text style={styles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+            <Text style={styles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate("A_Register")}>
             <Text style={styles.forgotPassword}>¿No tienes cuenta? Regístrate aquí</Text>
