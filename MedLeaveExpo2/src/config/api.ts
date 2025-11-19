@@ -5,7 +5,9 @@
  * Si quieres cambiar a un servidor en la nube, solo cambia esta URL
  */
 
-export const API_BASE_URL = "http://localhost:3000"; // Backend en localhost
+// Detectar si es web o mobile
+const isWeb = typeof window !== 'undefined' && typeof navigator !== 'undefined';
+export const API_BASE_URL = isWeb ? "http://localhost:3000" : "http://192.168.100.231:3000";
 
 // Rutas de autenticación
 export const AUTH_ROUTES = {

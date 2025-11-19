@@ -7,6 +7,7 @@ export default function ForgotPassword({ navigation }: any) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [resetToken, setResetToken] = useState("");
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
@@ -41,15 +42,21 @@ export default function ForgotPassword({ navigation }: any) {
         return;
       }
 
+      // Mostrar token en desarrollo (para pruebas)
+      if (data.token) {
+        setResetToken(data.token);
+      }
+
       setSuccessMessage(
         "✅ Se envió un enlace de recuperación a tu correo. Revisa tu bandeja de entrada."
       );
       setEmail("");
 
-      // Limpiar mensaje después de 5 segundos
+      // Limpiar mensaje después de 10 segundos
       setTimeout(() => {
         setSuccessMessage("");
-      }, 5000);
+        setResetToken("");
+      }, 10000);
     } catch (error: any) {
       console.error("[FORGOT_PASSWORD] Error:", error);
       Alert.alert("Error de conexión", "No se pudo conectar con el servidor");
@@ -73,6 +80,20 @@ export default function ForgotPassword({ navigation }: any) {
       {successMessage ? (
         <View style={styles.successContainer}>
           <Text style={styles.successText}>{successMessage}</Text>
+          {resetToken ? (
+            <View style={{ marginTop: 12 }}>
+              <Text style={styles.tokenLabel}>Token para pruebas (en desarrollo):</Text>
+              <Text style={styles.tokenText}>{resetToken}</Text>
+              <TouchableOpacity onPress={() => {
+                // Copiar al portapapeles
+                const url = `http://localhost:8082/reset-password?token=${resetToken}`;
+                console.log("URL de reseteo:", url);
+                Alert.alert("Link de reseteo", url);
+              }}>
+                <Text style={styles.tokenCopyLink}>Ver URL completa</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
       ) : null}
 

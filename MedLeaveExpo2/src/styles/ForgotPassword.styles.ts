@@ -116,4 +116,26 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  tokenLabel: {
+    color: "#155724",
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  tokenText: {
+    color: "#155724",
+    fontSize: 11,
+    fontFamily: "monospace",
+    backgroundColor: "#E8F5E9",
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  tokenCopyLink: {
+    color: "#0089E0",
+    fontSize: 12,
+    fontWeight: "600",
+    textDecorationLine: "underline",
+    textAlign: "center",
+  },
 });
