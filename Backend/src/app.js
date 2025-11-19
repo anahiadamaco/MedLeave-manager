@@ -8,7 +8,15 @@ import errorHandler from "./middlewares/errorHandler.js";
 import logger from './middlewares/logger.js';
 
 const app = express();
-app.use(cors());
+
+// Configurar CORS más específicamente
+app.use(cors({
+  origin: ["http://localhost:8081", "http://localhost:8082", "http://192.168.100.231:8081", "http://192.168.100.231:8082"],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(logger);

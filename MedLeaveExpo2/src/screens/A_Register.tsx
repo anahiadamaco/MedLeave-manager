@@ -19,6 +19,9 @@ export default function A_Register({ navigation }: any) {
   };
 
   const handleRegister = async () => {
+    console.log("[REGISTER] Iniciando registro...");
+    console.log("[REGISTER] Datos:", formData);
+    
     // Validaciones
     if (!formData.nombres || !formData.apellidos || !formData.correo || !formData.contrasena) {
       Alert.alert("Error", "Por favor completa todos los campos");
@@ -38,6 +41,7 @@ export default function A_Register({ navigation }: any) {
     setLoading(true);
 
     try {
+      console.log("[REGISTER] Enviando fetch a:", AUTH_ROUTES.REGISTER);
       const response = await fetch(AUTH_ROUTES.REGISTER, {
         method: "POST",
         headers: {
@@ -51,10 +55,19 @@ export default function A_Register({ navigation }: any) {
         }),
       });
 
+      console.log("[REGISTER] Response status:", response.status);
       const data = await response.json();
+      console.log("[REGISTER] Response data:", data);
+      console.log("[REGISTER] Response errors:", data.errors);
+      
+      // Mostrar errores en detalle
+      if (data.errors && data.errors.length > 0) {
+        const errorMessages = data.errors.map((e: any) => `${e.field}: ${e.message}`).join('\n');
+        console.log("[REGISTER] Error details:", errorMessages);
+      }
 
       if (!response.ok || !data.success) {
-        Alert.alert("Error en registro", data.message || "No se pudo registrar");
+        Alert.alert("Error en registro", data.message || data.error || "No se pudo registrar");
         return;
       }
 
@@ -66,10 +79,10 @@ export default function A_Register({ navigation }: any) {
         },
       ]);
     } catch (error: any) {
-      console.error("Error de conexión:", error);
+      console.error("[REGISTER] Error de conexión:", error);
       Alert.alert(
         "Error de conexión",
-        "No se pudo conectar con el servidor."
+        "No se pudo conectar con el servidor: " + error.message
       );
     } finally {
       setLoading(false);
