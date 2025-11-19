@@ -12,10 +12,18 @@ export const styles = StyleSheet.create({
   blackNavbar: {
     backgroundColor: "#0f172a",
   },
+
+  logo: {
+    width: 100,
+    height: 60,
+    marginRight: 'auto',
+  },
+
   navbarIcons: {
     flexDirection: "row",
     gap: 16,
-    marginTop: 30,
+    marginTop: 10,
+    marginBottom: 10,
   },
   headerBg: {
     height: 160,

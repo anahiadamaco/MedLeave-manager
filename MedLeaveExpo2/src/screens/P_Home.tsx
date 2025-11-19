@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
-import { Bell, User } from "lucide-react-native";
+import { Bell, LogOut } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import P_Menu from "../components/P_Menu";
@@ -19,12 +19,17 @@ export default function P_Home({ navigation }: any) {
     <View style={{ flex: 1, backgroundColor: isDark ? "#020617" : "#ffffff" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 110 }}>
         <View style={[styles.navbar, isDark && styles.blackNavbar]}>
+          <Image
+            source={require("../assets/Logo_normal.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <View style={styles.navbarIcons}>
             <TouchableOpacity onPress={() => navigation.navigate("P_Mensajes")}>
               <Bell color="white" size={22} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout}>
-              <User color="white" size={22} />
+              <LogOut color="white" size={22} />
             </TouchableOpacity>
           </View>
         </View>
