@@ -23,6 +23,9 @@ export const LICENCIA_ROUTES = {
   UPLOAD: `${API_BASE_URL}/api/licencias/upload`,
   UPDATE: (id: number) => `${API_BASE_URL}/api/licencias/${id}`,
   DELETE: (id: number) => `${API_BASE_URL}/api/licencias/${id}`,
+  GET_SOLICITUDES_PENDIENTES: `${API_BASE_URL}/api/licencias/solicitudes/pendientes`,
+  APROBAR: (id: number) => `${API_BASE_URL}/api/licencias/${id}/aprobar`,
+  RECHAZAR: (id: number) => `${API_BASE_URL}/api/licencias/${id}/rechazar`,
 };
 
 // Rutas de notificaciones

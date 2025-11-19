@@ -8,6 +8,9 @@ const router = express.Router();
 // GET todas las licencias - Solo FUNCIONARIO o ADMINISTRADOR
 router.get("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.getLicencias);
 
+// GET todas las solicitudes pendientes - Solo FUNCIONARIO o ADMINISTRADOR
+router.get("/solicitudes/pendientes", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.getLicenciasPendientes);
+
 // GET licencias del usuario autenticado
 router.get("/usuario/:id_usuario", authenticate, LicenciaController.getLicenciasUsuario);
 
@@ -19,5 +22,11 @@ router.post("/create", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaCont
 
 // Ruta para subir licencia con archivo: JSON + base64 (sin multer) - Solo ESTUDIANTE
 router.post("/upload", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaController.uploadLicencia);
+
+// PUT aprobar licencia - Solo FUNCIONARIO o ADMINISTRADOR
+router.put("/:id_licencia/aprobar", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.aprobarLicencia);
+
+// PUT rechazar licencia - Solo FUNCIONARIO o ADMINISTRADOR
+router.put("/:id_licencia/rechazar", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.rechazarLicencia);
 
 export default router;

@@ -150,3 +150,106 @@ export const uploadLicencia = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// Obtener todas las licencias pendientes de aprobación
+export const getLicenciasPendientes = async (req, res) => {
+  try {
+    console.log("📍 [SOLICITUDES] GET /solicitudes/pendientes recibida");
+    
+    const solicitudes = await LicenciaModel.getLicenciasPendientes();
+    console.log(`✅ [SOLICITUDES] ${solicitudes.length} solicitudes pendientes encontradas`);
+    
+    res.json({ success: true, data: solicitudes });
+  } catch (error) {
+    console.error("❌ [SOLICITUDES] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Aprobar una licencia
+export const aprobarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    console.log(`📍 [APROBAR] Aprobando licencia: ${id_licencia}`);
+    
+    // Verificar que la licencia existe
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [APROBAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+    
+    // Actualizar estado a 'aceptado'
+    await LicenciaModel.updateLicenciaEstado(id_licencia, 'aceptado');
+    console.log(`✅ [APROBAR] Licencia ${id_licencia} aprobada`);
+    
+    // Crear notificación para el estudiante
+    const { id_usuario } = licencia;
+    const asunto = "Licencia médica aprobada";
+    const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido aprobada.`;
+    
+    try {
+      await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario) VALUES (?, ?, NOW(), ?)`,
+        [asunto, contenido, id_usuario]
+      );
+      console.log(`✅ [APROBAR] Notificación enviada a usuario ${id_usuario}`);
+    } catch (notifError) {
+      console.error(`⚠️ [APROBAR] Error al enviar notificación:`, notifError);
+    }
+    
+    res.json({ success: true, message: "Licencia aprobada correctamente" });
+  } catch (error) {
+    console.error("❌ [APROBAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Rechazar una licencia
+export const rechazarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const { motivo_rechazo } = req.body;
+    
+    if (!motivo_rechazo || motivo_rechazo.trim().length < 10) {
+      console.log(`❌ [RECHAZAR] Motivo inválido`);
+      return res.status(400).json({ 
+        success: false, 
+        error: "Debe proporcionar un motivo de rechazo válido (mínimo 10 caracteres)" 
+      });
+    }
+    
+    console.log(`📍 [RECHAZAR] Rechazando licencia: ${id_licencia}`);
+    
+    // Verificar que la licencia existe
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [RECHAZAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+    
+    // Actualizar estado a 'rechazado' con motivo
+    await LicenciaModel.updateLicenciaEstado(id_licencia, 'rechazado', motivo_rechazo.trim());
+    console.log(`✅ [RECHAZAR] Licencia ${id_licencia} rechazada`);
+    
+    // Crear notificación para el estudiante
+    const { id_usuario } = licencia;
+    const asunto = "Licencia médica rechazada";
+    const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido rechazada.\n\nMotivo: ${motivo_rechazo.trim()}`;
+    
+    try {
+      await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario) VALUES (?, ?, NOW(), ?)`,
+        [asunto, contenido, id_usuario]
+      );
+      console.log(`✅ [RECHAZAR] Notificación enviada a usuario ${id_usuario}`);
+    } catch (notifError) {
+      console.error(`⚠️ [RECHAZAR] Error al enviar notificación:`, notifError);
+    }
+    
+    res.json({ success: true, message: "Licencia rechazada correctamente" });
+  } catch (error) {
+    console.error("❌ [RECHAZAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
