@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Footer from "../components/Footer";
 import { AUTH_ROUTES } from "../config/api";
 import { styles } from "../styles/A_Register.styles";
 
@@ -60,17 +59,12 @@ export default function A_Register({ navigation }: any) {
       }
 
       // ✅ Registro exitoso
-                Alert.alert("✅ Éxito", "Cuenta creada correctamente. Ahora inicia sesión.", [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("P_Login"),
-            },
-          ]);
-      
-      // Navegar de vuelta a login
-      if (navigation) {
-        navigation.navigate("A_Login");
-      }
+      Alert.alert("✅ Éxito", "Cuenta creada correctamente. Ahora inicia sesión.", [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate("P_Login"),
+        },
+      ]);
     } catch (error: any) {
       console.error("Error de conexión:", error);
       Alert.alert(
@@ -159,14 +153,13 @@ export default function A_Register({ navigation }: any) {
         <TouchableOpacity
           onPress={() => {
             if (navigation) {
-              navigation.navigate("A_Login");
+              navigation.navigate("P_Login");
             }
           }}
         >
           <Text style={styles.loginLink}>¿Ya tienes cuenta? Inicia sesión</Text>
         </TouchableOpacity>
       </View>
-      <Footer />
     </ScrollView>
   );
 }
