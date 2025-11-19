@@ -4,10 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { styles } from "../styles/A_Historial.styles";
 import A_Menu from "../components/A_Menu";
+import { useTheme } from "../components/ThemeContext";
 
 const A_Historial = () => {
   const navigation = useNavigation<any>();
   const [loading, setLoading] = React.useState(false);
+  const { isDark } = useTheme();
 
   // Datos de ejemplo
   const cursos = [
@@ -55,8 +57,8 @@ const A_Historial = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
+      <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
@@ -67,11 +69,11 @@ const A_Historial = () => {
       </View>
 
       {/* Filtros */}
-      <View style={styles.filterBar}>
+      <View style={[styles.filterBar, isDark && styles.blackFilterBar]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isDark && styles.blackInput]}
           placeholder="Buscar por nombre o código…"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={isDark ? 'white' : '#9CA3AF'}
           value={query}
           onChangeText={setQuery}
           autoCorrect={false}
@@ -79,16 +81,16 @@ const A_Historial = () => {
 
         <View style={styles.filterRow}>
           <TouchableOpacity
-            style={styles.selector}
+            style={[styles.selector, isDark && styles.blackSelector]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={styles.selectorText}>
+            <Text style={[styles.selectorText, isDark && styles.blackSelectorText]}>
               {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.sortBtn}
+            style={[styles.sortBtn, isDark && styles.blackSortBtn]}
             onPress={() =>
               setOrden((prev) => (prev === "az" ? "za" : "az"))
             }
@@ -103,18 +105,18 @@ const A_Historial = () => {
       {/* Modal de semestres */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalBox}>
+          <View style={[styles.modalBox, isDark && styles.blackModalBox]}>
             <ScrollView style={{ maxHeight: 280 }}>
               {semestres.map((s) => (
                 <TouchableOpacity
                   key={s || "all"}
-                  style={styles.modalItem}
+                  style={[styles.modalItem, isDark && styles.blackModalItem]}
                   onPress={() => {
                     setSemestre(s);
                     setModalVisible(false);
                   }}
                 >
-                  <Text>{s || "Todos los semestres"}</Text>
+                  <Text style={[isDark && { color: "white" }]}>{s || "Todos los semestres"}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -123,7 +125,7 @@ const A_Historial = () => {
               onPress={() => setModalVisible(false)}
               style={styles.modalClose}
             >
-              <Text style={styles.modalCloseText}>Cerrar</Text>
+              <Text style={[styles.modalCloseText, isDark && styles.blackModalCloseText]}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -144,16 +146,16 @@ const A_Historial = () => {
               cursosFiltrados.map((curso) => (
                 <TouchableOpacity
                   key={curso.id}
-                  style={styles.cursoCard}
+                  style={[styles.cursoCard, isDark && styles.blackCursoCard]}
                   onPress={() => handleSelectCurso(curso)}
                 >
                   <View style={styles.cursoInfo}>
-                    <Text style={styles.cursoNombre}>{curso.nombre}</Text>
-                    <Text style={styles.cursoCodigo}>
+                    <Text style={[styles.cursoNombre, isDark && styles.cursoNombreDark]}>{curso.nombre}</Text>
+                    <Text style={[styles.cursoCodigo, isDark && styles.blackCursoCodigo]}>
                       {curso.codigo} · {curso.semestre}
                     </Text>
                   </View>
-                  <ChevronRight size={20} color="#9CA3AF" />
+                  <ChevronRight size={20} color={isDark ? "white" : "#9CA3AF"} />
                 </TouchableOpacity>
               ))
             ) : (
@@ -163,7 +165,6 @@ const A_Historial = () => {
             )}
           </View>
         )}
-        
       </ScrollView>
       <A_Menu navigation={navigation} />
     </View>

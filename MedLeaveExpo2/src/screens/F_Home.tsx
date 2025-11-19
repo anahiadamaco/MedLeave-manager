@@ -34,7 +34,6 @@ export default function F_Home({ navigation }: any) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
       <Footer />
     </SafeAreaView>
   );

@@ -1,10 +1,13 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  //CXontenedor principal
+  //Contenedor principal
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  blackContainer: {
+    backgroundColor: "#020617",
   },
 
   //HEADER
@@ -15,6 +18,9 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  blackHeader: {
+    backgroundColor: "#0f172a",
   },
   backButton: {
     position: "absolute",
@@ -30,10 +36,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
   },
-
-  // Fondo celeste que contiene las tarjetas
+  //Fondo que contiene las tarjetas
   tableContainer: {
-    backgroundColor: "#b5d9ef",
+    backgroundColor: "transparent",
     borderRadius: 12,
     padding: 12,
     shadowColor: "#000",
@@ -41,14 +46,12 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-
   //Contenido interno
   listContent: {
     flexGrow: 1,
     paddingBottom: 0,
     justifyContent: "center",
     paddingTop: 20,
-   
     alignContent: "center",
   },
 
@@ -64,6 +67,12 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 2,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  blackCard: {
+    backgroundColor: "#1E293B",
+    borderColor: "#334155",
   },
   cardHeaderRow: {
     flexDirection: "row",
@@ -76,21 +85,29 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#003f66",
   },
+  blackCardName: {
+    color: "white",
+  },
   cardLabel: {
     fontSize: 11,
     color: "#6b7280",
+  },
+  blackCardLabel: {
+    color: "white",
   },
   cardDates: {
     fontSize: 13,
     color: "#003f66",
     marginBottom: 8,
   },
+  blackCardDates: {
+    color: "white",
+  },
   cardFooterRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
   },
-
   pdfButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -98,6 +115,9 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
     backgroundColor: "#048ED4",
+  },
+  blackPdfButton: {
+    backgroundColor: "#0f172a",
   },
   pdfButtonText: {
     color: "#ffffff",

@@ -84,7 +84,6 @@ export default function P_FyQ({ navigation }: any) {
         >
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-
         <Text style={styles.headerTitle}>
           Preguntas Frecuentes
         </Text>
@@ -114,7 +113,6 @@ export default function P_FyQ({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
-
       <P_Menu navigation={navigation} />
     </View>
   );
