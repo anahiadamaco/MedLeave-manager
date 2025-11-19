@@ -18,7 +18,11 @@ export default function A_Home({ navigation }: any) {
         onPress: async () => {
           await AsyncStorage.removeItem("user");
           await AsyncStorage.removeItem("isLoggedIn");
-          navigation.navigate("A_Login");
+          await AsyncStorage.removeItem("token");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "P_Login" }],
+          });
         },
       },
     ]);
