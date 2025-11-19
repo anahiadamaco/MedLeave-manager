@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import pool from "../config/db.js"; // tu conexión MySQL (default export)
 import { registerValidation, loginValidation } from "../validators/authValidators.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import SibApiV3Sdk from "sib-api-v3-sdk";
 
 const router = express.Router();
@@ -72,10 +73,21 @@ router.post("/login", loginValidation, async (req, res) => {
       return res.status(401).json({ success: false, message: "Contraseña incorrecta" });
     }
 
-    // generar JWT aquí más adelante
+    // Generar JWT token (válido 7 días)
+    const token = jwt.sign(
+      {
+        id_usuario: user.id_usuario,
+        correo_usuario: user.correo_usuario,
+        id_rol: user.id_rol,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     res.status(200).json({
       success: true,
       message: "Inicio de sesión exitoso",
+      token: token,
       data: {
         id_usuario: user.id_usuario,
         nombre: user.nombre,

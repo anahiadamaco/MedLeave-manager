@@ -127,6 +127,7 @@ export default function A_SubirLicencia({ navigation }: any) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${await AsyncStorage.getItem("token") || ""}`,
         },
         body: JSON.stringify({
           folio: formData.folio,

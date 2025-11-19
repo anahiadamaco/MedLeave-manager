@@ -240,6 +240,9 @@ export default function LoginScreen({ navigation }: any) {
       await AsyncStorage.setItem("user", JSON.stringify(data.data));
       await AsyncStorage.setItem("isLoggedIn", "true");
       await AsyncStorage.setItem("userRole", data.data.id_rol.toString());
+      if (data.token) {
+        await AsyncStorage.setItem("token", data.token);
+      }
 
       console.log("✅ [13] Datos guardados en AsyncStorage");
       console.log("👤 [14] Usuario autenticado:", data.data.nombre, "(" + roleName + ")");

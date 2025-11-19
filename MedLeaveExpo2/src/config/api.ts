@@ -5,9 +5,7 @@
  * Si quieres cambiar a un servidor en la nube, solo cambia esta URL
  */
 
-// Detectar si es web o mobile
-const isWeb = typeof window !== 'undefined' && typeof navigator !== 'undefined';
-export const API_BASE_URL = isWeb ? "http://localhost:3000" : "http://192.168.100.231:3000";
+export const API_BASE_URL = "http://172.20.10.11:3000";
 
 // Rutas de autenticación
 export const AUTH_ROUTES = {
