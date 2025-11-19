@@ -1,8 +1,114 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, SafeAreaView, ScrollView, Alert, ActivityIndicator} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AUTH_ROUTES } from "../config/api";
-import { styles } from "../styles/P_Login.styles";
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#E6F2FF",
+    alignItems: "center",
+  },
+  header: {
+    width: "100%",
+    backgroundColor: "#0089E0",
+    alignItems: "center",
+    paddingVertical: 40,
+    borderBottomLeftRadius: 100,
+    borderBottomRightRadius: 100,
+  },
+  headerTitle: {
+    color: "#ffffff",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  logoContainer: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    tintColor: "#0089E0",
+  },
+  formContainer: {
+    backgroundColor: "#ffffff",
+    borderWidth: 2,
+    borderColor: "#FFB700",
+    borderRadius: 12,
+    width: "85%",
+    marginTop: 32,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: "center",
+  },
+  userIconBg: {
+    backgroundColor: "#E6F2FF",
+    borderRadius: 999,
+    padding: 10,
+    marginBottom: 12,
+  },
+  userIcon: {
+    width: 40,
+    height: 40,
+    tintColor: "#0089E0",
+  },
+  label: {
+    alignSelf: "flex-start",
+    fontWeight: "600",
+    color: "#000000",
+    marginTop: 8,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "#B9DCFA",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    marginTop: 4,
+    color: "#000000",
+  },
+  forgotPassword: {
+    alignSelf: "flex-start",
+    fontSize: 12,
+    color: "#444444",
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: "#0089E0",
+    paddingVertical: 12,
+    paddingHorizontal: 60,
+    borderRadius: 8,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#FFB700",
+    width: "100%",
+    marginTop: 16,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
 
 // 🔐 Mapeo de roles a pantallas de inicio
 const getRoleHomeScreen = (id_rol: number): string => {
@@ -36,7 +142,7 @@ const getRoleName = (id_rol: number): string => {
   }
 };
 
-export default function P_Login({ navigation }: any) {
+export default function LoginScreen({ navigation }: any) {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -117,7 +223,7 @@ export default function P_Login({ navigation }: any) {
       // 🔍 Determinar el rol del usuario
       let roleHomeScreen: string;
       let roleName: string;
-
+      
       try {
         roleHomeScreen = getRoleHomeScreen(data.data.id_rol);
         roleName = getRoleName(data.data.id_rol);
@@ -126,7 +232,7 @@ export default function P_Login({ navigation }: any) {
         Alert.alert("Error de acceso", roleError.message);
         return;
       }
-
+      
       console.log("👤 [11] Rol detectado:", roleName, "- Pantalla destino:", roleHomeScreen);
 
       // ✅ Login exitoso — Guardar datos del usuario en AsyncStorage
@@ -134,6 +240,9 @@ export default function P_Login({ navigation }: any) {
       await AsyncStorage.setItem("user", JSON.stringify(data.data));
       await AsyncStorage.setItem("isLoggedIn", "true");
       await AsyncStorage.setItem("userRole", data.data.id_rol.toString());
+      if (data.token) {
+        await AsyncStorage.setItem("token", data.token);
+      }
 
       console.log("✅ [13] Datos guardados en AsyncStorage");
       console.log("👤 [14] Usuario autenticado:", data.data.nombre, "(" + roleName + ")");
@@ -213,7 +322,13 @@ export default function P_Login({ navigation }: any) {
             editable={!loading}
           />
 
-          <Text style={styles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+            <Text style={styles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("A_Register")}>
+            <Text style={styles.forgotPassword}>¿No tienes cuenta? Regístrate aquí</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.button}

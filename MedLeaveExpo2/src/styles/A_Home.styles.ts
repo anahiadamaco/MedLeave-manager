@@ -14,8 +14,14 @@ export const styles = StyleSheet.create({
   },
   navbarIcons: {
     flexDirection: "row",
-    gap: 16,
-    marginTop: 30,
+    gap: 18,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  logo: {
+    width: 100,
+    height: 60,
+    marginRight: 'auto',
   },
   headerBg: {
     height: 160,

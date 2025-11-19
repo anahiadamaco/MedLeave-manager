@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Footer from "../components/Footer";
 import { AUTH_ROUTES } from "../config/api";
 import { styles } from "../styles/A_Register.styles";
 
@@ -14,12 +13,16 @@ export default function A_Register({ navigation }: any) {
     confirmarContrasena: "",
   });
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
 
   const handleRegister = async () => {
+    console.log("[REGISTER] Iniciando registro...");
+    console.log("[REGISTER] Datos:", formData);
+    
     // Validaciones
     if (!formData.nombres || !formData.apellidos || !formData.correo || !formData.contrasena) {
       Alert.alert("Error", "Por favor completa todos los campos");
@@ -39,6 +42,7 @@ export default function A_Register({ navigation }: any) {
     setLoading(true);
 
     try {
+      console.log("[REGISTER] Enviando fetch a:", AUTH_ROUTES.REGISTER);
       const response = await fetch(AUTH_ROUTES.REGISTER, {
         method: "POST",
         headers: {
@@ -52,25 +56,43 @@ export default function A_Register({ navigation }: any) {
         }),
       });
 
+      console.log("[REGISTER] Response status:", response.status);
       const data = await response.json();
+      console.log("[REGISTER] Response data:", data);
+      console.log("[REGISTER] Response errors:", data.errors);
+      
+      // Mostrar errores en detalle
+      if (data.errors && data.errors.length > 0) {
+        const errorMessages = data.errors.map((e: any) => `${e.field}: ${e.message}`).join('\n');
+        console.log("[REGISTER] Error details:", errorMessages);
+      }
 
       if (!response.ok || !data.success) {
-        Alert.alert("Error en registro", data.message || "No se pudo registrar");
+        Alert.alert("Error en registro", data.message || data.error || "No se pudo registrar");
         return;
       }
 
       // ✅ Registro exitoso
-      Alert.alert("Éxito", "Cuenta creada exitosamente. Inicia sesión ahora.");
+      setSuccessMessage("✅ ¡Registro exitoso! Tu cuenta ha sido creada correctamente.");
       
-      // Navegar de vuelta a login
-      if (navigation) {
-        navigation.navigate("A_Login");
-      }
+      // Limpiar formulario
+      setFormData({
+        nombres: "",
+        apellidos: "",
+        correo: "",
+        contrasena: "",
+        confirmarContrasena: "",
+      });
+      
+      // Navegar a login después de 2 segundos
+      setTimeout(() => {
+        navigation.navigate("P_Login");
+      }, 2000);
     } catch (error: any) {
-      console.error("Error de conexión:", error);
+      console.error("[REGISTER] Error de conexión:", error);
       Alert.alert(
         "Error de conexión",
-        "No se pudo conectar con el servidor."
+        "No se pudo conectar con el servidor: " + error.message
       );
     } finally {
       setLoading(false);
@@ -87,6 +109,14 @@ export default function A_Register({ navigation }: any) {
           <Text style={styles.icon}>📝</Text>
         </View>
       </View>
+
+      {/* Mensaje de éxito */}
+      {successMessage ? (
+        <View style={styles.successContainer}>
+          <Text style={styles.successText}>{successMessage}</Text>
+          <Text style={styles.redirectText}>Redirigiendo a inicio de sesión...</Text>
+        </View>
+      ) : null}
 
       {/* Formulario */}
       <View style={styles.formContainer}>
@@ -154,14 +184,13 @@ export default function A_Register({ navigation }: any) {
         <TouchableOpacity
           onPress={() => {
             if (navigation) {
-              navigation.navigate("A_Login");
+              navigation.navigate("P_Login");
             }
           }}
         >
           <Text style={styles.loginLink}>¿Ya tienes cuenta? Inicia sesión</Text>
         </TouchableOpacity>
       </View>
-      <Footer />
     </ScrollView>
   );
 }

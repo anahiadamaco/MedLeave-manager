@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
-import { Bell, User } from "lucide-react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { Bell, LogOut} from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import P_Menu from "../components/P_Menu";
@@ -10,9 +10,22 @@ import { useTheme } from "../components/ThemeContext";
 export default function P_Home({ navigation }: any) {
   const { isDark } = useTheme();
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("user");
-    await AsyncStorage.removeItem("isLoggedIn");
-    navigation.navigate("P_Login");
+    Alert.alert("Cerrar sesión", "¿Estás seguro que deseas cerrar sesión?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Cerrar sesión",
+        style: "destructive",
+        onPress: async () => {
+          await AsyncStorage.removeItem("user");
+          await AsyncStorage.removeItem("isLoggedIn");
+          await AsyncStorage.removeItem("token");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "P_Login" }],
+          });
+        },
+      },
+    ]);
   };
 
   return (
@@ -24,7 +37,7 @@ export default function P_Home({ navigation }: any) {
               <Bell color="white" size={22} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout}>
-              <User color="white" size={22} />
+              <LogOut color="white" size={22} />
             </TouchableOpacity>
           </View>
         </View>

@@ -71,6 +71,18 @@ async function initDB() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     `);
 
+    // 5.5️⃣ licencia_curso (Junction table for multiple courses per license)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS licencia_curso (
+        id_licencia_curso INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id_licencia INT NOT NULL,
+        id_curso INT NOT NULL,
+        UNIQUE KEY unique_licencia_curso (id_licencia, id_curso),
+        FOREIGN KEY (id_licencia) REFERENCES licenciamedica(id_licencia) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (id_curso) REFERENCES curso(id_curso) ON DELETE CASCADE ON UPDATE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `);
+
     // 6️⃣ historiallicencias
     await pool.query(`
       CREATE TABLE IF NOT EXISTS historiallicencias (

@@ -22,6 +22,10 @@ import P_FyQ from "../screens/P_FyQ";
 import P_Mensajes from "../screens/P_Mensajes";
 import P_ProfileUser from "../screens/P_ProfileUser";
 
+// Pantallas de Autenticación
+import ForgotPassword from "../screens/ForgotPassword";
+import ResetPassword from "../screens/ResetPassword";
+
 // Pantallas Funcionario
 import F_Home from "../screens/F_Home";
 import F_Solicitudes from "../screens/F_Solicitudes";
@@ -87,6 +91,16 @@ export default function Navigation() {
           name="P_Login" 
           component={P_Login}
           options={{ headerShown: false, cardStyle: { backgroundColor: '#E6F2FF' } }}
+        />
+        <Stack.Screen 
+          name="ForgotPassword" 
+          component={ForgotPassword}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="ResetPassword" 
+          component={ResetPassword}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="P_Home" 
