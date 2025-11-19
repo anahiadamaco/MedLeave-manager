@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  //Contenedor principal
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
@@ -9,8 +8,6 @@ export const styles = StyleSheet.create({
   blackContainer: {
     backgroundColor: "#020617",
   },
-
-  //HEADER
   header: {
     backgroundColor: "#048ED4",
     paddingVertical: 20,
@@ -36,7 +33,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
   },
-  //Fondo que contiene las tarjetas
   tableContainer: {
     backgroundColor: "transparent",
     borderRadius: 12,
@@ -46,7 +42,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-  //Contenido interno
   listContent: {
     flexGrow: 1,
     paddingBottom: 0,
@@ -54,10 +49,8 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     alignContent: "center",
   },
-
-  //TARJETASsS
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#CEEDFF",  // ← COLOR NUEVO
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -83,25 +76,25 @@ export const styles = StyleSheet.create({
   cardName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#003f66",
-  },
-  blackCardName: {
-    color: "white",
+    color: "#048ED4",
   },
   cardLabel: {
     fontSize: 11,
-    color: "#6b7280",
-  },
-  blackCardLabel: {
-    color: "white",
+    color: "#048ED4",
   },
   cardDates: {
     fontSize: 13,
-    color: "#003f66",
+    color: "#048ED4",
     marginBottom: 8,
   },
+  blackCardName: {
+    color: "#FFFFFF",
+  },
+  blackCardLabel: {
+    color: "#FFFFFF",
+  },
   blackCardDates: {
-    color: "white",
+    color: "#FFFFFF",
   },
   cardFooterRow: {
     flexDirection: "row",
@@ -120,7 +113,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#0f172a",
   },
   pdfButtonText: {
-    color: "#ffffff",
+    color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "500",
     marginRight: 4,

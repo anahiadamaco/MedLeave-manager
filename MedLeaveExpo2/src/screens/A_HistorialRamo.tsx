@@ -32,20 +32,22 @@ export default function A_HistorialRamo() {
   const renderItem = ({ item }: { item: HistorialItem }) => (
     <View style={[styles.card, isDark && styles.blackCard]}>
       <View style={styles.cardHeaderRow}>
-        <Text style={[styles.cardName, isDark && styles.blackCardName]}>{item.nombre}</Text>
+        <Text style={[styles.cardName, isDark && styles.blackCardName]}>
+          {item.nombre}
+        </Text>
       </View>
-
-      <Text style={[styles.cardLabel, isDark && styles.blackCardLabel]}>Período licencia</Text>
+      <Text style={[styles.cardLabel, isDark && styles.blackCardLabel]}>
+        Período licencia
+      </Text>
       <Text style={[styles.cardDates, isDark && styles.blackCardDates]}>
         {item.fechaInicio} - {item.fechaFin}
       </Text>
-
       <View style={styles.cardFooterRow}>
         <TouchableOpacity
           style={[styles.pdfButton, isDark && styles.blackPdfButton]}
           onPress={() => handleOpenPdf(item)}
         >
-          <Text style={styles.pdfButtonText}>Ver PDF</Text>
+          <Text style={styles.pdfButtonText}> Ver PDF </Text>
           <Text style={styles.pdfIcon}>📄</Text>
         </TouchableOpacity>
       </View>
@@ -54,7 +56,6 @@ export default function A_HistorialRamo() {
 
   return (
     <View style={[styles.container, isDark && styles.blackContainer]}>
-      {/* Header fijo */}
       <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -75,7 +76,6 @@ export default function A_HistorialRamo() {
           />
         </View>
       </View>
-      {/* Menú fijo abajo */}
       <A_Menu navigation={navigation} />
     </View>
   );

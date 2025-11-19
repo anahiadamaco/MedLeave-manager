@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal} from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { styles } from "../styles/A_Historial.styles";
@@ -11,7 +11,6 @@ const A_Historial = () => {
   const [loading, setLoading] = React.useState(false);
   const { isDark } = useTheme();
 
-  // Datos de ejemplo
   const cursos = [
     { id: 1, nombre: "Matemáticas I", codigo: "MAT-101", semestre: "2025-1" },
     { id: 2, nombre: "Física General", codigo: "FIS-101", semestre: "2025-1" },
@@ -19,19 +18,16 @@ const A_Historial = () => {
     { id: 4, nombre: "Historia Universal", codigo: "HIS-101", semestre: "2024-2" },
   ];
 
-  // Filtros
   const [query, setQuery] = React.useState("");
   const [orden, setOrden] = React.useState<"az" | "za">("az");
   const [semestre, setSemestre] = React.useState<string>("");
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  // Semestres disponibles desde los datos
   const semestres = React.useMemo(() => {
     const set = new Set(cursos.map((c) => c.semestre));
-    return ["", ...Array.from(set).sort().reverse()]; // "" = Todos
+    return ["", ...Array.from(set).sort().reverse()];
   }, [cursos]);
 
-  // Aplicar búsqueda + filtro + orden
   const cursosFiltrados = React.useMemo(() => {
     const q = query.trim().toLowerCase();
     let out = cursos.filter(
@@ -63,17 +59,20 @@ const A_Historial = () => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <ChevronLeft size={24} color="#ffffff" />
+          <ChevronLeft size={24} color={"#ffffff"} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Historial</Text>
+        <Text style={[styles.headerTitle, { color: "#ffffff" }]}>Historial</Text>
       </View>
 
-      {/* Filtros */}
       <View style={[styles.filterBar, isDark && styles.blackFilterBar]}>
         <TextInput
-          style={[styles.input, isDark && styles.blackInput]}
+          style={[
+            styles.input,
+            isDark && styles.blackInput,
+            { color: "#FFFFFF", borderColor: "#FFFFFF" }
+          ]}
           placeholder="Buscar por nombre o código…"
-          placeholderTextColor={isDark ? 'white' : '#9CA3AF'}
+          placeholderTextColor={"#FFFFFF"}
           value={query}
           onChangeText={setQuery}
           autoCorrect={false}
@@ -81,42 +80,47 @@ const A_Historial = () => {
 
         <View style={styles.filterRow}>
           <TouchableOpacity
-            style={[styles.selector, isDark && styles.blackSelector]}
+            style={[
+              styles.selector,
+              isDark && styles.blackSelector,
+              { borderColor: "#FFFFFF" }
+            ]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={[styles.selectorText, isDark && styles.blackSelectorText]}>
+            <Text style={[styles.selectorText, { color: "#FFFFFF" }]}>
               {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.sortBtn, isDark && styles.blackSortBtn]}
-            onPress={() =>
-              setOrden((prev) => (prev === "az" ? "za" : "az"))
-            }
+            style={[
+              styles.sortBtn,
+              isDark && styles.blackSortBtn,
+              { borderColor: "#FFFFFF" }
+            ]}
+            onPress={() => setOrden((prev) => (prev === "az" ? "za" : "az"))}
           >
-            <Text style={styles.sortText}>
+            <Text style={[styles.sortText, { color: "#FFFFFF" }]}>
               {orden === "az" ? "A-Z" : "Z-A"}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Modal de semestres */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalBackdrop}>
-          <View style={[styles.modalBox, isDark && styles.blackModalBox]}>
+          <View style={[styles.modalBox, isDark && styles.blackModalBox, { borderColor: "#FFFFFF" }]}>
             <ScrollView style={{ maxHeight: 280 }}>
               {semestres.map((s) => (
                 <TouchableOpacity
                   key={s || "all"}
-                  style={[styles.modalItem, isDark && styles.blackModalItem]}
+                  style={[styles.modalItem, isDark && styles.blackModalItem, { borderBottomColor: "#FFFFFF" }]}
                   onPress={() => {
                     setSemestre(s);
                     setModalVisible(false);
                   }}
                 >
-                  <Text style={[isDark && { color: "white" }]}>{s || "Todos los semestres"}</Text>
+                  <Text style={{ color: "#FFFFFF" }}>{s || "Todos los semestres"}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -125,20 +129,16 @@ const A_Historial = () => {
               onPress={() => setModalVisible(false)}
               style={styles.modalClose}
             >
-              <Text style={[styles.modalCloseText, isDark && styles.blackModalCloseText]}>Cerrar</Text>
+              <Text style={[styles.modalCloseText, { color: "#FFFFFF" }]}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Content */}
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#048ED4" />
+            <ActivityIndicator size="large" color={"#FFFFFF"} />
           </View>
         ) : (
           <View style={styles.cursosList}>
@@ -146,20 +146,26 @@ const A_Historial = () => {
               cursosFiltrados.map((curso) => (
                 <TouchableOpacity
                   key={curso.id}
-                  style={[styles.cursoCard, isDark && styles.blackCursoCard]}
+                  style={[
+                    styles.cursoCard,
+                    isDark && styles.blackCursoCard,
+                    { borderColor: "#FFFFFF" }
+                  ]}
                   onPress={() => handleSelectCurso(curso)}
                 >
                   <View style={styles.cursoInfo}>
-                    <Text style={[styles.cursoNombre, isDark && styles.cursoNombreDark]}>{curso.nombre}</Text>
-                    <Text style={[styles.cursoCodigo, isDark && styles.blackCursoCodigo]}>
+                    <Text style={[styles.cursoNombre, { color: "#FFFFFF" }]}>
+                      {curso.nombre}
+                    </Text>
+                    <Text style={[styles.cursoCodigo, { color: "#FFFFFF" }]}>
                       {curso.codigo} · {curso.semestre}
                     </Text>
                   </View>
-                  <ChevronRight size={20} color={isDark ? "white" : "#9CA3AF"} />
+                  <ChevronRight size={20} color={"#FFFFFF"} />
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={styles.emptyText}>
+              <Text style={[styles.emptyText, { color: "#FFFFFF" }]}>
                 No hay ramos con ese filtro.
               </Text>
             )}
