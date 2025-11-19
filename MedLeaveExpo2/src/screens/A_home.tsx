@@ -4,6 +4,7 @@ import { Bell, LogOut} from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import A_Menu from "../components/A_Menu";
+import NotificationBadge from "../components/NotificationBadge";
 import { styles } from "../styles/A_Home.styles";
 import { useTheme } from "../components/ThemeContext";
 
@@ -38,8 +39,9 @@ export default function A_Home({ navigation }: any) {
             resizeMode="contain"
           />
           <View style={styles.navbarIcons}> 
-            <TouchableOpacity onPress={() => navigation.navigate("A_Mensajes")}>
+            <TouchableOpacity onPress={() => navigation.navigate("A_Mensajes")} style={{ position: "relative" }}>
               <Bell color="white" size={22}  />
+              <NotificationBadge size={22} badgeSize={18} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout}>
               <LogOut color="white" size={22} />
