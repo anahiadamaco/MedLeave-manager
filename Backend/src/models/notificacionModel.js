@@ -18,3 +18,11 @@ export const createNotificacion = async (notificacion) => {
   );
   return result.insertId;
 };
+
+export const updateNotificacionLeida = async (id_notificacion, leido = true) => {
+  const [result] = await pool.query(
+    "UPDATE notificacion SET leido = ? WHERE id_notificacion = ?",
+    [leido ? 1 : 0, id_notificacion]
+  );
+  return result;
+};

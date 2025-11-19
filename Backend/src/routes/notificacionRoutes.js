@@ -11,6 +11,9 @@ router.get("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR
 // GET notificaciones de un usuario - Solo FUNCIONARIO/ADMINISTRADOR o el usuario mismo
 router.get("/usuario/:id_usuario", authenticate, NotificacionController.getNotificacionesUsuario);
 
+// PUT marcar notificación como leída
+router.put("/:id_notificacion/leida", authenticate, NotificacionController.markNotificacionLeida);
+
 // POST crear notificación - Solo FUNCIONARIO o ADMINISTRADOR
 router.post("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), NotificacionController.createNotificacion);
 

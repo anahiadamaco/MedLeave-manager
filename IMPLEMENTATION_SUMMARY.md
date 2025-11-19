@@ -1,7 +1,7 @@
 # 📋 Implementación: Sistema de Aprobación/Rechazo de Licencias Médicas
 
 ## 🎯 Objetivo
-Crear un sistema completo para que los **funcionarios** puedan revisar, aprobar o rechazar solicitudes de licencias médicas de estudiantes, con notificaciones automáticas.
+Crear un sistema completo para que los **funcionarios** puedan revisar, aprobar o rechazar solicitudes de licencias médicas de estudiantes, con **notificaciones automáticas funcionales**.
 
 ---
 
@@ -64,18 +64,20 @@ Actualiza el estado de una licencia a:
 
 1. Valida que la licencia exista
 2. Cambia estado a `'aceptado'`
-3. **Crea notificación automática** al estudiante:
+3. **✅ Crea notificación automática** al estudiante:
    - Asunto: "Licencia médica aprobada"
    - Mensaje: Incluye folio de la licencia
+   - `leido`: 0 (sin leer)
 
 #### ✅ Endpoint: `PUT /api/licencias/:id_licencia/rechazar`
 **Controlador:** `rechazarLicencia(id_licencia, motivo_rechazo)`
 
 1. Valida que `motivo_rechazo` tenga mínimo 10 caracteres
 2. Cambia estado a `'rechazado'` y guarda el motivo
-3. **Crea notificación automática** al estudiante:
+3. **✅ Crea notificación automática** al estudiante:
    - Asunto: "Licencia médica rechazada"
    - Mensaje: Incluye folio + motivo del rechazo
+   - `leido`: 0 (sin leer)
 
 ---
 

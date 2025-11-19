@@ -179,9 +179,11 @@ export const aprobarLicencia = async (req, res) => {
       return res.status(404).json({ success: false, error: "Licencia no encontrada" });
     }
     
+    console.log(`📊 [APROBAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+    
     // Actualizar estado a 'aceptado'
     await LicenciaModel.updateLicenciaEstado(id_licencia, 'aceptado');
-    console.log(`✅ [APROBAR] Licencia ${id_licencia} aprobada`);
+    console.log(`✅ [APROBAR] Licencia ${id_licencia} actualizada a estado 'aceptado'`);
     
     // Crear notificación para el estudiante
     const { id_usuario } = licencia;
@@ -189,13 +191,14 @@ export const aprobarLicencia = async (req, res) => {
     const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido aprobada.`;
     
     try {
-      await pool.query(
-        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario) VALUES (?, ?, NOW(), ?)`,
+      console.log(`📬 [APROBAR] Insertando notificación para usuario ${id_usuario}`);
+      const [result] = await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)`,
         [asunto, contenido, id_usuario]
       );
-      console.log(`✅ [APROBAR] Notificación enviada a usuario ${id_usuario}`);
+      console.log(`✅ [APROBAR] Notificación creada con ID: ${result.insertId} para usuario ${id_usuario}`);
     } catch (notifError) {
-      console.error(`⚠️ [APROBAR] Error al enviar notificación:`, notifError);
+      console.error(`⚠️ [APROBAR] Error al crear notificación:`, notifError.message);
     }
     
     res.json({ success: true, message: "Licencia aprobada correctamente" });
@@ -228,9 +231,11 @@ export const rechazarLicencia = async (req, res) => {
       return res.status(404).json({ success: false, error: "Licencia no encontrada" });
     }
     
+    console.log(`📊 [RECHAZAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+    
     // Actualizar estado a 'rechazado' con motivo
     await LicenciaModel.updateLicenciaEstado(id_licencia, 'rechazado', motivo_rechazo.trim());
-    console.log(`✅ [RECHAZAR] Licencia ${id_licencia} rechazada`);
+    console.log(`✅ [RECHAZAR] Licencia ${id_licencia} actualizada a estado 'rechazado'`);
     
     // Crear notificación para el estudiante
     const { id_usuario } = licencia;
@@ -238,13 +243,14 @@ export const rechazarLicencia = async (req, res) => {
     const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido rechazada.\n\nMotivo: ${motivo_rechazo.trim()}`;
     
     try {
-      await pool.query(
-        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario) VALUES (?, ?, NOW(), ?)`,
+      console.log(`📬 [RECHAZAR] Insertando notificación para usuario ${id_usuario}`);
+      const [result] = await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)`,
         [asunto, contenido, id_usuario]
       );
-      console.log(`✅ [RECHAZAR] Notificación enviada a usuario ${id_usuario}`);
+      console.log(`✅ [RECHAZAR] Notificación creada con ID: ${result.insertId} para usuario ${id_usuario}`);
     } catch (notifError) {
-      console.error(`⚠️ [RECHAZAR] Error al enviar notificación:`, notifError);
+      console.error(`⚠️ [RECHAZAR] Error al crear notificación:`, notifError.message);
     }
     
     res.json({ success: true, message: "Licencia rechazada correctamente" });
