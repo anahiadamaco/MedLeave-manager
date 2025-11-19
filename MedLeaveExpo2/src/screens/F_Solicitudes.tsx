@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { styles } from "../styles/F_Solicitudes.styles";
@@ -399,50 +399,60 @@ export default function F_Solicitudes() {
 
       {/* Modal para rechazar con motivo */}
       <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Motivo del rechazo</Text>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.modalBackdrop}>
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Motivo del rechazo</Text>
 
-            <TextInput
-              style={styles.textInput}
-              placeholder="Ingresa el motivo del rechazo (mínimo 10 caracteres)..."
-              placeholderTextColor="#9CA3AF"
-              multiline
-              value={rechazoMotivo}
-              onChangeText={setRechazoMotivo}
-              editable={!loadingAction}
-            />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Ingresa el motivo del rechazo (mínimo 10 caracteres)..."
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  value={rechazoMotivo}
+                  onChangeText={setRechazoMotivo}
+                  editable={!loadingAction}
+                />
 
-            <Text style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>
-              {rechazoMotivo.length} caracteres
-            </Text>
+                <Text style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>
+                  {rechazoMotivo.length} caracteres
+                </Text>
 
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => {
-                  setModalVisible(false);
-                  setRechazoMotivo("");
-                }}
-                disabled={loadingAction}
-              >
-                <Text style={[styles.modalButtonText, { color: "#1F2937" }]}>Cancelar</Text>
-              </TouchableOpacity>
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => {
+                      setModalVisible(false);
+                      setRechazoMotivo("");
+                    }}
+                    disabled={loadingAction}
+                  >
+                    <Text style={[styles.modalButtonText, { color: "#1F2937" }]}>Cancelar</Text>
+                  </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.confirmButton, loadingAction && { opacity: 0.6 }]}
-                onPress={handleConfirmarRechazo}
-                disabled={loadingAction}
-              >
-                {loadingAction ? (
-                  <ActivityIndicator color="#ffffff" />
-                ) : (
-                  <Text style={[styles.modalButtonText, { color: "#ffffff" }]}>Rechazar</Text>
-                )}
-              </TouchableOpacity>
-            </View>
+                  <TouchableOpacity
+                    style={[styles.confirmButton, loadingAction && { opacity: 0.6 }]}
+                    onPress={handleConfirmarRechazo}
+                    disabled={loadingAction}
+                  >
+                    {loadingAction ? (
+                      <ActivityIndicator color="#ffffff" />
+                    ) : (
+                      <Text style={[styles.modalButtonText, { color: "#ffffff" }]}>Rechazar</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
