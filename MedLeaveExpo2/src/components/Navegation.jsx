@@ -24,6 +24,7 @@ import P_ProfileUser from "../screens/P_ProfileUser";
 
 // Pantallas Funcionario
 import F_Home from "../screens/F_Home";
+import F_Solicitudes from "../screens/F_Solicitudes";
 
 // Pantallas Admin
 import Admin_Home from "../screens/Admin_Home";
@@ -122,6 +123,11 @@ export default function Navigation() {
         <Stack.Screen 
           name="F_Home" 
           component={F_Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="F_Solicitudes" 
+          component={F_Solicitudes}
           options={{ headerShown: false }}
         />
         
