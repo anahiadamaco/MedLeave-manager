@@ -5,17 +5,30 @@ import { useNavigation } from "@react-navigation/native";
 import { styles } from "../styles/A_ProfileUser.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 
 export default function A_ProfileUser() {
   const navigation = useNavigation<any>();
   const { isDark, toggleTheme } = useTheme();
+  const [correo, setCorreo] = React.useState("Cargando...");
+
+  React.useEffect(() => {
+    AsyncStorage.getItem("user").then((data) => {
+      if (data) {
+        try {
+          const userData = JSON.parse(data);
+          setCorreo(userData.correo || userData.email || "No disponible");
+        } catch {
+          setCorreo("No disponible");
+        }
+      }
+    });
+  }, []);
+
   const user = {
     nombre: "Juan Castro",
     rut: "12.345.678-9",
-    correo: correoReal || "Cargando...",
+    correo,
     carrera: "Ingeniería en Informática",
     rol: "Estudiante",
   };
