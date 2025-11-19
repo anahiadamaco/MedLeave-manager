@@ -1,23 +1,32 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  // Contenedor principal
   container: {
     flex: 1,
-    backgroundColor: "#e6f1fb",
+    backgroundColor: "#ffffff",
   },
+  blackContainer: {
+    backgroundColor: "#020617",
+  },
+
+  // HEADER
   header: {
     backgroundColor: "#048ED4",
-    paddingVertical: 12,
+    paddingVertical: 20,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
+  },
+  blackHeader: {
+    backgroundColor: "#0f172a",
   },
   backButton: {
     position: "absolute",
     left: 16,
     zIndex: 10,
+    marginTop: 30,
   },
   headerTitle: {
     color: "#ffffff",
@@ -25,62 +34,101 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     flex: 1,
+    marginTop: 30,
   },
-  titleContainer: {
-    backgroundColor: "#1c75bc",
-    paddingVertical: 28,
-    alignItems: "center",
-  },
-  titleMain: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#ffffff",
-  },
-  titleSub: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 4,
-    color: "#ffffff",
-  },
-  content: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingVertical: 24,
-  },
+
+  // Fondo que contiene las tarjetas
   tableContainer: {
-    backgroundColor: "#cde2f8",
-    borderRadius: 8,
-    padding: 16,
-    width: "90%",
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    padding: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3,
   },
-  tableHeader: {
+
+  // Contenido interno
+  listContent: {
+    flexGrow: 1,
+    paddingBottom: 0,
+    justifyContent: "center",
+    paddingTop: 20,
+    alignContent: "center",
+  },
+
+  // TARJETAS
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  blackCard: {
+    backgroundColor: "#1E293B",
+    borderColor: "#334155",
+  },
+  cardHeaderRow: {
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#666",
-    paddingBottom: 8,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  cardName: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#003f66",
+  },
+  blackCardName: {
+    color: "white",
+  },
+  cardLabel: {
+    fontSize: 11,
+    color: "#6b7280",
+  },
+  blackCardLabel: {
+    color: "white",
+  },
+  cardDates: {
+    fontSize: 13,
+    color: "#003f66",
     marginBottom: 8,
   },
-  headerCell: {
-    flex: 1,
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#333",
+  blackCardDates: {
+    color: "white",
   },
-  tableRow: {
+  cardFooterRow: {
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#bbb",
-    paddingVertical: 8,
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
-  cell: {
-    flex: 1,
+  pdfButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: "#048ED4",
+  },
+  blackPdfButton: {
+    backgroundColor: "#0f172a",
+  },
+  pdfButtonText: {
+    color: "#ffffff",
     fontSize: 12,
-    color: "#333",
+    fontWeight: "500",
+    marginRight: 4,
+  },
+  pdfIcon: {
+    fontSize: 14,
+    color: "#ffffff",
   },
 });

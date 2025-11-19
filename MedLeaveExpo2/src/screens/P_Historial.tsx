@@ -3,10 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from "reac
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../styles/P_Historial.styles";
+import { useTheme } from "../components/ThemeContext";
 import P_Menu from "../components/P_Menu";
 
 export default function P_Historial() {
   const navigation = useNavigation<any>();
+  const { isDark } = useTheme();
 
   //Datos
   const cursos = [
@@ -38,8 +40,8 @@ export default function P_Historial() {
   }, [cursos, query, semestre, orden]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
+      <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
@@ -47,21 +49,21 @@ export default function P_Historial() {
       </View>
 
       {/* Barra de filtros */}
-      <View style={styles.filterBar}>
+      <View style={[styles.filterBar, isDark && styles.blackFilterBar]}>
         <TextInput
           placeholder="Buscar por nombre o código..."
           placeholderTextColor="#7a93ad"
-          style={styles.input}
+          style={[styles.input, isDark && styles.blackInput]}
           value={query}
           onChangeText={setQuery}
         />
 
-        <TouchableOpacity style={styles.selector} onPress={() => setModalVisible(true)}>
-          <Text>{semestre ? `Semestre: ${semestre}` : "Todos los semestres"}</Text>
+        <TouchableOpacity style={[styles.selector, isDark && styles.blackSelector]} onPress={() => setModalVisible(true)}>
+          <Text style={isDark ? { color: 'white' } : { color: '#9CA3AF' }}>{semestre ? `Semestre: ${semestre}` : "Todos los semestres"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.sortBtn}
+          style={[styles.sortBtn, isDark && styles.blackSortBtn]}
           onPress={() => setOrden(orden === "az" ? "za" : "az")}
         >
           <Text style={styles.sortText}>
@@ -102,14 +104,14 @@ export default function P_Historial() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {cursosFiltrados.length > 0 ? (
           cursosFiltrados.map((curso) => (
-            <TouchableOpacity
+              <TouchableOpacity
               key={curso.id}
-              style={styles.courseCard}
+              style={[styles.courseCard, isDark && styles.blackCourseCard]}
               onPress={() => navigation.navigate("P_HistorialRamo", { curso })}
             >
               <View style={styles.courseInfo}>
-                <Text style={styles.courseName}>{curso.codigo}</Text>
-                <Text style={styles.courseCode}>
+                <Text style={[styles.courseName, isDark && styles.courseNameDark]}>{curso.codigo}</Text>
+                <Text style={[styles.courseCode, isDark && styles.courseCodeDark]}>
                   {curso.nombre} · {curso.semestre}
                 </Text>
               </View>

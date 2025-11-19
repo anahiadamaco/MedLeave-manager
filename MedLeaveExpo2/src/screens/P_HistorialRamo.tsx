@@ -1,57 +1,82 @@
-import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import * as React from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "../components/ThemeContext";
 import { styles } from "../styles/P_HistorialRamo.styles";
 import P_Menu from "../components/P_Menu";
 
+type HistorialItem = {
+  id: string;
+  nombre: string;
+  fechaInicio: string;
+  fechaFin: string;
+  pdfUrl?: string;
+};
+
 export default function P_HistorialRamo({ navigation }: any) {
-  const data = Array(4)
-    .fill(null)
-    .map(() => ({
-      nombre: "Juan Castro",
-      inicio: "12-08-2025",
-      fin: "14-08-2025",
-    }));
+  const { isDark } = useTheme();
+
+  const historial: HistorialItem[] = [
+    { id: "1", nombre: "Juan Castro", fechaInicio: "12-08-2025", fechaFin: "14-08-2025" },
+    { id: "2", nombre: "Juan Castro", fechaInicio: "12-08-2025", fechaFin: "14-08-2025" },
+    { id: "3", nombre: "Juan Castro", fechaInicio: "12-08-2025", fechaFin: "14-08-2025" },
+    { id: "4", nombre: "Juan Castro", fechaInicio: "12-08-2025", fechaFin: "14-08-2025" },
+  ];
+
+  const handleOpenPdf = (item: HistorialItem) => {
+    console.log("Abrir PDF de", item.nombre);
+  };
+
+  const renderItem = ({ item }: { item: HistorialItem }) => (
+    <View style={[styles.card, isDark && styles.blackCard]}>
+      <View style={styles.cardHeaderRow}>
+        <Text style={[styles.cardName, isDark && styles.blackCardName]}>{item.nombre}</Text>
+      </View>
+
+      <Text style={[styles.cardLabel, isDark && styles.blackCardLabel]}>Período licencia</Text>
+      <Text style={[styles.cardDates, isDark && styles.blackCardDates]}>
+        {item.fechaInicio} - {item.fechaFin}
+      </Text>
+
+      <View style={styles.cardFooterRow}>
+        <TouchableOpacity
+          style={[styles.pdfButton, isDark && styles.blackPdfButton]}
+          onPress={() => handleOpenPdf(item)}
+        >
+          <Text style={styles.pdfButtonText}>Ver PDF</Text>
+          <Text style={styles.pdfIcon}>📄</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
+    <View style={[styles.container, isDark && styles.blackContainer]}>
+      {/* Header fijo */}
+      <View style={[styles.header, isDark && styles.blackHeader]}>
+        <TouchableOpacity
           style={styles.backButton}
+          onPress={() => navigation.goBack()}
         >
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          Historial por ramo
-        </Text>
+        <Text style={styles.headerTitle}>Historial por ramo</Text>
       </View>
 
       {/* Contenido */}
-      <View style={styles.content}>
+      <View style={{ flex: 1, paddingHorizontal: 12, paddingTop: 20 }}>
         <View style={styles.tableContainer}>
-          {/* Encabezado */}
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerCell}>Nombre alumno</Text>
-            <Text style={styles.headerCell}>Fecha inicio</Text>
-            <Text style={styles.headerCell}>Fecha fin</Text>
-            <Text style={styles.headerCell}>PDF</Text>
-          </View>
-          {/* Filas */}
-          <ScrollView style={{ maxHeight: 250 }}>
-            {data.map((row, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.cell}>{row.nombre}</Text>
-                <Text style={styles.cell}>{row.inicio}</Text>
-                <Text style={styles.cell}>{row.fin}</Text>
-                <Text style={styles.cell}>📄</Text>
-              </View>
-            ))}
-          </ScrollView>
+          <FlatList
+            data={historial}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       </View>
+
+      {/* Menú profesor fijo abajo */}
       <P_Menu navigation={navigation} />
     </View>
   );
