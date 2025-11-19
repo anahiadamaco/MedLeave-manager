@@ -1,37 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator } from "react-native";
 import { ChevronLeft, Paperclip, X } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
-import * as pako from "pako";
 import { LICENCIA_ROUTES } from "../config/api";
 import { styles } from "../styles/A_SubirLicencia.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
 
-// NOTIFICACIONES LOCALES (puedes reemplazarlo con Context o Redux)
-type Notificacion = {
-  id: string;
-  titulo: string;
-  mensaje: string;
-  fecha: string;
-  leido: boolean;
-};
-
-type FormState = {
-  nombres: string;
-  apellidos: string;
-  fechaEmision: string;
-  inicioLicencia: string;
-  terminoLicencia: string;
-  cursosJustificar: string;
-  seccion: string;
-};
-
 export default function A_SubirLicencia({ navigation }: any) {
   const { isDark } = useTheme();
 
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     folio: "",
     fecha_emision: "",
     fecha_inicio: "",
@@ -39,34 +19,49 @@ export default function A_SubirLicencia({ navigation }: any) {
     motivo_medico: "",
     cursos: "",
   });
-  const [loading, setLoading] = React.useState(false);
-  const [userId, setUserId] = React.useState<number | null>(null);
-  const [selectedFile, setSelectedFile] = React.useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [processingFile, setProcessingFile] = useState(false);
 
-  // Obtener ID del usuario del almacenamiento
   useEffect(() => {
-    const getUserId = async () => {
+    const getUserData = async () => {
       try {
         const user = await AsyncStorage.getItem("user");
+        const savedToken = await AsyncStorage.getItem("token");
         if (user) {
           const userData = JSON.parse(user);
           setUserId(userData.id_usuario);
         }
+        if (savedToken) {
+          setToken(savedToken);
+        }
       } catch (error) {
-        console.error("Error obteniendo usuario:", error);
+        console.error("Error obteniendo usuario o token:", error);
       }
     };
-    getUserId();
+    getUserData();
   }, []);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+  };
 
   const handleSelectFile = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "application/pdf",
-      });
-
+      const result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setSelectedFile(result.assets[0]);
+        const file = result.assets[0];
+
+        // Validar tamaño máximo (5MB)
+        const MAX_SIZE_MB = 5;
+        if (file.size && file.size > MAX_SIZE_MB * 1024 * 1024) {
+          Alert.alert("❌ Error", `El archivo no puede superar ${MAX_SIZE_MB} MB`);
+          return;
+        }
+
+        setSelectedFile(file);
       }
     } catch (error) {
       console.error("Error seleccionando archivo:", error);
@@ -74,61 +69,34 @@ export default function A_SubirLicencia({ navigation }: any) {
     }
   };
 
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-  };
+  const handleRemoveFile = () => setSelectedFile(null);
 
-  const handleInputChange = (field: keyof FormState, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handlePickPDF = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "application/pdf",
-        copyToCacheDirectory: true,
-      });
-      if ((result as any).type === "cancel" || (result as any).canceled === true) return;
-
-      let file: any = null;
-      if ((result as any).uri) {
-        file = {
-          uri: (result as any).uri,
-          name: (result as any).name || "licencia.pdf",
-          type: (result as any).mimeType || "application/pdf",
-        };
-      } else if ((result as any).assets && (result as any).assets.length > 0) {
-        const a = (result as any).assets[0];
-        file = {
-          uri: a.uri,
-          name: a.name || "licencia.pdf",
-          type: a.mimeType || "application/pdf",
-        };
-      }
-
-      if (!file) {
-        Alert.alert("Error", "No se pudo obtener el archivo seleccionado.");
-        return;
-      }
-
-      setPdfFile(file);
-      Alert.alert("Archivo seleccionado", file.name);
-    } catch (e) {
-      console.error("Error al seleccionar PDF:", e);
-      Alert.alert("Error", "No se pudo seleccionar el archivo PDF.");
-    }
-  };
+  const isValidDate = (dateStr: string) => !isNaN(Date.parse(dateStr));
 
   const handleSubmit = async () => {
-    if (
-      !formData.folio ||
-      !formData.fecha_emision ||
-      !formData.fecha_inicio ||
-      !formData.fecha_fin ||
-      !formData.motivo_medico ||
-      !formData.cursos
-    ) {
+    // Validaciones básicas
+    if (!formData.folio || !formData.fecha_emision || !formData.fecha_inicio || !formData.fecha_fin || !formData.motivo_medico || !formData.cursos) {
       Alert.alert("Error", "Por favor completa todos los campos");
+      return;
+    }
+
+    const folioRegex = /^LIC-\d{4}-\d{3}$/;
+    if (!folioRegex.test(formData.folio)) {
+      Alert.alert("Error", "El folio debe tener formato LIC-YYYY-NNN (ej: LIC-2025-001)");
+      return;
+    }
+
+    if (!isValidDate(formData.fecha_emision) || !isValidDate(formData.fecha_inicio) || !isValidDate(formData.fecha_fin)) {
+      Alert.alert("Error", "Ingresa fechas válidas en formato YYYY-MM-DD");
+      return;
+    }
+
+    if (new Date(formData.fecha_emision) > new Date(formData.fecha_inicio)) {
+      Alert.alert("Error", "La fecha de emisión no puede ser posterior a la fecha de inicio");
+      return;
+    }
+    if (new Date(formData.fecha_inicio) > new Date(formData.fecha_fin)) {
+      Alert.alert("Error", "La fecha de inicio no puede ser posterior a la fecha de fin");
       return;
     }
 
@@ -137,131 +105,70 @@ export default function A_SubirLicencia({ navigation }: any) {
       return;
     }
 
-    if (!userId) {
-      Alert.alert("Error", "No se pudo obtener la información del usuario");
+    if (!userId || !token) {
+      Alert.alert("Error", "No se pudo obtener la información del usuario o token");
       return;
     }
 
-    setLoading(true);
+    setProcessingFile(true);
 
     try {
-      // Leer el archivo como base64
-      const fileResponse = await fetch(selectedFile.uri);
-      const blob = await fileResponse.blob();
-      
-      const fileContent = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64String = reader.result as string;
-          // Extraer solo la parte base64 (sin el prefijo data:...)
-          const base64Data = base64String.split(',')[1] || base64String;
-          resolve(base64Data);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
+      // Crear FormData
+      const data = new FormData();
+      data.append("folio", formData.folio);
+      data.append("fecha_emision", formData.fecha_emision);
+      data.append("fecha_inicio", formData.fecha_inicio);
+      data.append("fecha_fin", formData.fecha_fin);
+      data.append("motivo_medico", formData.motivo_medico);
+      data.append("cursos", formData.cursos);
+      data.append("id_usuario", userId.toString());
+      data.append("file", {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: selectedFile.mimeType || "application/pdf"
+      } as any);
 
-      // Convertir base64 a bytes y comprimir
-      const binaryString = atob(fileContent);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const compressed = pako.gzip(bytes);
-      
-      // Convertir bytes comprimidos a base64 de forma eficiente
-      let compressedBase64 = "";
-      const chunkSize = 8192;
-      for (let i = 0; i < compressed.length; i += chunkSize) {
-        const chunk = compressed.slice(i, i + chunkSize);
-        compressedBase64 += String.fromCharCode(...chunk);
-      }
-      compressedBase64 = btoa(compressedBase64);
+      setLoading(true);
 
+      // Enviar al backend con token
       const response = await fetch(LICENCIA_ROUTES.UPLOAD, {
         method: "POST",
+        body: data,
         headers: {
-          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          folio: formData.folio,
-          fecha_emision: formData.fecha_emision,
-          fecha_inicio: formData.fecha_inicio,
-          fecha_fin: formData.fecha_fin,
-          motivo_medico: formData.motivo_medico,
-          cursos: formData.cursos,
-          id_usuario: userId,
-          file: {
-            name: selectedFile.name,
-            base64: compressedBase64,
-            type: selectedFile.mimeType || "application/pdf",
-            compressed: true,
-          },
-        }),
       });
 
-      const data = await response.json();
-      console.log("📦 [RESPUESTA] Data recibida:", data);
-      console.log("📊 [RESPUESTA] Status:", response.status);
-      console.log("✅ [RESPUESTA] Success:", data.success);
+      const resData = await response.json();
 
-      if (!response.ok || !data.success) {
-        console.log("Error backend:", data);
-        Alert.alert("Error", data.message || "No se pudo enviar la licencia");
-
-        // Notificación de fallo
-        setNotificaciones((prev) => [
-          ...prev,
-          {
-            id: new Date().getTime().toString(),
-            titulo: "Error al enviar licencia",
-            mensaje: `Licencia de ${formData.nombres} ${formData.apellidos} no enviada.`,
-            fecha: new Date().toLocaleDateString(),
-            leido: false,
-          },
-        ]);
+      if (response.status === 401) {
+        Alert.alert("❌ No autorizado", "Tu sesión ha expirado o no tienes permiso. Por favor inicia sesión nuevamente.");
+        setLoading(false);
         return;
       }
 
-      console.log("🎉 [ÉXITO] Mostrando alert...");
-      Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
-        {
-          text: "Ir al inicio",
-          onPress: () => {
-            console.log("🔄 [NAVEGACIÓN] Limpiando formulario...");
-            setFormData({
-              folio: "",
-              fecha_emision: "",
-              fecha_inicio: "",
-              fecha_fin: "",
-              motivo_medico: "",
-              cursos: "",
-            });
-            setSelectedFile(null);
-            console.log("🔄 [NAVEGACIÓN] Navegando a A_home...");
-            navigation.navigate("A_home");
-            console.log("🔄 [NAVEGACIÓN] Navegación completada");
+      if (response.ok && resData.success) {
+        Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
+          {
+            text: "Ir al inicio",
+            onPress: () => {
+              setFormData({ folio:"", fecha_emision:"", fecha_inicio:"", fecha_fin:"", motivo_medico:"", cursos:"" });
+              setSelectedFile(null);
+              navigation.navigate("A_home");
+            },
           },
-        },
-      ]);
+        ]);
+      } else {
+        Alert.alert("❌ Error", resData.message || "No se pudo enviar la licencia");
+      }
+
     } catch (error: any) {
       console.error("Error de conexión:", error);
-      Alert.alert(
-        "❌ Error de conexión",
-        error.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
-        [
-          {
-            text: "Reintentar",
-            onPress: () => handleSubmit(),
-          },
-          {
-            text: "Cancelar",
-            style: "cancel",
-          },
-        ]
-      );
+      Alert.alert("❌ Error de conexión", error.message || "No se pudo conectar al servidor");
     } finally {
       setLoading(false);
+      setProcessingFile(false);
     }
   };
 
@@ -276,126 +183,45 @@ export default function A_SubirLicencia({ navigation }: any) {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={[styles.description, isDark && styles.blackDescription]}>
-          En esta sección podrás ingresar tu licencia médica y adjuntar el PDF para su verificación.
+          Ingresa tu licencia médica digital y adjunta los documentos necesarios.
         </Text>
 
-        {/* Campo: Folio */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.folio}
-            onChangeText={(value) => handleInputChange("folio", value)}
-            placeholder="Ej: LIC-2025-001"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            editable={!loading}
-          />
-        </View>
+        {["folio","fecha_emision","fecha_inicio","fecha_fin","motivo_medico","cursos"].map((field) => (
+          <View style={styles.fieldContainer} key={field}>
+            <Text style={[styles.label, isDark && styles.blackLabel]}>
+              {field.replace("_", " ").toUpperCase()}:
+            </Text>
+            <TextInput
+              style={[styles.input, isDark && styles.blackInput]}
+              value={formData[field as keyof typeof formData]}
+              onChangeText={(value) => handleInputChange(field, value)}
+              placeholder={field.replace("_", " ")}
+              placeholderTextColor={isDark ? '#999999' : '#999999'}
+              multiline={field === "motivo_medico" || field === "cursos"}
+              numberOfLines={field === "motivo_medico" ? 4 : field === "cursos" ? 3 : 1}
+              editable={!loading && !processingFile}
+            />
+          </View>
+        ))}
 
-        {/* Campo: Fecha de emisión */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de emisión:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.fecha_emision}
-            onChangeText={(value) => handleInputChange("fecha_emision", value)}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Campo: Fecha de inicio */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de inicio:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.fecha_inicio}
-            onChangeText={(value) => handleInputChange("fecha_inicio", value)}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Campo: Fecha de fin */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de fin:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.fecha_fin}
-            onChangeText={(value) => handleInputChange("fecha_fin", value)}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Campo: Motivo médico */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Motivo médico:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.motivo_medico}
-            onChangeText={(value) => handleInputChange("motivo_medico", value)}
-            placeholder="Descripción del motivo médico"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            multiline
-            numberOfLines={4}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Campo: Cursos a justificar */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Cursos a justificar:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.cursos}
-            onChangeText={(value) => handleInputChange("cursos", value)}
-            placeholder="Ej: Matemáticas, Historia, Inglés"
-            placeholderTextColor={isDark ? '#999999' : '#999999'}
-            multiline
-            numberOfLines={3}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Seleccionar PDF */}
-        <TouchableOpacity 
-          style={[styles.attachButton, isDark && styles.attachButtonDark]}
-          onPress={handleSelectFile}
-          disabled={loading}
-        >
+        <TouchableOpacity style={[styles.attachButton, isDark && styles.attachButtonDark]} onPress={handleSelectFile} disabled={loading || processingFile}>
           <Paperclip size={20} color="#ffffff" />
           <Text style={[styles.attachButtonText, isDark && styles.attachButtonTextDark]}>
-            Seleccionar licencia médica PDF
+            {processingFile ? "Procesando archivo..." : "Seleccionar licencia médica PDF"}
           </Text>
         </TouchableOpacity>
 
-        {/* Mostrar archivo seleccionado */}
         {selectedFile && (
           <View style={[styles.fileContainer, isDark && styles.fileContainerDark]}>
-            <Text style={[styles.fileName, isDark && styles.fileNameDark]}>
-              ✓ {selectedFile.name}
-            </Text>
-            <TouchableOpacity onPress={handleRemoveFile} disabled={loading}>
+            <Text style={[styles.fileName, isDark && styles.fileNameDark]}>✓ {selectedFile.name}</Text>
+            <TouchableOpacity onPress={handleRemoveFile} disabled={loading || processingFile}>
               <X size={20} color={isDark ? "#999999" : "#666666"} />
             </TouchableOpacity>
           </View>
         )}
 
-        {/* Botón enviar */}
-        <TouchableOpacity 
-          style={[styles.submitButton, isDark && styles.submitButtonDark]}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#ffffff" />
-          ) : (
-            <Text style={styles.submitButtonText}>Enviar licencia</Text>
-          )}
+        <TouchableOpacity style={[styles.submitButton, isDark && styles.submitButtonDark]} onPress={handleSubmit} disabled={loading || processingFile}>
+          {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.submitButtonText}>Enviar licencia</Text>}
         </TouchableOpacity>
       </ScrollView>
 
