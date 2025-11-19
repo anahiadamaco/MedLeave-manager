@@ -60,7 +60,12 @@ export default function A_Register({ navigation }: any) {
       }
 
       // ✅ Registro exitoso
-      Alert.alert("Éxito", "Cuenta creada exitosamente. Inicia sesión ahora.");
+                Alert.alert("✅ Éxito", "Cuenta creada correctamente. Ahora inicia sesión.", [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("P_Login"),
+            },
+          ]);
       
       // Navegar de vuelta a login
       if (navigation) {
