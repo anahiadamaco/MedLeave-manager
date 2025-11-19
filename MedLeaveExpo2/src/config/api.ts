@@ -29,3 +29,9 @@ export const NOTIFICACION_ROUTES = {
   GET_ALL: `${API_BASE_URL}/api/notificaciones`,
   CREATE: `${API_BASE_URL}/api/notificaciones`,
 };
+
+// Rutas de cursos
+export const CURSOS_ROUTES = {
+  GET_ALL: `${API_BASE_URL}/api/cursos`,
+  GET_ONE: (id: number) => `${API_BASE_URL}/api/cursos/${id}`,
+};

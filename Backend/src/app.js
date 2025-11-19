@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import licenciaRoutes from "./routes/licenciaRoutes.js";
 import notificacionRoutes from "./routes/notificacionRoutes.js";
-import authRoutes from "./routes/authRoutes.js"; 
+import authRoutes from "./routes/authRoutes.js";
+import cursosRoutes from "./routes/cursosRoutes.js";
 import notFound from "./middlewares/notFound.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import logger from './middlewares/logger.js';
@@ -24,6 +25,7 @@ app.use(logger);
 app.use("/api/licencias", licenciaRoutes);
 app.use("/api/notificaciones", notificacionRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/cursos", cursosRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando correctamente 🚀");

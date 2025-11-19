@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator, Modal, FlatList } from "react-native";
-import { ChevronLeft, Paperclip, X, Calendar, ChevronDown } from "lucide-react-native";
+import { ChevronLeft, Paperclip, X, Calendar } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
 import * as pako from "pako";
@@ -26,11 +26,10 @@ export default function A_SubirLicencia({ navigation }: any) {
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const [cursos, setCursos] = React.useState<any[]>([]);
   const [loadingCursos, setLoadingCursos] = React.useState(false);
-  const [showCalendar, setShowCalendar] = React.useState<string | null>(null);
+  const [showCalendar, setShowCalendar] = React.useState<string | null>(null); // 'emision', 'inicio', 'fin' o null
   const [token, setToken] = React.useState<string>("");
-  const [showCursosDropdown, setShowCursosDropdown] = React.useState(false);
 
-  // Obtener datos del usuario y cargar cursos
+  // Obtener ID del usuario, token y cursos del almacenamiento
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -44,6 +43,7 @@ export default function A_SubirLicencia({ navigation }: any) {
         
         if (authToken) {
           setToken(authToken);
+          // Cargar cursos del usuario
           await loadCursos(authToken);
         }
       } catch (error) {
@@ -52,33 +52,6 @@ export default function A_SubirLicencia({ navigation }: any) {
     };
     getUserData();
   }, []);
-
-  const loadCursos = async (authToken: string) => {
-    try {
-      setLoadingCursos(true);
-      const response = await fetch(CURSOS_ROUTES.GET_ALL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`,
-        },
-      });
-
-      const data = await response.json();
-      console.log("[CURSOS] Respuesta:", data);
-
-      if (data.success && Array.isArray(data.data)) {
-        setCursos(data.data);
-        console.log(`[CURSOS] ${data.data.length} cursos cargados`);
-      } else {
-        console.error("[CURSOS] Error:", data.message);
-      }
-    } catch (error) {
-      console.error("[CURSOS] Error de conexión:", error);
-    } finally {
-      setLoadingCursos(false);
-    }
-  };
 
   const handleSelectFile = async () => {
     try {
@@ -103,17 +76,6 @@ export default function A_SubirLicencia({ navigation }: any) {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleDateSelect = (date: string) => {
-    if (showCalendar === "emision") {
-      setFormData({ ...formData, fecha_emision: date });
-    } else if (showCalendar === "inicio") {
-      setFormData({ ...formData, fecha_inicio: date });
-    } else if (showCalendar === "fin") {
-      setFormData({ ...formData, fecha_fin: date });
-    }
-    setShowCalendar(null);
-  };
-
   const handleSubmit = async () => {
     // Validaciones
     if (
@@ -122,7 +84,7 @@ export default function A_SubirLicencia({ navigation }: any) {
       !formData.fecha_inicio ||
       !formData.fecha_fin ||
       !formData.motivo_medico ||
-      !formData.id_curso
+      !formData.cursos
     ) {
       Alert.alert("Error", "Por favor completa todos los campos");
       return;
@@ -149,6 +111,7 @@ export default function A_SubirLicencia({ navigation }: any) {
         const reader = new FileReader();
         reader.onload = () => {
           const base64String = reader.result as string;
+          // Extraer solo la parte base64 (sin el prefijo data:...)
           const base64Data = base64String.split(',')[1] || base64String;
           resolve(base64Data);
         };
@@ -164,7 +127,7 @@ export default function A_SubirLicencia({ navigation }: any) {
       }
       const compressed = pako.gzip(bytes);
       
-      // Convertir bytes comprimidos a base64
+      // Convertir bytes comprimidos a base64 de forma eficiente
       let compressedBase64 = "";
       const chunkSize = 8192;
       for (let i = 0; i < compressed.length; i += chunkSize) {
@@ -177,7 +140,7 @@ export default function A_SubirLicencia({ navigation }: any) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${await AsyncStorage.getItem("token") || ""}`,
         },
         body: JSON.stringify({
           folio: formData.folio,
@@ -185,7 +148,7 @@ export default function A_SubirLicencia({ navigation }: any) {
           fecha_inicio: formData.fecha_inicio,
           fecha_fin: formData.fecha_fin,
           motivo_medico: formData.motivo_medico,
-          id_curso: formData.id_curso,
+          cursos: formData.cursos,
           id_usuario: userId,
           file: {
             name: selectedFile.name,
@@ -206,20 +169,24 @@ export default function A_SubirLicencia({ navigation }: any) {
         return;
       }
 
+      console.log("🎉 [ÉXITO] Mostrando alert...");
       Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
         {
           text: "Ir al inicio",
           onPress: () => {
+            console.log("🔄 [NAVEGACIÓN] Limpiando formulario...");
             setFormData({
               folio: "",
               fecha_emision: "",
               fecha_inicio: "",
               fecha_fin: "",
               motivo_medico: "",
-              id_curso: "",
+              cursos: "",
             });
             setSelectedFile(null);
+            console.log("🔄 [NAVEGACIÓN] Navegando a A_home...");
             navigation.navigate("A_home");
+            console.log("🔄 [NAVEGACIÓN] Navegación completada");
           },
         },
       ]);
@@ -227,15 +194,22 @@ export default function A_SubirLicencia({ navigation }: any) {
       console.error("Error de conexión:", error);
       Alert.alert(
         "❌ Error de conexión",
-        error.message || "No se pudo conectar con el servidor."
+        error.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        [
+          {
+            text: "Reintentar",
+            onPress: () => handleSubmit(),
+          },
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+        ]
       );
     } finally {
       setLoading(false);
     }
   };
-
-  // Obtener nombre del curso seleccionado
-  const selectedCursoName = cursos.find(c => c.id_curso === parseInt(formData.id_curso))?.nombre_curso || "Selecciona un curso";
 
   return (
     <View style={[styles.container, isDark && styles.blackContainer]}>
@@ -246,18 +220,23 @@ export default function A_SubirLicencia({ navigation }: any) {
         >
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subir licencia médica</Text>
+        <Text style={styles.headerTitle}>
+          Subir licencia médica
+        </Text>
       </View>
 
+      {/* Contenido principal */}
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <Text style={[styles.description, isDark && styles.blackDescription]}>
-          En esta sección podrás ingresar tu licencia médica de forma digital.
+          En esta sección podrás ingresar tu licencia médica de forma digital,
+          adjuntar los documentos necesarios y enviarlos para su revisión rápida
+          y segura.
         </Text>
 
-        {/* Folio */}
+        {/* Campo: Folio */}
         <View style={styles.fieldContainer}>
           <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
           <TextInput
@@ -265,176 +244,117 @@ export default function A_SubirLicencia({ navigation }: any) {
             value={formData.folio}
             onChangeText={(value) => handleInputChange("folio", value)}
             placeholder="Ej: LIC-2025-001"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
             editable={!loading}
           />
         </View>
 
-        {/* Fecha Emisión */}
+        {/* Campo: Fecha de emisión */}
         <View style={styles.fieldContainer}>
           <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de emisión:</Text>
-          <TouchableOpacity
-            style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
-            onPress={() => setShowCalendar("emision")}
-            disabled={loading}
-          >
-            <Text style={{ color: formData.fecha_emision ? '#000' : '#999' }}>
-              {formData.fecha_emision || "YYYY-MM-DD"}
-            </Text>
-            <Calendar size={20} color="#0089E0" />
-          </TouchableOpacity>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_emision}
+            onChangeText={(value) => handleInputChange("fecha_emision", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
         </View>
 
-        {/* Fecha Inicio */}
+        {/* Campo: Fecha de inicio */}
         <View style={styles.fieldContainer}>
           <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de inicio:</Text>
-          <TouchableOpacity
-            style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
-            onPress={() => setShowCalendar("inicio")}
-            disabled={loading}
-          >
-            <Text style={{ color: formData.fecha_inicio ? '#000' : '#999' }}>
-              {formData.fecha_inicio || "YYYY-MM-DD"}
-            </Text>
-            <Calendar size={20} color="#0089E0" />
-          </TouchableOpacity>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_inicio}
+            onChangeText={(value) => handleInputChange("fecha_inicio", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
         </View>
 
-        {/* Fecha Fin */}
+        {/* Campo: Fecha de fin */}
         <View style={styles.fieldContainer}>
           <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de fin:</Text>
-          <TouchableOpacity
-            style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
-            onPress={() => setShowCalendar("fin")}
-            disabled={loading}
-          >
-            <Text style={{ color: formData.fecha_fin ? '#000' : '#999' }}>
-              {formData.fecha_fin || "YYYY-MM-DD"}
-            </Text>
-            <Calendar size={20} color="#0089E0" />
-          </TouchableOpacity>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_fin}
+            onChangeText={(value) => handleInputChange("fecha_fin", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
         </View>
 
-        {/* Motivo Médico */}
+        {/* Campo: Motivo médico */}
         <View style={styles.fieldContainer}>
           <Text style={[styles.label, isDark && styles.blackLabel]}>Motivo médico:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
             value={formData.motivo_medico}
             onChangeText={(value) => handleInputChange("motivo_medico", value)}
-            placeholder="Ej: Reposo por influenza"
+            placeholder="Descripción del motivo médico"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={4}
             editable={!loading}
           />
         </View>
 
-        {/* Cursos */}
+        {/* Campo: Cursos a justificar */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Curso:</Text>
-          {loadingCursos ? (
-            <ActivityIndicator color="#0089E0" />
-          ) : (
-            <TouchableOpacity
-              style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
-              onPress={() => setShowCursosDropdown(!showCursosDropdown)}
-              disabled={loading}
-            >
-              <Text style={{ color: formData.id_curso ? '#000' : '#999' }}>
-                {selectedCursoName}
-              </Text>
-              <ChevronDown size={20} color="#0089E0" style={{ transform: [{ rotate: showCursosDropdown ? '180deg' : '0deg' }] }} />
-            </TouchableOpacity>
-          )}
-
-          {showCursosDropdown && cursos.length > 0 && (
-            <FlatList
-              data={cursos}
-              keyExtractor={(item) => item.id_curso.toString()}
-              scrollEnabled={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
-                    formData.id_curso === item.id_curso.toString() && { backgroundColor: '#e3f2fd' }
-                  ]}
-                  onPress={() => {
-                    handleInputChange("id_curso", item.id_curso.toString());
-                    setShowCursosDropdown(false);
-                  }}
-                >
-                  <Text style={{ fontSize: 14, color: '#333' }}>
-                    {item.codigo} - {item.nombre_curso}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: '#666' }}>
-                    Profesor: {item.profesor_nombre}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          )}
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Cursos a justificar:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.cursos}
+            onChangeText={(value) => handleInputChange("cursos", value)}
+            placeholder="Ej: Matemáticas, Historia, Inglés"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={3}
+            editable={!loading}
+          />
         </View>
 
-        {/* Archivo */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Archivo PDF:</Text>
-          {selectedFile ? (
-            <View style={[styles.fileContainer, isDark && { backgroundColor: '#333' }]}>
-              <Paperclip size={20} color="#0089E0" />
-              <Text style={[styles.fileName, isDark && { color: '#fff' }]}>
-                {selectedFile.name}
-              </Text>
-              <TouchableOpacity onPress={handleRemoveFile}>
-                <X size={20} color="#ff6b6b" />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[styles.fileButton, isDark && { backgroundColor: '#333' }]}
-              onPress={handleSelectFile}
-              disabled={loading}
-            >
-              <Paperclip size={24} color="#0089E0" />
-              <Text style={[styles.fileButtonText, isDark && { color: '#fff' }]}>
-                Seleccionar archivo
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        {/* Seleccionar PDF */}
+        <TouchableOpacity 
+          style={[styles.attachButton, isDark && styles.attachButtonDark]}
+          onPress={handleSelectFile}
+          disabled={loading}
+        >
+          <Paperclip size={20} color="#ffffff" />
+          <Text style={[styles.attachButtonText, isDark && styles.attachButtonTextDark]}>
+            Seleccionar licencia médica PDF
+          </Text>
+        </TouchableOpacity>
 
-        {/* Botón Enviar */}
-        <TouchableOpacity
-          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+        {/* Mostrar archivo seleccionado */}
+        {selectedFile && (
+          <View style={[styles.fileContainer, isDark && styles.fileContainerDark]}>
+            <Text style={[styles.fileName, isDark && styles.fileNameDark]}>
+              ✓ {selectedFile.name}
+            </Text>
+            <TouchableOpacity onPress={handleRemoveFile} disabled={loading}>
+              <X size={20} color={isDark ? "#999999" : "#666666"} />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Botón enviar */}
+        <TouchableOpacity 
+          style={[styles.submitButton, isDark && styles.submitButtonDark]}
           onPress={handleSubmit}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.submitButtonText}>Enviar Licencia</Text>
+            <Text style={styles.submitButtonText}>Enviar licencia</Text>
           )}
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Modal de Calendario */}
-      <Modal visible={showCalendar !== null} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <View style={{ backgroundColor: '#fff', paddingTop: 20 }}>
-            <TouchableOpacity
-              style={{ alignSelf: 'flex-end', paddingRight: 20, marginBottom: 10 }}
-              onPress={() => setShowCalendar(null)}
-            >
-              <X size={24} color="#000" />
-            </TouchableOpacity>
-            <RNCalendar
-              onDayPress={(day) => handleDateSelect(day.dateString)}
-              markedDates={{
-                [formData.fecha_emision]: { selected: showCalendar === "emision", selectedColor: '#0089E0' },
-                [formData.fecha_inicio]: { selected: showCalendar === "inicio", selectedColor: '#0089E0' },
-                [formData.fecha_fin]: { selected: showCalendar === "fin", selectedColor: '#0089E0' },
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
-
       <A_Menu navigation={navigation} />
     </View>
   );
