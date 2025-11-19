@@ -74,9 +74,15 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#048ED4",
   },
+  blackUserName:{
+    color: "white",
+  },
   userRole: {
     fontSize: 13,
     color: "#048ED4",
+  },
+  blackUserRole: {
+    color: "white",
   },
   centerDataBox: {
     backgroundColor: "#CEEDFF",
@@ -91,6 +97,9 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 6,
+  },
+  blackCenterDataText: {
+    color: "white",
   },
   colorCard: {
     backgroundColor: "#CEEDFF",

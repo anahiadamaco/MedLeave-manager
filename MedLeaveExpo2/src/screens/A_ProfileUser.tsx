@@ -50,15 +50,15 @@ export default function A_ProfileUser() {
           <View style={[styles.avatarCircle, isDark && styles.blackAvatarCircle]}>
             <UserIcon size={36} color="#ffffff" />
           </View>
-          <Text style={styles.userName}>{user.nombre}</Text>
-          <Text style={styles.userRole}>{user.rol}</Text>
+          <Text style={[styles.userName, isDark && styles.blackUserName]}>{user.nombre}</Text>
+          <Text style={[styles.userRole, isDark && styles.blackUserRole]}>{user.rol}</Text>
         </View>
 
         <View style={[styles.centerDataBox, isDark && styles.darkBox]}>
-          <Text style={styles.centerDataText}>RUT: {user.rut}</Text>
-          <Text style={styles.centerDataText}>Correo: {user.correo}</Text>
-          <Text style={styles.centerDataText}>Carrera: {user.carrera}</Text>
-          <Text style={styles.centerDataText}>Rol: {user.rol}</Text>
+          <Text style={[styles.centerDataText, isDark && styles.blackCenterDataText]}>RUT: {user.rut}</Text>
+          <Text style={[styles.centerDataText, isDark && styles.blackCenterDataText]}>Correo: {user.correo}</Text>
+          <Text style={[styles.centerDataText, isDark && styles.blackCenterDataText]}>Carrera: {user.carrera}</Text>
+          <Text style={[styles.centerDataText, isDark && styles.blackCenterDataText]}>Rol: {user.rol}</Text>
         </View>
 
         <View style={[styles.colorCard, isDark && styles.darkBox]}>
