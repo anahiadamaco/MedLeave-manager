@@ -39,6 +39,18 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 12,
   },
+  userBox: {
+    backgroundColor: "#CEEDFF",
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  userBoxDark: {
+    backgroundColor: "#1E293B",
+    borderColor: "#475569",
+    borderWidth: 1,
+  },
   avatarContainer: {
     alignItems: "center",
     marginBottom: 20,
@@ -60,27 +72,34 @@ export const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#0f172a",
+    color: "#048ED4",
   },
   userRole: {
     fontSize: 13,
-    color: "#6b7280",
+    color: "#048ED4",
   },
-
-  // Tarjetas
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
+  centerDataBox: {
+    backgroundColor: "#CEEDFF",
+    padding: 18,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  centerDataText: {
+    color: "#048ED4",
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 6,
+  },
+  colorCard: {
+    backgroundColor: "#CEEDFF",
+    borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 14,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
   },
-  cardDark: {
+  darkBox: {
     backgroundColor: "#1E293B",
     borderWidth: 1,
     borderColor: "#475569",
@@ -89,11 +108,7 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 10,
-    color: "#0f172a",
-  },
-  row: {
-    flexDirection: "row",
-    marginBottom: 6,
+    color: "#048ED4",
   },
   rowBetween: {
     flexDirection: "row",
@@ -102,34 +117,9 @@ export const styles = StyleSheet.create({
     marginTop: 4,
   },
   label: {
-    width: 90,
-    fontSize: 12,
-    color: "#6b7280",
+    fontSize: 14,
+    color: "#048ED4",
   },
-  value: {
-    flex: 1,
-    fontSize: 13,
-    color: "#0f172a",
-  },
-  infoText: {
-    fontSize: 11,
-    color: "#6b7280",
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  webButton: {
-    alignSelf: "flex-start",
-    backgroundColor: "#048ED4",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-  },
-  webButtonText: {
-    color: "#ffffff",
-    fontSize: 12,
-    fontWeight: "500",
-  },
-  // Textos para modo oscuro
   textDarkPrimary: {
     color: "#e5e7eb",
   },
