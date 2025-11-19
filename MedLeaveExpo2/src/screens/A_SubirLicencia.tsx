@@ -1,15 +1,9 @@
-import { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import { ChevronLeft } from "lucide-react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from "react-native";
+import { ChevronLeft, Paperclip, X } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
+import * as pako from "pako";
 import { LICENCIA_ROUTES } from "../config/api";
 import { styles } from "../styles/A_SubirLicencia.styles";
 import A_Menu from "../components/A_Menu";
@@ -37,19 +31,52 @@ type FormState = {
 export default function A_SubirLicencia({ navigation }: any) {
   const { isDark } = useTheme();
 
-  const [formData, setFormData] = useState<FormState>({
-    nombres: "",
-    apellidos: "",
-    fechaEmision: "",
-    inicioLicencia: "",
-    terminoLicencia: "",
-    cursosJustificar: "",
-    seccion: "",
+  const [formData, setFormData] = React.useState({
+    folio: "",
+    fecha_emision: "",
+    fecha_inicio: "",
+    fecha_fin: "",
+    motivo_medico: "",
+    cursos: "",
   });
+  const [loading, setLoading] = React.useState(false);
+  const [userId, setUserId] = React.useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = React.useState<any>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [pdfFile, setPdfFile] = useState<any>(null);
-  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
+  // Obtener ID del usuario del almacenamiento
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const user = await AsyncStorage.getItem("user");
+        if (user) {
+          const userData = JSON.parse(user);
+          setUserId(userData.id_usuario);
+        }
+      } catch (error) {
+        console.error("Error obteniendo usuario:", error);
+      }
+    };
+    getUserId();
+  }, []);
+
+  const handleSelectFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setSelectedFile(result.assets[0]);
+      }
+    } catch (error) {
+      console.error("Error seleccionando archivo:", error);
+      Alert.alert("Error", "No se pudo seleccionar el archivo");
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
 
   const handleInputChange = (field: keyof FormState, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -94,40 +121,89 @@ export default function A_SubirLicencia({ navigation }: any) {
 
   const handleSubmit = async () => {
     if (
-      !formData.nombres ||
-      !formData.apellidos ||
-      !formData.fechaEmision ||
-      !formData.inicioLicencia ||
-      !formData.terminoLicencia ||
-      !formData.cursosJustificar ||
-      !formData.seccion
+      !formData.folio ||
+      !formData.fecha_emision ||
+      !formData.fecha_inicio ||
+      !formData.fecha_fin ||
+      !formData.motivo_medico ||
+      !formData.cursos
     ) {
       Alert.alert("Error", "Por favor completa todos los campos");
       return;
     }
 
-    if (!pdfFile) {
-      Alert.alert("Error", "Debes adjuntar el PDF de la licencia.");
+    if (!selectedFile) {
+      Alert.alert("Error", "Por favor selecciona un archivo PDF");
+      return;
+    }
+
+    if (!userId) {
+      Alert.alert("Error", "No se pudo obtener la información del usuario");
       return;
     }
 
     setLoading(true);
 
     try {
-      const sendData = new FormData();
-      Object.entries(formData).forEach(([key, value]) => sendData.append(key, value));
-      sendData.append("pdf", {
-        uri: pdfFile.uri,
-        name: pdfFile.name.endsWith(".pdf") ? pdfFile.name : pdfFile.name + ".pdf",
-        type: pdfFile.type || "application/pdf",
-      } as any);
+      // Leer el archivo como base64
+      const fileResponse = await fetch(selectedFile.uri);
+      const blob = await fileResponse.blob();
+      
+      const fileContent = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result as string;
+          // Extraer solo la parte base64 (sin el prefijo data:...)
+          const base64Data = base64String.split(',')[1] || base64String;
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
 
-      const response = await fetch(LICENCIA_ROUTES.CREATE, {
+      // Convertir base64 a bytes y comprimir
+      const binaryString = atob(fileContent);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const compressed = pako.gzip(bytes);
+      
+      // Convertir bytes comprimidos a base64 de forma eficiente
+      let compressedBase64 = "";
+      const chunkSize = 8192;
+      for (let i = 0; i < compressed.length; i += chunkSize) {
+        const chunk = compressed.slice(i, i + chunkSize);
+        compressedBase64 += String.fromCharCode(...chunk);
+      }
+      compressedBase64 = btoa(compressedBase64);
+
+      const response = await fetch(LICENCIA_ROUTES.UPLOAD, {
         method: "POST",
-        body: sendData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          folio: formData.folio,
+          fecha_emision: formData.fecha_emision,
+          fecha_inicio: formData.fecha_inicio,
+          fecha_fin: formData.fecha_fin,
+          motivo_medico: formData.motivo_medico,
+          cursos: formData.cursos,
+          id_usuario: userId,
+          file: {
+            name: selectedFile.name,
+            base64: compressedBase64,
+            type: selectedFile.mimeType || "application/pdf",
+            compressed: true,
+          },
+        }),
       });
 
       const data = await response.json();
+      console.log("📦 [RESPUESTA] Data recibida:", data);
+      console.log("📊 [RESPUESTA] Status:", response.status);
+      console.log("✅ [RESPUESTA] Success:", data.success);
 
       if (!response.ok || !data.success) {
         console.log("Error backend:", data);
@@ -147,45 +223,43 @@ export default function A_SubirLicencia({ navigation }: any) {
         return;
       }
 
-      Alert.alert("Éxito", data.message || "Licencia enviada correctamente");
-
-      // Notificación de éxito
-      setNotificaciones((prev) => [
-        ...prev,
+      console.log("🎉 [ÉXITO] Mostrando alert...");
+      Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
         {
-          id: new Date().getTime().toString(),
-          titulo: "Licencia enviada",
-          mensaje: `Licencia de ${formData.nombres} ${formData.apellidos} enviada correctamente.`,
-          fecha: new Date().toLocaleDateString(),
-          leido: false,
+          text: "Ir al inicio",
+          onPress: () => {
+            console.log("🔄 [NAVEGACIÓN] Limpiando formulario...");
+            setFormData({
+              folio: "",
+              fecha_emision: "",
+              fecha_inicio: "",
+              fecha_fin: "",
+              motivo_medico: "",
+              cursos: "",
+            });
+            setSelectedFile(null);
+            console.log("🔄 [NAVEGACIÓN] Navegando a A_home...");
+            navigation.navigate("A_home");
+            console.log("🔄 [NAVEGACIÓN] Navegación completada");
+          },
         },
       ]);
-
-      // Reset
-      setFormData({
-        nombres: "",
-        apellidos: "",
-        fechaEmision: "",
-        inicioLicencia: "",
-        terminoLicencia: "",
-        cursosJustificar: "",
-        seccion: "",
-      });
-      setPdfFile(null);
-    } catch (error) {
-      console.error("Error al enviar licencia:", error);
-      Alert.alert("Error", "Hubo un problema al enviar la licencia.");
-
-      setNotificaciones((prev) => [
-        ...prev,
-        {
-          id: new Date().getTime().toString(),
-          titulo: "Error al enviar licencia",
-          mensaje: `Licencia de ${formData.nombres} ${formData.apellidos} no enviada por error del sistema.`,
-          fecha: new Date().toLocaleDateString(),
-          leido: false,
-        },
-      ]);
+    } catch (error: any) {
+      console.error("Error de conexión:", error);
+      Alert.alert(
+        "❌ Error de conexión",
+        error.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        [
+          {
+            text: "Reintentar",
+            onPress: () => handleSubmit(),
+          },
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+        ]
+      );
     } finally {
       setLoading(false);
     }
@@ -205,43 +279,123 @@ export default function A_SubirLicencia({ navigation }: any) {
           En esta sección podrás ingresar tu licencia médica y adjuntar el PDF para su verificación.
         </Text>
 
-        {[
-          ["Nombres", "nombres"],
-          ["Apellidos", "apellidos"],
-          ["Fecha de emisión (YYYY-MM-DD)", "fechaEmision"],
-          ["Inicio licencia (YYYY-MM-DD)", "inicioLicencia"],
-          ["Término licencia (YYYY-MM-DD)", "terminoLicencia"],
-          ["Cursos a justificar", "cursosJustificar"],
-          ["Sección", "seccion"],
-        ].map(([label, field]) => (
-          <View key={field as string} style={styles.fieldContainer}>
-            <Text style={[styles.label, isDark && styles.blackLabel]}>{label}:</Text>
-            <TextInput
-              style={[styles.input, isDark && styles.blackInput]}
-              value={(formData as any)[field as string]}
-              onChangeText={(value) => handleInputChange(field as keyof FormState, value)}
-              editable={!loading}
-            />
-          </View>
-        ))}
+        {/* Campo: Folio */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.folio}
+            onChangeText={(value) => handleInputChange("folio", value)}
+            placeholder="Ej: LIC-2025-001"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
+        </View>
 
-        <TouchableOpacity
+        {/* Campo: Fecha de emisión */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de emisión:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_emision}
+            onChangeText={(value) => handleInputChange("fecha_emision", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Campo: Fecha de inicio */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de inicio:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_inicio}
+            onChangeText={(value) => handleInputChange("fecha_inicio", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Campo: Fecha de fin */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de fin:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.fecha_fin}
+            onChangeText={(value) => handleInputChange("fecha_fin", value)}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Campo: Motivo médico */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Motivo médico:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.motivo_medico}
+            onChangeText={(value) => handleInputChange("motivo_medico", value)}
+            placeholder="Descripción del motivo médico"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={4}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Campo: Cursos a justificar */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Cursos a justificar:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.cursos}
+            onChangeText={(value) => handleInputChange("cursos", value)}
+            placeholder="Ej: Matemáticas, Historia, Inglés"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={3}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Seleccionar PDF */}
+        <TouchableOpacity 
           style={[styles.attachButton, isDark && styles.attachButtonDark]}
-          onPress={handlePickPDF}
+          onPress={handleSelectFile}
           disabled={loading}
         >
+          <Paperclip size={20} color="#ffffff" />
           <Text style={[styles.attachButtonText, isDark && styles.attachButtonTextDark]}>
-            {pdfFile ? `PDF seleccionado: ${pdfFile.name}` : "Adjuntar licencia médica (PDF)"}
+            Seleccionar licencia médica PDF
           </Text>
-          <Text style={styles.attachIcon}>📎</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* Mostrar archivo seleccionado */}
+        {selectedFile && (
+          <View style={[styles.fileContainer, isDark && styles.fileContainerDark]}>
+            <Text style={[styles.fileName, isDark && styles.fileNameDark]}>
+              ✓ {selectedFile.name}
+            </Text>
+            <TouchableOpacity onPress={handleRemoveFile} disabled={loading}>
+              <X size={20} color={isDark ? "#999999" : "#666666"} />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Botón enviar */}
+        <TouchableOpacity 
           style={[styles.submitButton, isDark && styles.submitButtonDark]}
           onPress={handleSubmit}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.submitButtonText}>Enviar</Text>}
+          {loading ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Enviar licencia</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
 

@@ -13,7 +13,7 @@ export const registerUser = async (req, res) => {
     );
 
     if (existingUser.length > 0) {
-      return res.status(400).json({ error: "El correo ya está registrado" });
+      return res.status(400).json({ success: false, error: "El correo ya está registrado" });
     }
 
     // Hashear la contraseña
@@ -26,10 +26,10 @@ export const registerUser = async (req, res) => {
       [correo_usuario, nombre, hashedPassword, id_rol || 2] // 2 = usuario normal
     );
 
-    res.json({ message: "Usuario registrado correctamente ✅" });
+    res.json({ success: true, message: "Usuario registrado correctamente ✅" });
   } catch (error) {
     console.error("Error en registerUser:", error);
-    res.status(500).json({ error: "Error al registrar usuario" });
+    res.status(500).json({ success: false, error: "Error al registrar usuario" });
   }
 };
 
@@ -42,16 +42,17 @@ export const loginUser = async (req, res) => {
     const [rows] = await db.query("SELECT * FROM usuario WHERE correo_usuario = ?", [
       correo_usuario,
     ]);
-    if (rows.length === 0) return res.status(404).json({ error: "Usuario no encontrado" });
+    if (rows.length === 0) return res.status(404).json({ success: false, error: "Usuario no encontrado" });
 
     const user = rows[0];
 
     // Comparar contraseñas
     const isMatch = await bcrypt.compare(contrasena, user.contrasena);
-    if (!isMatch) return res.status(401).json({ error: "Contraseña incorrecta" });
+    if (!isMatch) return res.status(401).json({ success: false, error: "Contraseña incorrecta" });
 
     // Si todo ok, puedes devolver los datos o un token JWT más adelante
     res.json({
+      success: true,
       message: "Inicio de sesión exitoso 🎉",
       user: {
         id_usuario: user.id_usuario,
@@ -62,6 +63,6 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en loginUser:", error);
-    res.status(500).json({ error: "Error en el inicio de sesión" });
+    res.status(500).json({ success: false, error: "Error en el inicio de sesión" });
   }
 };

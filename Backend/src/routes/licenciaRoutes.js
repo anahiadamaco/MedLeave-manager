@@ -1,34 +1,20 @@
-
-import express from 'express';
-import multer from 'multer';
-import { uploadLicenciaPDF } from '../controllers/licenciaController.js';
+import express from "express";
+import * as LicenciaController from "../controllers/licenciaController.js";
+import { authenticate } from "../middlewares/auth.js";
+import { requireRole, ROLES } from "../middlewares/authorizacion.js";
 
 const router = express.Router();
 
-// Configuración de Multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // carpeta donde se guardarán los PDFs
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // nombre único
-  }
-});
+// GET todas las licencias - Solo FUNCIONARIO o ADMINISTRADOR
+router.get("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.getLicencias);
 
-// Filtrado para aceptar solo PDFs
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/pdf') {
-    cb(null, true);
-  } else {
-    cb(new Error('Solo se permiten archivos PDF'), false);
-  }
-};
+// GET licencia por ID - Solo el usuario autenticado o FUNCIONARIO/ADMINISTRADOR
+router.get("/:id", authenticate, LicenciaController.getLicencia);
 
-const upload = multer({ storage, fileFilter });
+// POST crear licencia - Solo ESTUDIANTE
+router.post("/create", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaController.createLicencia);
 
-// Ruta para subir PDF
-// El 'pdf' aquí debe coincidir con el nombre del campo en el frontend
-router.post('/', upload.single('pdf'), uploadLicenciaPDF);
-
+// Ruta para subir licencia con archivo: JSON + base64 (sin multer) - Solo ESTUDIANTE
+router.post("/upload", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaController.uploadLicencia);
 
 export default router;

@@ -11,11 +11,11 @@ export const getLicenciaById = async (id) => {
 };
 
 export const createLicencia = async (licencia) => {
-  const { folio, fecha_emision, fecha_inicio, fecha_fin, id_usuario } = licencia;
+  const { folio, fecha_emision, fecha_inicio, fecha_fin, id_usuario, motivo_medico } = licencia;
   const [result] = await pool.query(
-    `INSERT INTO licenciamedica (folio, fecha_emision, fecha_inicio, fecha_fin, fecha_creacion, id_usuario) 
-     VALUES (?, ?, ?, ?, NOW(), ?)`,
-    [folio, fecha_emision, fecha_inicio, fecha_fin, id_usuario]
+    `INSERT INTO licenciamedica (folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, fecha_creacion, id_usuario) 
+     VALUES (?, ?, ?, ?, ?, NOW(), ?)`,
+    [folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_usuario]
   );
   return result.insertId;
 };
