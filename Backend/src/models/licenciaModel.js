@@ -20,20 +20,26 @@ export const getLicenciasByUsuario = async (id_usuario) => {
       lm.fecha_fin,
       lm.motivo_medico,
       lm.estado,
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          'id_curso', c.id_curso,
-          'nombre_curso', c.nombre_curso,
-          'codigo', c.codigo
-        )
+      COALESCE(
+        JSON_ARRAYAGG(
+          IF(c.id_curso IS NOT NULL,
+            JSON_OBJECT(
+              'id_curso', c.id_curso,
+              'nombre_curso', c.nombre_curso,
+              'codigo', c.codigo
+            ),
+            NULL
+          )
+        ),
+        JSON_ARRAY()
       ) as cursos,
-      ca.archivo_hash
+      ca.hash as archivo_hash
     FROM licenciamedica lm
     LEFT JOIN licencia_curso lc ON lm.id_licencia = lc.id_licencia
     LEFT JOIN curso c ON lc.id_curso = c.id_curso
     LEFT JOIN archivolicencia ca ON lm.id_licencia = ca.id_licencia
     WHERE lm.id_usuario = ?
-    GROUP BY lm.id_licencia
+    GROUP BY lm.id_licencia, ca.id_archivo
     ORDER BY lm.fecha_creacion DESC
   `;
   const [rows] = await pool.query(query, [id_usuario]);
@@ -41,7 +47,7 @@ export const getLicenciasByUsuario = async (id_usuario) => {
   // Process rows to clean up null course data
   return rows.map(row => ({
     ...row,
-    cursos: row.cursos ? row.cursos.filter(c => c.id_curso !== null) : []
+    cursos: Array.isArray(row.cursos) ? row.cursos.filter(c => c !== null && c.id_curso !== null) : []
   }));
 };
 

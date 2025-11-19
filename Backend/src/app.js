@@ -12,7 +12,7 @@ const app = express();
 
 // Configurar CORS más específicamente
 app.use(cors({
-  origin: ["http://localhost:8081", "http://localhost:8082", "http://192.168.100.231:8081", "http://192.168.100.231:8082"],
+  origin: ["http://localhost:8081", "http://localhost:8082", "http://192.168.100.231:8081", "http://192.168.100.231:8082", "http://172.20.10.11:8081", "http://172.20.10.11:8082"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]

@@ -27,9 +27,15 @@ export const getLicencia = async (req, res) => {
 export const getLicenciasUsuario = async (req, res) => {
   try {
     const { id_usuario } = req.params;
+    console.log(`📍 [LICENCIAS] Buscando licencias para usuario: ${id_usuario}`);
+    
     const licencias = await LicenciaModel.getLicenciasByUsuario(id_usuario);
+    console.log(`✅ [LICENCIAS] ${licencias.length} licencias encontradas`);
+    console.log(`📦 [LICENCIAS] Datos:`, JSON.stringify(licencias, null, 2));
+    
     res.json({ success: true, data: licencias });
   } catch (error) {
+    console.error(`❌ [LICENCIAS] Error:`, error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

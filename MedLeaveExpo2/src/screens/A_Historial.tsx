@@ -77,7 +77,10 @@ const A_Historial = () => {
     
     try {
       setLoading(true);
-      const response = await fetch(LICENCIA_ROUTES.GET_BY_USER(userId), {
+      const url = LICENCIA_ROUTES.GET_BY_USER(userId);
+      console.log("📍 Cargando licencias desde:", url);
+      
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -86,11 +89,17 @@ const A_Historial = () => {
       });
 
       const data = await response.json();
+      console.log("📦 Respuesta del servidor:", JSON.stringify(data, null, 2));
+      
       if (data.success && Array.isArray(data.data)) {
+        console.log(`✅ ${data.data.length} licencias cargadas`);
         setLicencias(data.data);
+      } else {
+        console.warn("⚠️ Respuesta inesperada:", data);
+        setLicencias([]);
       }
     } catch (error) {
-      console.error("Error cargando licencias:", error);
+      console.error("❌ Error cargando licencias:", error);
       Alert.alert("Error", "No se pudieron cargar las licencias");
     } finally {
       setLoading(false);

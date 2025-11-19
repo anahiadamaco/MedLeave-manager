@@ -10,7 +10,11 @@ const router = express.Router();
  */
 router.get("/", authenticate, async (req, res) => {
   try {
+    console.log("📍 [CURSOS] GET / recibida");
+    console.log(`🔑 [CURSOS] Usuario: ${req.user?.id_usuario}`);
+    
     const id_usuario = req.query.id_usuario || req.user.id_usuario;
+    console.log(`📊 [CURSOS] Buscando cursos para usuario: ${id_usuario}`);
 
     // Obtener cursos del alumno mediante la tabla matriculas
     const [cursos] = await pool.query(
@@ -31,13 +35,15 @@ router.get("/", authenticate, async (req, res) => {
       [id_usuario]
     );
 
+    console.log(`✅ [CURSOS] ${cursos.length} cursos encontrados`);
+    
     res.json({
       success: true,
       data: cursos,
       message: `${cursos.length} cursos encontrados`,
     });
   } catch (error) {
-    console.error("Error en GET /cursos:", error);
+    console.error("❌ [CURSOS] Error en GET /cursos:", error);
     res.status(500).json({
       success: false,
       message: "Error al obtener cursos",

@@ -30,33 +30,14 @@ export default function A_SubirLicencia({ navigation }: any) {
   const [token, setToken] = React.useState<string>("");
   const [showCursosDropdown, setShowCursosDropdown] = React.useState(false);
 
-  // Obtener datos del usuario y cargar cursos
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const user = await AsyncStorage.getItem("user");
-        const authToken = await AsyncStorage.getItem("token");
-        
-        if (user) {
-          const userData = JSON.parse(user);
-          setUserId(userData.id_usuario);
-        }
-        
-        if (authToken) {
-          setToken(authToken);
-          await loadCursos(authToken);
-        }
-      } catch (error) {
-        console.error("Error obteniendo datos del usuario:", error);
-      }
-    };
-    getUserData();
-  }, []);
-
   const loadCursos = async (authToken: string) => {
     try {
       setLoadingCursos(true);
-      const response = await fetch(CURSOS_ROUTES.GET_ALL, {
+      const url = CURSOS_ROUTES.GET_ALL;
+      console.log("📍 [CURSOS] Llamando a:", url);
+      console.log("🔑 [CURSOS] Token disponible:", !!authToken);
+      
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -64,21 +45,60 @@ export default function A_SubirLicencia({ navigation }: any) {
         },
       });
 
+      console.log("📊 [CURSOS] Status:", response.status);
       const data = await response.json();
-      console.log("[CURSOS] Respuesta:", data);
+      console.log("📦 [CURSOS] Respuesta completa:", JSON.stringify(data, null, 2));
 
-      if (data.success && Array.isArray(data.data)) {
+      if (response.ok && data.success && Array.isArray(data.data)) {
         setCursos(data.data);
-        console.log(`[CURSOS] ${data.data.length} cursos cargados`);
+        console.log(`✅ [CURSOS] ${data.data.length} cursos cargados:`, data.data.map((c: any) => c.codigo));
       } else {
-        console.error("[CURSOS] Error:", data.message);
+        console.error("❌ [CURSOS] Error o respuesta inválida:");
+        console.error(`   Success: ${data.success}`);
+        console.error(`   Data es array: ${Array.isArray(data.data)}`);
+        console.error(`   Status: ${response.status}`);
+        console.error(`   Message: ${data.message}`);
+        setCursos([]);
       }
-    } catch (error) {
-      console.error("[CURSOS] Error de conexión:", error);
+    } catch (error: any) {
+      console.error("❌ [CURSOS] Error de conexión:", error.message);
+      setCursos([]);
     } finally {
       setLoadingCursos(false);
     }
   };
+
+  // Obtener datos del usuario y cargar cursos
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        console.log("🔄 [INIT] Iniciando carga de datos del usuario");
+        const user = await AsyncStorage.getItem("user");
+        const authToken = await AsyncStorage.getItem("token");
+        
+        console.log("🔍 [INIT] User en AsyncStorage:", !!user);
+        console.log("🔍 [INIT] Token en AsyncStorage:", !!authToken);
+        
+        if (user) {
+          const userData = JSON.parse(user);
+          setUserId(userData.id_usuario);
+          console.log("✅ [INIT] Usuario ID:", userData.id_usuario);
+        }
+        
+        if (authToken) {
+          setToken(authToken);
+          console.log("✅ [INIT] Token guardado en state");
+          console.log("⏳ [INIT] Llamando loadCursos...");
+          await loadCursos(authToken);
+        } else {
+          console.warn("⚠️ [INIT] No hay token en AsyncStorage");
+        }
+      } catch (error) {
+        console.error("❌ [INIT] Error obteniendo datos del usuario:", error);
+      }
+    };
+    getUserData();
+  }, []);
 
   const handleSelectFile = async () => {
     try {
