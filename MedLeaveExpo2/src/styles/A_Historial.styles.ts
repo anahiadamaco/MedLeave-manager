@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#ffffff" 
+    backgroundColor: "#ffffff",
   },
   blackContainer: { 
     backgroundColor: "#020617", 
@@ -26,15 +26,15 @@ export const styles = StyleSheet.create({
     marginTop: 30,
   },
   headerTitle: {
-    color: "#ffffff",
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
     flex: 1,
     marginTop: 30,
+    color: "#ffffff",
   },
   filterBar: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "#CEEDFFFF",
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 8,
@@ -48,16 +48,13 @@ export const styles = StyleSheet.create({
   input: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     borderRadius: 8,
     height: 40,
     paddingHorizontal: 12,
-    color: "#111827",
+    color: "#048ED4",
   },
   blackInput: {
     backgroundColor: "#334155",
-    borderColor: "#475569",
-    color: "#F1F5F9",
   },
   filterRow: {
     flexDirection: "row",
@@ -68,7 +65,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     borderRadius: 8,
     height: 40,
     justifyContent: "center",
@@ -76,30 +72,26 @@ export const styles = StyleSheet.create({
   },
   blackSelector: {
     backgroundColor: "#334155",
-    borderColor: "#475569",
   },
   selectorText: { 
-    color: "#111827" 
-  },
-  blackSelectorText: { 
-    color: "#F1F5F9" 
+    color: "#048ED4" 
   },
   sortBtn: {
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: "#3B82F6",
+    backgroundColor: "#CEEDFFFF",
     justifyContent: "center",
     alignItems: "center",
     height: 40,
+    borderWidth: 1,
+    borderColor: "#048ED4",
   },
   blackSortBtn: {
     backgroundColor: "#1E293B",
-    borderColor: "#334155",
-    borderWidth: 1,
   },
   sortText: { 
-    color: "#FFFFFF", 
-    fontWeight: "700" 
+    fontWeight: "700",
+    color: "#048ED4"
   },
   modalBackdrop: {
     flex: 1,
@@ -111,30 +103,23 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
+    borderWidth: 1,
   },
   blackModalBox: {
     backgroundColor: "#1E293B",
-    borderWidth: 1,
-    borderColor: "#334155",
   },
   modalItem: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
   },
-  blackModalItem: {
-    borderBottomColor: "#475569",
-  },
+  blackModalItem: {},
   modalClose: { 
     alignSelf: "flex-end", 
     padding: 10 
   },
   modalCloseText: { 
-    color: "#2563EB", 
-    fontWeight: "700" 
-  },
-  blackModalCloseText: {
-    color: "white",
+    fontWeight: "700",
+    color: "#048ED4"
   },
   content: { 
     flex: 1, 
@@ -154,10 +139,11 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#cde2f6",
+    backgroundColor: "#CEEDFFFF",
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderRadius: 10,
+    borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.15,
@@ -166,8 +152,6 @@ export const styles = StyleSheet.create({
   },
   blackCursoCard: {
     backgroundColor: "#1E293B",
-    borderColor: "#475569",
-    borderWidth: 1,
   },
   cursoInfo: { 
     flex: 1 
@@ -175,22 +159,16 @@ export const styles = StyleSheet.create({
   cursoNombre: { 
     fontSize: 16, 
     fontWeight: "600", 
-    color: "#1F2937", 
+    color: "#048ED4", 
     marginBottom: 4 
-  },
-  cursoNombreDark: { 
-    color: "white", 
   },
   cursoCodigo: { 
     fontSize: 14, 
-    color: "#6B7280" 
-  },
-  blackCursoCodigo: { 
-    color: "white"
+    color: "#048ED4"
   },
   emptyText: { 
     textAlign: "center", 
-    color: "#6B7280", 
-    marginTop: 16 
+    marginTop: 16,
+    color: "#048ED4"
   },
 });
