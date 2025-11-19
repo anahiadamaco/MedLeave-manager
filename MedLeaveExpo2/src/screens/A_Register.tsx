@@ -13,6 +13,7 @@ export default function A_Register({ navigation }: any) {
     confirmarContrasena: "",
   });
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -72,12 +73,21 @@ export default function A_Register({ navigation }: any) {
       }
 
       // ✅ Registro exitoso
-      Alert.alert("✅ Éxito", "Cuenta creada correctamente. Ahora inicia sesión.", [
-        {
-          text: "OK",
-          onPress: () => navigation.navigate("P_Login"),
-        },
-      ]);
+      setSuccessMessage("✅ ¡Registro exitoso! Tu cuenta ha sido creada correctamente.");
+      
+      // Limpiar formulario
+      setFormData({
+        nombres: "",
+        apellidos: "",
+        correo: "",
+        contrasena: "",
+        confirmarContrasena: "",
+      });
+      
+      // Navegar a login después de 2 segundos
+      setTimeout(() => {
+        navigation.navigate("P_Login");
+      }, 2000);
     } catch (error: any) {
       console.error("[REGISTER] Error de conexión:", error);
       Alert.alert(
@@ -99,6 +109,14 @@ export default function A_Register({ navigation }: any) {
           <Text style={styles.icon}>📝</Text>
         </View>
       </View>
+
+      {/* Mensaje de éxito */}
+      {successMessage ? (
+        <View style={styles.successContainer}>
+          <Text style={styles.successText}>{successMessage}</Text>
+          <Text style={styles.redirectText}>Redirigiendo a inicio de sesión...</Text>
+        </View>
+      ) : null}
 
       {/* Formulario */}
       <View style={styles.formContainer}>

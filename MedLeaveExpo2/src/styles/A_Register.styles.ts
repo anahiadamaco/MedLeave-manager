@@ -102,9 +102,30 @@ export const styles = StyleSheet.create({
   loginLink: {
     textAlign: "center",
     color: "#0089E0",
-    marginTop: 20,
+    marginTop: 16,
     textDecorationLine: "underline",
-    fontSize: 14,
-    fontWeight: "500",
+    fontSize: 12,
+  },
+  successContainer: {
+    backgroundColor: "#D4EDDA",
+    borderWidth: 1,
+    borderColor: "#28A745",
+    borderRadius: 8,
+    padding: 16,
+    marginHorizontal: 20,
+    marginTop: 20,
+    alignItems: "center",
+  },
+  successText: {
+    color: "#155724",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  redirectText: {
+    color: "#155724",
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: "center",
   },
 });
