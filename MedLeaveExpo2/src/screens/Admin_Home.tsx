@@ -38,7 +38,6 @@ export default function Admin_Home({ navigation }: any) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
       <Footer />
     </SafeAreaView>
   );

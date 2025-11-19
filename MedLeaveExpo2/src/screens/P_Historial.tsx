@@ -8,6 +8,7 @@ import P_Menu from "../components/P_Menu";
 export default function P_Historial() {
   const navigation = useNavigation<any>();
 
+  //Datos
   const cursos = [
     { id: 1, codigo: "INFO 1111", nombre: "Teoría de sistemas", semestre: "2024-1" },
     { id: 2, codigo: "INFO 2222", nombre: "Programación avanzada", semestre: "2024-2" },
@@ -19,7 +20,6 @@ export default function P_Historial() {
   const [orden, setOrden] = useState<"az" | "za">("az");
   const [semestre, setSemestre] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
-
   const semestres = ["", "2024-2", "2024-1", "2023-2"];
 
   const cursosFiltrados = useMemo(() => {
@@ -39,8 +39,6 @@ export default function P_Historial() {
 
   return (
     <View style={styles.container}>
-
-      {/* Nuevo Header unificado */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ChevronLeft size={24} color="#ffffff" />
@@ -90,7 +88,6 @@ export default function P_Historial() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
-
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={styles.modalClose}
@@ -123,7 +120,6 @@ export default function P_Historial() {
           <Text style={styles.emptyText}>No existe ningun ramo relacionado.</Text>
         )}
       </ScrollView>
-
       <P_Menu navigation={navigation} />
     </View>
   );

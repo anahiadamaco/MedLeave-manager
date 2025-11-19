@@ -9,7 +9,6 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       {/*Encabesado*/}
-
       <View style={{ alignItems: "center", marginVertical: 20 }}>
         <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: "#ccc" }} />
         <Text style={{ marginTop: 10 }}>medleave@gmail.com</Text>
