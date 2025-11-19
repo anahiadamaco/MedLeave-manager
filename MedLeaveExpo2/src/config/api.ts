@@ -27,7 +27,11 @@ export const LICENCIA_ROUTES = {
 // Rutas de notificaciones
 export const NOTIFICACION_ROUTES = {
   GET_ALL: `${API_BASE_URL}/api/notificaciones`,
+  GET_BY_USER: (id: number) => `${API_BASE_URL}/api/notificaciones/usuario/${id}`,
+  GET_NO_LEIDAS: (id: number) => `${API_BASE_URL}/api/notificaciones/usuario/${id}/no-leidas`,
   CREATE: `${API_BASE_URL}/api/notificaciones`,
+  MARK_READ: (id: number) => `${API_BASE_URL}/api/notificaciones/${id}/leida`,
+  MARK_ALL_READ: (id: number) => `${API_BASE_URL}/api/notificaciones/usuario/${id}/leidas`,
 };
 
 // Rutas de cursos
