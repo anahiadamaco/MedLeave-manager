@@ -5,6 +5,10 @@ import { styles } from "../styles/F_Home.styles";
 import Footer from "../components/Footer";
 
 export default function F_Home({ navigation }: any) {
+  const handleRevisarSolicitudes = () => {
+    navigation.navigate("F_Solicitudes");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -25,7 +29,10 @@ export default function F_Home({ navigation }: any) {
             Aquí podrás gestionar las solicitudes de licencias médicas de los estudiantes.
           </Text>
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={handleRevisarSolicitudes}
+          >
             <Text style={styles.buttonText}>Revisar Solicitudes</Text>
           </TouchableOpacity>
 
