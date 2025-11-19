@@ -1,55 +1,118 @@
 import React, { useState, useMemo } from "react";
-import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, Modal, Alert } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { ChevronLeft, X, Eye } from "lucide-react-native";
 import { styles } from "../styles/A_Historial.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LICENCIA_ROUTES } from "../config/api";
+
+interface Licencia {
+  folio: number;
+  fecha_emision: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  motivo_medico: string;
+  estado: string;
+  cursos?: Array<{
+    id_curso: number;
+    nombre_curso: string;
+    codigo: string;
+  }>;
+  archivo_hash?: string;
+}
+
+const ESTADO_COLORS: Record<string, string> = {
+  "pendiente": "#FFD93D",
+  "aprobada": "#4ECDC4",
+  "rechazada": "#FF6B6B",
+  "expirada": "#95A3A3",
+};
 
 const A_Historial = () => {
   const navigation = useNavigation<any>();
-  const [loading, setLoading] = React.useState(false);
   const { isDark } = useTheme();
+  const [licencias, setLicencias] = useState<Licencia[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [token, setToken] = useState<string>("");
+  const [selectedLicencia, setSelectedLicencia] = useState<Licencia | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const cursos = [
-    { id: 1, nombre: "Matemáticas I", codigo: "MAT-101", semestre: "2025-1" },
-    { id: 2, nombre: "Física General", codigo: "FIS-101", semestre: "2025-1" },
-    { id: 3, nombre: "Química Orgánica", codigo: "QUI-201", semestre: "2024-2" },
-    { id: 4, nombre: "Historia Universal", codigo: "HIS-101", semestre: "2024-2" },
-  ];
+  useFocusEffect(
+    React.useCallback(() => {
+      loadUserData();
+    }, [])
+  );
 
-  const [query, setQuery] = React.useState("");
-  const [orden, setOrden] = React.useState<"az" | "za">("az");
-  const [semestre, setSemestre] = React.useState<string>("");
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const loadUserData = async () => {
+    try {
+      const user = await AsyncStorage.getItem("user");
+      const authToken = await AsyncStorage.getItem("token");
+      
+      if (user) {
+        const userData = JSON.parse(user);
+        setUserId(userData.id_usuario);
+      }
+      
+      if (authToken) {
+        setToken(authToken);
+      }
+    } catch (error) {
+      console.error("Error obteniendo datos del usuario:", error);
+    }
+  };
 
-  const semestres = React.useMemo(() => {
-    const set = new Set(cursos.map((c) => c.semestre));
-    return ["", ...Array.from(set).sort().reverse()];
-  }, [cursos]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userId && token) {
+        loadLicencias();
+      }
+    }, [userId, token])
+  );
 
-  const cursosFiltrados = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    let out = cursos.filter(
-      (c) =>
-        (semestre ? c.semestre === semestre : true) &&
-        (q
-          ? c.nombre.toLowerCase().includes(q) ||
-            c.codigo.toLowerCase().includes(q)
-          : true)
-    );
-    out.sort((a, b) => {
-      const A = a.nombre.toLowerCase(),
-        B = b.nombre.toLowerCase();
-      if (A < B) return orden === "az" ? -1 : 1;
-      if (A > B) return orden === "az" ? 1 : -1;
-      return 0;
+  const loadLicencias = async () => {
+    if (!userId || !token) return;
+    
+    try {
+      setLoading(true);
+      const response = await fetch(LICENCIA_ROUTES.GET_BY_USER(userId), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.data)) {
+        setLicencias(data.data);
+      }
+    } catch (error) {
+      console.error("Error cargando licencias:", error);
+      Alert.alert("Error", "No se pudieron cargar las licencias");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatFecha = (fecha: string) => {
+    const date = new Date(fecha);
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
-    return out;
-  }, [cursos, query, semestre, orden]);
+  };
 
-  const handleSelectCurso = (curso: any) => {
-    navigation.navigate("A_HistorialRamo", { curso });
+  const getStatusColor = (estado: string) => {
+    return ESTADO_COLORS[estado.toLowerCase()] || "#048ED4";
+  };
+
+  const handleVerDetalles = (licencia: Licencia) => {
+    setSelectedLicencia(licencia);
+    setModalVisible(true);
   };
 
   return (
@@ -61,117 +124,196 @@ const A_Historial = () => {
         >
           <ChevronLeft size={24} color={"#ffffff"} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: "#ffffff" }]}>Historial</Text>
+        <Text style={[styles.headerTitle, { color: "#ffffff" }]}>Historial de Licencias</Text>
       </View>
-
-      <View style={[styles.filterBar, isDark && styles.blackFilterBar]}>
-        <TextInput
-          style={[
-            styles.input,
-            isDark && styles.blackInput,
-            { color: "#FFFFFF", borderColor: "#FFFFFF" }
-          ]}
-          placeholder="Buscar por nombre o código…"
-          placeholderTextColor={"#FFFFFF"}
-          value={query}
-          onChangeText={setQuery}
-          autoCorrect={false}
-        />
-
-        <View style={styles.filterRow}>
-          <TouchableOpacity
-            style={[
-              styles.selector,
-              isDark && styles.blackSelector,
-              { borderColor: "#FFFFFF" }
-            ]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={[styles.selectorText, { color: "#FFFFFF" }]}>
-              {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.sortBtn,
-              isDark && styles.blackSortBtn,
-              { borderColor: "#FFFFFF" }
-            ]}
-            onPress={() => setOrden((prev) => (prev === "az" ? "za" : "az"))}
-          >
-            <Text style={[styles.sortText, { color: "#FFFFFF" }]}>
-              {orden === "az" ? "A-Z" : "Z-A"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <Modal visible={modalVisible} transparent animationType="fade">
-        <View style={styles.modalBackdrop}>
-          <View style={[styles.modalBox, isDark && styles.blackModalBox, { borderColor: "#FFFFFF" }]}>
-            <ScrollView style={{ maxHeight: 280 }}>
-              {semestres.map((s) => (
-                <TouchableOpacity
-                  key={s || "all"}
-                  style={[styles.modalItem, isDark && styles.blackModalItem, { borderBottomColor: "#FFFFFF" }]}
-                  onPress={() => {
-                    setSemestre(s);
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={{ color: "#FFFFFF" }}>{s || "Todos los semestres"}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={styles.modalClose}
-            >
-              <Text style={[styles.modalCloseText, { color: "#FFFFFF" }]}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color={"#FFFFFF"} />
+            <ActivityIndicator size="large" color={"#048ED4"} />
+          </View>
+        ) : licencias.length === 0 ? (
+          <View style={styles.centerContainer}>
+            <Text style={[styles.emptyText, { color: isDark ? "#9CA3AF" : "#666" }]}>
+              No hay licencias registradas
+            </Text>
           </View>
         ) : (
           <View style={styles.cursosList}>
-            {cursosFiltrados.length ? (
-              cursosFiltrados.map((curso) => (
-                <TouchableOpacity
-                  key={curso.id}
-                  style={[
-                    styles.cursoCard,
-                    isDark && styles.blackCursoCard,
-                    { borderColor: "#FFFFFF" }
-                  ]}
-                  onPress={() => handleSelectCurso(curso)}
-                >
-                  <View style={styles.cursoInfo}>
-                    <Text style={[styles.cursoNombre, { color: "#FFFFFF" }]}>
-                      {curso.nombre}
+            {licencias.map((licencia) => (
+              <View
+                key={licencia.folio}
+                style={[
+                  styles.cursoCard,
+                  isDark && styles.blackCursoCard,
+                  { borderLeftWidth: 4, borderLeftColor: getStatusColor(licencia.estado) }
+                ]}
+              >
+                <View style={styles.cursoInfo}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.cursoNombre, { color: "#FFFFFF" }]}>
+                        Folio: {licencia.folio}
+                      </Text>
+                      <View style={{ marginTop: 4 }}>
+                        {licencia.cursos && licencia.cursos.length > 0 ? (
+                          licencia.cursos.map((curso) => (
+                            <Text key={curso.id_curso} style={[styles.cursoCodigo, { color: "#FFFFFF", fontSize: 12 }]}>
+                              {curso.codigo} - {curso.nombre_curso}
+                            </Text>
+                          ))
+                        ) : (
+                          <Text style={[styles.cursoCodigo, { color: "#FFFFFF", fontSize: 12 }]}>
+                            Curso no especificado
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: getStatusColor(licencia.estado),
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ color: "#fff", fontSize: 11, fontWeight: "600" }}>
+                        {licencia.estado.charAt(0).toUpperCase() + licencia.estado.slice(1)}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ marginVertical: 8 }}>
+                    <Text style={[styles.cursoCodigo, { color: "#FFFFFF", fontSize: 11 }]}>
+                      📅 {formatFecha(licencia.fecha_inicio)} - {formatFecha(licencia.fecha_fin)}
                     </Text>
-                    <Text style={[styles.cursoCodigo, { color: "#FFFFFF" }]}>
-                      {curso.codigo} · {curso.semestre}
+                    <Text style={[styles.cursoCodigo, { color: "#FFFFFF", fontSize: 11, marginTop: 4 }]}>
+                      📝 {licencia.motivo_medico}
                     </Text>
                   </View>
-                  <ChevronRight size={20} color={"#FFFFFF"} />
+                </View>
+
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingVertical: 8,
+                    paddingHorizontal: 12,
+                    backgroundColor: "#048ED4",
+                    borderRadius: 8,
+                  }}
+                  onPress={() => handleVerDetalles(licencia)}
+                >
+                  <Eye size={18} color="#FFFFFF" />
+                  <Text style={{ color: "#FFFFFF", fontSize: 10, fontWeight: "600", marginTop: 4 }}>
+                    Ver más
+                  </Text>
                 </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={[styles.emptyText, { color: "#FFFFFF" }]}>
-                No hay ramos con ese filtro.
-              </Text>
-            )}
+              </View>
+            ))}
           </View>
         )}
       </ScrollView>
+
+      {/* Modal de detalles */}
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" }}>
+          <View style={[{ backgroundColor: isDark ? "#1F2937" : "#FFFFFF", borderRadius: 12, padding: 20, maxWidth: "90%", maxHeight: "80%" }, isDark && { backgroundColor: "#1F2937" }]}>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-end", marginBottom: 16 }}
+              onPress={() => setModalVisible(false)}
+            >
+              <X size={24} color={isDark ? "#FFFFFF" : "#000"} />
+            </TouchableOpacity>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {selectedLicencia && (
+                <>
+                  <Text style={[{ fontSize: 18, fontWeight: "700", marginBottom: 16 }, isDark && { color: "#FFFFFF" }]}>
+                    Detalles de la Licencia
+                  </Text>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Folio
+                    </Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                      {selectedLicencia.folio}
+                    </Text>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Curso(s)
+                    </Text>
+                    <View>
+                      {selectedLicencia.cursos && selectedLicencia.cursos.length > 0 ? (
+                        selectedLicencia.cursos.map((curso) => (
+                          <Text key={curso.id_curso} style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                            {curso.codigo} - {curso.nombre_curso}
+                          </Text>
+                        ))
+                      ) : (
+                        <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                          No especificado
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Estado
+                    </Text>
+                    <View style={{ backgroundColor: getStatusColor(selectedLicencia.estado), paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, alignSelf: "flex-start" }}>
+                      <Text style={{ color: "#fff", fontWeight: "600", fontSize: 12 }}>
+                        {selectedLicencia.estado.charAt(0).toUpperCase() + selectedLicencia.estado.slice(1)}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Motivo Médico
+                    </Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                      {selectedLicencia.motivo_medico}
+                    </Text>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Fecha de Emisión
+                    </Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                      {formatFecha(selectedLicencia.fecha_emision)}
+                    </Text>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Fecha de Inicio
+                    </Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                      {formatFecha(selectedLicencia.fecha_inicio)}
+                    </Text>
+                  </View>
+
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={[{ fontSize: 12, fontWeight: "600", marginBottom: 4 }, isDark ? { color: "#9CA3AF" } : { color: "#666" }]}>
+                      Fecha de Fin
+                    </Text>
+                    <Text style={[{ fontSize: 14, fontWeight: "500" }, isDark && { color: "#FFFFFF" }]}>
+                      {formatFecha(selectedLicencia.fecha_fin)}
+                    </Text>
+                  </View>
+                </>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       <A_Menu navigation={navigation} />
     </View>
   );

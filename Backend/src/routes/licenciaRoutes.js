@@ -8,6 +8,9 @@ const router = express.Router();
 // GET todas las licencias - Solo FUNCIONARIO o ADMINISTRADOR
 router.get("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.getLicencias);
 
+// GET licencias del usuario autenticado
+router.get("/usuario/:id_usuario", authenticate, LicenciaController.getLicenciasUsuario);
+
 // GET licencia por ID - Solo el usuario autenticado o FUNCIONARIO/ADMINISTRADOR
 router.get("/:id", authenticate, LicenciaController.getLicencia);
 

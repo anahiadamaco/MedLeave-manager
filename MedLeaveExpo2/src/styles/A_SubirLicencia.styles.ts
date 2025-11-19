@@ -102,10 +102,29 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
   submitButtonDark: {
     backgroundColor: '#1E293B',
     borderWidth: 1,
     borderColor: '#334155',
+  },
+  fileButton: {
+    backgroundColor: '#C7E5FF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    gap: 8,
+  },
+  fileButtonText: {
+    color: '#333333',
+    fontWeight: '500',
   },
   submitButtonText: {
     color: '#ffffff',

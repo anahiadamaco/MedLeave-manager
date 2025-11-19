@@ -18,6 +18,7 @@ export const AUTH_ROUTES = {
 // Rutas de licencias
 export const LICENCIA_ROUTES = {
   GET_ALL: `${API_BASE_URL}/api/licencias`,
+  GET_BY_USER: (id: number) => `${API_BASE_URL}/api/licencias/usuario/${id}`,
   CREATE: `${API_BASE_URL}/api/licencias`,
   UPLOAD: `${API_BASE_URL}/api/licencias/upload`,
   UPDATE: (id: number) => `${API_BASE_URL}/api/licencias/${id}`,

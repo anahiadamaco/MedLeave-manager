@@ -1,8 +1,8 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Switch, ActivityIndicator, ScrollView } from "react-native";
 import { ChevronLeft, User as UserIcon } from "lucide-react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { styles } from "../styles/A_ProfileUser.styles";
+import { styles } from "../styles/P_ProfileUser.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,11 +28,10 @@ const ROLE_COLORS = {
   4: "#6C5CE7", // Administrador - Púrpura
 };
 
-export default function A_ProfileUser() {
-  const navigation = useNavigation<any>();
+export default function P_ProfileUser({ navigation }: any) {
   const { isDark, toggleTheme } = useTheme();
-  const [user, setUser] = React.useState<UserData | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -178,6 +177,8 @@ export default function A_ProfileUser() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Menú profesor */}
       <A_Menu navigation={navigation} />
     </View>
   );

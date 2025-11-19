@@ -24,6 +24,16 @@ export const getLicencia = async (req, res) => {
   }
 };
 
+export const getLicenciasUsuario = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const licencias = await LicenciaModel.getLicenciasByUsuario(id_usuario);
+    res.json({ success: true, data: licencias });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 export const createLicencia = async (req, res) => {
   try {
     const id = await LicenciaModel.createLicencia(req.body);
@@ -38,13 +48,18 @@ export const uploadLicencia = async (req, res) => {
   try {
     console.log("📝 [1] Iniciando uploadLicencia...");
     
-    const { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, cursos, id_usuario, file } = req.body;
-    console.log("📦 [2] Datos recibidos:", { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_usuario, file: file ? { name: file.name, type: file.type, base64Length: file.base64?.length } : null });
+    const { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_cursos, id_usuario, file } = req.body;
+    console.log("📦 [2] Datos recibidos:", { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_usuario, id_cursos, file: file ? { name: file.name, type: file.type, base64Length: file.base64?.length } : null });
 
     // Validar campos
     if (!folio || !fecha_emision || !fecha_inicio || !fecha_fin || !id_usuario || !motivo_medico) {
       console.log("❌ [3] Campos incompletos");
       return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    if (!id_cursos || !Array.isArray(id_cursos) || id_cursos.length === 0) {
+      console.log("❌ [3a] Cursos incompletos o no es un array");
+      return res.status(400).json({ error: "Debe seleccionar al menos un curso" });
     }
 
     if (!file || !file.base64 || !file.name) {
@@ -66,7 +81,15 @@ export const uploadLicencia = async (req, res) => {
     });
     console.log("✅ [4] Licencia creada con ID:", licenciaId);
 
-    // 2) Decodificar base64 y guardar archivo
+    // 2) Asociar cursos a la licencia
+    console.log("📝 [4a] Asociando cursos a licencia...");
+    for (const cursoId of id_cursos) {
+      const queryLicenciaCurso = `INSERT INTO licencia_curso (id_licencia, id_curso) VALUES (?, ?)`;
+      await pool.query(queryLicenciaCurso, [licenciaId, cursoId]);
+      console.log(`✅ [4a] Curso ${cursoId} asociado a licencia ${licenciaId}`);
+    }
+
+    // 3) Decodificar base64 y guardar archivo
     console.log("📝 [5] Decodificando base64 y guardando archivo...");
     let buffer = Buffer.from(file.base64, "base64");
     
@@ -95,17 +118,17 @@ export const uploadLicencia = async (req, res) => {
     fs.writeFileSync(filePath, buffer);
     console.log("✅ [5c] Archivo guardado en:", filePath);
 
-    // 3) Calcular hash SHA256
+    // 4) Calcular hash SHA256
     const hash = crypto.createHash("sha256").update(buffer).digest("hex");
     console.log("🔐 [6] Hash calculado:", hash);
 
-    // 4) Insertar en tabla archivolicencia
+    // 5) Insertar en tabla archivolicencia
     console.log("📝 [7] Insertando archivo en BD...");
     const query = `INSERT INTO archivolicencia (ruta_url, tipo_mime, hash, tamano, fecha_subida, id_licencia) VALUES (?, ?, ?, ?, NOW(), ?)`;
     const [result] = await pool.query(query, [filePath, file.type || "application/pdf", hash, buffer.length, licenciaId]);
     console.log("✅ [7] Archivo insertado con ID:", result.insertId);
 
-    // 5) Respuesta exitosa
+    // 6) Respuesta exitosa
     console.log("✅ [8] Enviando respuesta exitosa");
     return res.status(201).json({
       success: true,
@@ -113,7 +136,7 @@ export const uploadLicencia = async (req, res) => {
       licenciaId,
       archivoId: result.insertId,
       motivo_medico,
-      cursos,
+      id_cursos,
       file: { path: filePath, type: file.type, size: buffer.length, hash },
     });
   } catch (error) {

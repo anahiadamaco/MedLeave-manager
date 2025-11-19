@@ -19,7 +19,7 @@ export default function A_SubirLicencia({ navigation }: any) {
     fecha_inicio: "",
     fecha_fin: "",
     motivo_medico: "",
-    id_curso: "",
+    id_cursos: [] as number[],
   });
   const [loading, setLoading] = React.useState(false);
   const [userId, setUserId] = React.useState<number | null>(null);
@@ -122,9 +122,9 @@ export default function A_SubirLicencia({ navigation }: any) {
       !formData.fecha_inicio ||
       !formData.fecha_fin ||
       !formData.motivo_medico ||
-      !formData.id_curso
+      formData.id_cursos.length === 0
     ) {
-      Alert.alert("Error", "Por favor completa todos los campos");
+      Alert.alert("Error", "Por favor completa todos los campos y selecciona al menos un curso");
       return;
     }
 
@@ -185,7 +185,7 @@ export default function A_SubirLicencia({ navigation }: any) {
           fecha_inicio: formData.fecha_inicio,
           fecha_fin: formData.fecha_fin,
           motivo_medico: formData.motivo_medico,
-          id_curso: formData.id_curso,
+          id_cursos: formData.id_cursos,
           id_usuario: userId,
           file: {
             name: selectedFile.name,
@@ -216,7 +216,7 @@ export default function A_SubirLicencia({ navigation }: any) {
               fecha_inicio: "",
               fecha_fin: "",
               motivo_medico: "",
-              id_curso: "",
+              id_cursos: [],
             });
             setSelectedFile(null);
             navigation.navigate("A_home");
@@ -235,7 +235,9 @@ export default function A_SubirLicencia({ navigation }: any) {
   };
 
   // Obtener nombre del curso seleccionado
-  const selectedCursoName = cursos.find(c => c.id_curso === parseInt(formData.id_curso))?.nombre_curso || "Selecciona un curso";
+  const selectedCursoName = formData.id_cursos.length > 0 
+    ? `${formData.id_cursos.length} curso(s) seleccionado(s)` 
+    : "Selecciona uno o más cursos";
 
   return (
     <View style={[styles.container, isDark && styles.blackContainer]}>
@@ -328,47 +330,127 @@ export default function A_SubirLicencia({ navigation }: any) {
 
         {/* Cursos */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Curso:</Text>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Cursos:</Text>
           {loadingCursos ? (
             <ActivityIndicator color="#0089E0" />
           ) : (
-            <TouchableOpacity
-              style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
-              onPress={() => setShowCursosDropdown(!showCursosDropdown)}
-              disabled={loading}
-            >
-              <Text style={{ color: formData.id_curso ? '#000' : '#999' }}>
-                {selectedCursoName}
-              </Text>
-              <ChevronDown size={20} color="#0089E0" style={{ transform: [{ rotate: showCursosDropdown ? '180deg' : '0deg' }] }} />
-            </TouchableOpacity>
-          )}
-
-          {showCursosDropdown && cursos.length > 0 && (
-            <FlatList
-              data={cursos}
-              keyExtractor={(item) => item.id_curso.toString()}
-              scrollEnabled={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
-                    formData.id_curso === item.id_curso.toString() && { backgroundColor: '#e3f2fd' }
-                  ]}
-                  onPress={() => {
-                    handleInputChange("id_curso", item.id_curso.toString());
-                    setShowCursosDropdown(false);
-                  }}
-                >
-                  <Text style={{ fontSize: 14, color: '#333' }}>
-                    {item.codigo} - {item.nombre_curso}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: '#666' }}>
-                    Profesor: {item.profesor_nombre}
-                  </Text>
-                </TouchableOpacity>
+            <>
+              {/* Selected Courses Display */}
+              {formData.id_cursos.length > 0 && (
+                <View style={{ marginBottom: 12, gap: 8 }}>
+                  {formData.id_cursos.map((cursoId) => {
+                    const curso = cursos.find(c => c.id_curso === cursoId);
+                    return (
+                      <View
+                        key={cursoId}
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backgroundColor: '#e3f2fd',
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 6,
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 14, fontWeight: '600', color: '#000' }}>
+                            {curso?.codigo}
+                          </Text>
+                          <Text style={{ fontSize: 12, color: '#666' }}>
+                            {curso?.nombre_curso}
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setFormData({
+                              ...formData,
+                              id_cursos: formData.id_cursos.filter(id => id !== cursoId),
+                            });
+                          }}
+                        >
+                          <X size={20} color="#ff6b6b" />
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
+                </View>
               )}
-            />
+
+              {/* Course Selection Dropdown */}
+              <TouchableOpacity
+                style={[styles.input, isDark && styles.blackInput, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}
+                onPress={() => setShowCursosDropdown(!showCursosDropdown)}
+                disabled={loading}
+              >
+                <Text style={{ color: formData.id_cursos.length > 0 ? '#000' : '#999' }}>
+                  {selectedCursoName}
+                </Text>
+                <ChevronDown size={20} color="#0089E0" style={{ transform: [{ rotate: showCursosDropdown ? '180deg' : '0deg' }] }} />
+              </TouchableOpacity>
+
+              {showCursosDropdown && cursos.length > 0 && (
+                <FlatList
+                  data={cursos}
+                  keyExtractor={(item) => item.id_curso.toString()}
+                  scrollEnabled={false}
+                  renderItem={({ item }) => {
+                    const isSelected = formData.id_cursos.includes(item.id_curso);
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          { 
+                            padding: 12, 
+                            borderBottomWidth: 1, 
+                            borderBottomColor: '#eee',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 12,
+                          },
+                          isSelected && { backgroundColor: '#e3f2fd' }
+                        ]}
+                        onPress={() => {
+                          if (isSelected) {
+                            setFormData({
+                              ...formData,
+                              id_cursos: formData.id_cursos.filter(id => id !== item.id_curso),
+                            });
+                          } else {
+                            setFormData({
+                              ...formData,
+                              id_cursos: [...formData.id_cursos, item.id_curso],
+                            });
+                          }
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderWidth: 2,
+                            borderColor: '#0089E0',
+                            borderRadius: 4,
+                            backgroundColor: isSelected ? '#0089E0' : 'transparent',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {isSelected && <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}>✓</Text>}
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 14, color: '#333', fontWeight: isSelected ? '600' : '400' }}>
+                            {item.codigo} - {item.nombre_curso}
+                          </Text>
+                          <Text style={{ fontSize: 12, color: '#666' }}>
+                            Profesor: {item.profesor_nombre}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              )}
+            </>
           )}
         </View>
 
