@@ -3,6 +3,7 @@ import pool from "../config/db.js";
 import fs from "fs";
 import crypto from "crypto";
 import path from "path";
+import pako from "pako";
 
 export const getLicencias = async (req, res) => {
   try {
@@ -26,9 +27,9 @@ export const getLicencia = async (req, res) => {
 export const createLicencia = async (req, res) => {
   try {
     const id = await LicenciaModel.createLicencia(req.body);
-    res.status(201).json({ message: "Licencia creada", id });
+    res.status(201).json({ success: true, message: "Licencia creada", id });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -67,18 +68,32 @@ export const uploadLicencia = async (req, res) => {
 
     // 2) Decodificar base64 y guardar archivo
     console.log("📝 [5] Decodificando base64 y guardando archivo...");
-    const buffer = Buffer.from(file.base64, "base64");
+    let buffer = Buffer.from(file.base64, "base64");
+    
+    // Descomprimir si está comprimido
+    if (file.compressed) {
+      console.log("📊 [5a] Descomprimiendo archivo...");
+      try {
+        const compressed = buffer;
+        buffer = Buffer.from(pako.ungzip(compressed));
+        console.log("✅ [5a] Archivo descomprimido. Tamaño original:", buffer.length);
+      } catch (unzipError) {
+        console.error("❌ [5a] Error descomprimiendo:", unzipError);
+        return res.status(400).json({ error: "No se pudo descomprimir el archivo" });
+      }
+    }
+    
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const uploadsDir = path.resolve("uploads");
     
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
-      console.log("📁 [5a] Directorio uploads creado");
+      console.log("📁 [5b] Directorio uploads creado");
     }
     
     const filePath = path.join(uploadsDir, uniqueSuffix + "-" + file.name);
     fs.writeFileSync(filePath, buffer);
-    console.log("✅ [5] Archivo guardado en:", filePath);
+    console.log("✅ [5c] Archivo guardado en:", filePath);
 
     // 3) Calcular hash SHA256
     const hash = crypto.createHash("sha256").update(buffer).digest("hex");
@@ -93,6 +108,7 @@ export const uploadLicencia = async (req, res) => {
     // 5) Respuesta exitosa
     console.log("✅ [8] Enviando respuesta exitosa");
     return res.status(201).json({
+      success: true,
       message: "Licencia y archivo subidos correctamente",
       licenciaId,
       archivoId: result.insertId,

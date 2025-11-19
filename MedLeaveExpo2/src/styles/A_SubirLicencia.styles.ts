@@ -113,4 +113,28 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  fileContainer: {
+    backgroundColor: '#E8F5E9',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
+  fileContainerDark: {
+    backgroundColor: '#1B5E20',
+    borderColor: '#66BB6A',
+  },
+  fileName: {
+    color: '#2E7D32',
+    fontWeight: '500',
+    flex: 1,
+  },
+  fileNameDark: {
+    color: '#C8E6C9',
+  },
 });

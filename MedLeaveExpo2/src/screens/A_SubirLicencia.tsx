@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from "react-native";
-import { ChevronLeft } from "lucide-react-native";
+import { ChevronLeft, Paperclip, X } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as DocumentPicker from "expo-document-picker";
+import * as pako from "pako";
 import { LICENCIA_ROUTES } from "../config/api";
 import { styles } from "../styles/A_SubirLicencia.styles";
 import A_Menu from "../components/A_Menu";
@@ -10,15 +13,51 @@ export default function A_SubirLicencia({ navigation }: any) {
   const { isDark } = useTheme();
 
   const [formData, setFormData] = React.useState({
-    nombres: "",
-    apellidos: "",
-    fechaEmision: "",
-    inicioLicencia: "",
-    terminoLicencia: "",
-    cursosJustificar: "",
-    seccion: "",
+    folio: "",
+    fecha_emision: "",
+    fecha_inicio: "",
+    fecha_fin: "",
+    motivo_medico: "",
+    cursos: "",
   });
   const [loading, setLoading] = React.useState(false);
+  const [userId, setUserId] = React.useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = React.useState<any>(null);
+
+  // Obtener ID del usuario del almacenamiento
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const user = await AsyncStorage.getItem("user");
+        if (user) {
+          const userData = JSON.parse(user);
+          setUserId(userData.id_usuario);
+        }
+      } catch (error) {
+        console.error("Error obteniendo usuario:", error);
+      }
+    };
+    getUserId();
+  }, []);
+
+  const handleSelectFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setSelectedFile(result.assets[0]);
+      }
+    } catch (error) {
+      console.error("Error seleccionando archivo:", error);
+      Alert.alert("Error", "No se pudo seleccionar el archivo");
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -27,60 +66,131 @@ export default function A_SubirLicencia({ navigation }: any) {
   const handleSubmit = async () => {
     // Validaciones
     if (
-      !formData.nombres ||
-      !formData.apellidos ||
-      !formData.fechaEmision ||
-      !formData.inicioLicencia ||
-      !formData.terminoLicencia ||
-      !formData.cursosJustificar ||
-      !formData.seccion
+      !formData.folio ||
+      !formData.fecha_emision ||
+      !formData.fecha_inicio ||
+      !formData.fecha_fin ||
+      !formData.motivo_medico ||
+      !formData.cursos
     ) {
       Alert.alert("Error", "Por favor completa todos los campos");
+      return;
+    }
+
+    if (!selectedFile) {
+      Alert.alert("Error", "Por favor selecciona un archivo PDF");
+      return;
+    }
+
+    if (!userId) {
+      Alert.alert("Error", "No se pudo obtener la información del usuario");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch(LICENCIA_ROUTES.CREATE, {
+      // Leer el archivo como base64
+      const fileResponse = await fetch(selectedFile.uri);
+      const blob = await fileResponse.blob();
+      
+      const fileContent = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result as string;
+          // Extraer solo la parte base64 (sin el prefijo data:...)
+          const base64Data = base64String.split(',')[1] || base64String;
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      // Convertir base64 a bytes y comprimir
+      const binaryString = atob(fileContent);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const compressed = pako.gzip(bytes);
+      
+      // Convertir bytes comprimidos a base64 de forma eficiente
+      let compressedBase64 = "";
+      const chunkSize = 8192;
+      for (let i = 0; i < compressed.length; i += chunkSize) {
+        const chunk = compressed.slice(i, i + chunkSize);
+        compressedBase64 += String.fromCharCode(...chunk);
+      }
+      compressedBase64 = btoa(compressedBase64);
+
+      const response = await fetch(LICENCIA_ROUTES.UPLOAD, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombres: formData.nombres,
-          apellidos: formData.apellidos,
-          fecha_emision: formData.fechaEmision,
-          inicio_licencia: formData.inicioLicencia,
-          termino_licencia: formData.terminoLicencia,
-          cursos_justificar: formData.cursosJustificar,
-          seccion: formData.seccion,
+          folio: formData.folio,
+          fecha_emision: formData.fecha_emision,
+          fecha_inicio: formData.fecha_inicio,
+          fecha_fin: formData.fecha_fin,
+          motivo_medico: formData.motivo_medico,
+          cursos: formData.cursos,
+          id_usuario: userId,
+          file: {
+            name: selectedFile.name,
+            base64: compressedBase64,
+            type: selectedFile.mimeType || "application/pdf",
+            compressed: true,
+          },
         }),
       });
 
       const data = await response.json();
+      console.log("📦 [RESPUESTA] Data recibida:", data);
+      console.log("📊 [RESPUESTA] Status:", response.status);
+      console.log("✅ [RESPUESTA] Success:", data.success);
 
       if (!response.ok || !data.success) {
         Alert.alert("Error", data.message || "No se pudo enviar la licencia");
         return;
       }
 
-      Alert.alert("Éxito", "Licencia enviada correctamente");
-
-      setFormData({
-        nombres: "",
-        apellidos: "",
-        fechaEmision: "",
-        inicioLicencia: "",
-        terminoLicencia: "",
-        cursosJustificar: "",
-        seccion: "",
-      });
+      console.log("🎉 [ÉXITO] Mostrando alert...");
+      Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
+        {
+          text: "Ir al inicio",
+          onPress: () => {
+            console.log("🔄 [NAVEGACIÓN] Limpiando formulario...");
+            setFormData({
+              folio: "",
+              fecha_emision: "",
+              fecha_inicio: "",
+              fecha_fin: "",
+              motivo_medico: "",
+              cursos: "",
+            });
+            setSelectedFile(null);
+            console.log("🔄 [NAVEGACIÓN] Navegando a A_home...");
+            navigation.navigate("A_home");
+            console.log("🔄 [NAVEGACIÓN] Navegación completada");
+          },
+        },
+      ]);
     } catch (error: any) {
       console.error("Error de conexión:", error);
       Alert.alert(
-        "Error de conexión",
-        "No se pudo conectar con el servidor."
+        "❌ Error de conexión",
+        error.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        [
+          {
+            text: "Reintentar",
+            onPress: () => handleSubmit(),
+          },
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+        ]
       );
     } finally {
       setLoading(false);
@@ -112,24 +222,15 @@ export default function A_SubirLicencia({ navigation }: any) {
           y segura.
         </Text>
 
-        {/* Campo: Nombres */}
+        {/* Campo: Folio */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Nombres:</Text>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
-            value={formData.nombres}
-            onChangeText={(value) => handleInputChange("nombres", value)}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Campo: Apellidos */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Apellidos:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.apellidos}
-            onChangeText={(value) => handleInputChange("apellidos", value)}
+            value={formData.folio}
+            onChangeText={(value) => handleInputChange("folio", value)}
+            placeholder="Ej: LIC-2025-001"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
             editable={!loading}
           />
         </View>
@@ -139,36 +240,51 @@ export default function A_SubirLicencia({ navigation }: any) {
           <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de emisión:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
-            value={formData.fechaEmision}
-            onChangeText={(value) => handleInputChange("fechaEmision", value)}
+            value={formData.fecha_emision}
+            onChangeText={(value) => handleInputChange("fecha_emision", value)}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#ffffff' : '#4A4A4A'}
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
             editable={!loading}
           />
         </View>
 
-        {/* Campo: Inicio licencia */}
+        {/* Campo: Fecha de inicio */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Inicio licencia:</Text>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de inicio:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
-            value={formData.inicioLicencia}
-            onChangeText={(value) => handleInputChange("inicioLicencia", value)}
+            value={formData.fecha_inicio}
+            onChangeText={(value) => handleInputChange("fecha_inicio", value)}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#ffffff' : '#4A4A4A'}
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
             editable={!loading}
           />
         </View>
 
-        {/* Campo: Término licencia */}
+        {/* Campo: Fecha de fin */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Término licencia:</Text>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Fecha de fin:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
-            value={formData.terminoLicencia}
-            onChangeText={(value) => handleInputChange("terminoLicencia", value)}
+            value={formData.fecha_fin}
+            onChangeText={(value) => handleInputChange("fecha_fin", value)}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor={isDark ? '#ffffff' : '#4A4A4A'}
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            editable={!loading}
+          />
+        </View>
+
+        {/* Campo: Motivo médico */}
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.label, isDark && styles.blackLabel]}>Motivo médico:</Text>
+          <TextInput
+            style={[styles.input, isDark && styles.blackInput]}
+            value={formData.motivo_medico}
+            onChangeText={(value) => handleInputChange("motivo_medico", value)}
+            placeholder="Descripción del motivo médico"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={4}
             editable={!loading}
           />
         </View>
@@ -178,28 +294,39 @@ export default function A_SubirLicencia({ navigation }: any) {
           <Text style={[styles.label, isDark && styles.blackLabel]}>Cursos a justificar:</Text>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
-            value={formData.cursosJustificar}
-            onChangeText={(value) => handleInputChange("cursosJustificar", value)}
+            value={formData.cursos}
+            onChangeText={(value) => handleInputChange("cursos", value)}
+            placeholder="Ej: Matemáticas, Historia, Inglés"
+            placeholderTextColor={isDark ? '#999999' : '#999999'}
+            multiline
+            numberOfLines={3}
             editable={!loading}
           />
         </View>
 
-        {/* Campo: Sección */}
-        <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Sección:</Text>
-          <TextInput
-            style={[styles.input, isDark && styles.blackInput]}
-            value={formData.seccion}
-            onChangeText={(value) => handleInputChange("seccion", value)}
-            editable={!loading}
-          />
-        </View>
-
-        {/* Botón de adjuntar */}
-        <TouchableOpacity style={[styles.attachButton, isDark && styles.attachButtonDark]}>
-          <Text style={[styles.attachButtonText, isDark && styles.attachButtonTextDark]}>Adjuntar licencia médica</Text>
-          <Text style={styles.attachIcon}>📎</Text>
+        {/* Seleccionar PDF */}
+        <TouchableOpacity 
+          style={[styles.attachButton, isDark && styles.attachButtonDark]}
+          onPress={handleSelectFile}
+          disabled={loading}
+        >
+          <Paperclip size={20} color="#ffffff" />
+          <Text style={[styles.attachButtonText, isDark && styles.attachButtonTextDark]}>
+            Seleccionar licencia médica PDF
+          </Text>
         </TouchableOpacity>
+
+        {/* Mostrar archivo seleccionado */}
+        {selectedFile && (
+          <View style={[styles.fileContainer, isDark && styles.fileContainerDark]}>
+            <Text style={[styles.fileName, isDark && styles.fileNameDark]}>
+              ✓ {selectedFile.name}
+            </Text>
+            <TouchableOpacity onPress={handleRemoveFile} disabled={loading}>
+              <X size={20} color={isDark ? "#999999" : "#666666"} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Botón enviar */}
         <TouchableOpacity 
@@ -210,7 +337,7 @@ export default function A_SubirLicencia({ navigation }: any) {
           {loading ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.submitButtonText}>Enviar</Text>
+            <Text style={styles.submitButtonText}>Enviar licencia</Text>
           )}
         </TouchableOpacity>
       </ScrollView>
