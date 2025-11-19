@@ -6,5 +6,5 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
-  console.log(`Accesible desde: http://172.16.5.49:${PORT}`);
+  console.log(`Accesible desde: http://172.16.3.215:${PORT}`);
 });

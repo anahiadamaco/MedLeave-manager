@@ -5,7 +5,7 @@
  * Si quieres cambiar a un servidor en la nube, solo cambia esta URL
  */
 
-export const API_BASE_URL = "http://172.16.5.49:3000";
+export const API_BASE_URL = "http://172.16.3.215:3000";
 
 // Rutas de autenticación
 export const AUTH_ROUTES = {

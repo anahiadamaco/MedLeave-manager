@@ -1,4 +1,6 @@
-import pdfParse from 'pdf-parse';
+import * as pdfParse from 'pdf-parse';
+
+
 import fs from 'fs/promises';
 
 class PdfValidationService {
