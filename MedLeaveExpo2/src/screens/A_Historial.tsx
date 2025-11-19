@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LICENCIA_ROUTES } from "../config/api";
 
 interface Licencia {
+  id_licencia?: number;
   folio: number;
   fecha_emision: string;
   fecha_inicio: string;
@@ -42,6 +43,7 @@ const A_Historial = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      console.log("🔄 [HISTORIAL] Pantalla en foco - recargando");
       loadUserData();
     }, [])
   );
@@ -93,7 +95,16 @@ const A_Historial = () => {
       
       if (data.success && Array.isArray(data.data)) {
         console.log(`✅ ${data.data.length} licencias cargadas`);
-        setLicencias(data.data);
+        
+        // Limpiar datos inválidos (null courses, etc)
+        const licenciasLimpias = data.data.map((lic: Licencia) => ({
+          ...lic,
+          cursos: Array.isArray(lic.cursos) 
+            ? lic.cursos.filter((c: any) => c && c.id_curso) 
+            : []
+        }));
+        
+        setLicencias(licenciasLimpias);
       } else {
         console.warn("⚠️ Respuesta inesperada:", data);
         setLicencias([]);
@@ -151,7 +162,7 @@ const A_Historial = () => {
           <View style={styles.cursosList}>
             {licencias.map((licencia) => (
               <View
-                key={licencia.folio}
+                key={licencia.id_licencia}
                 style={[
                   styles.cursoCard,
                   isDark && styles.blackCursoCard,

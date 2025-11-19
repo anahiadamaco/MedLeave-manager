@@ -45,10 +45,28 @@ export const getLicenciasByUsuario = async (id_usuario) => {
   const [rows] = await pool.query(query, [id_usuario]);
   
   // Process rows to clean up null course data
-  return rows.map(row => ({
-    ...row,
-    cursos: Array.isArray(row.cursos) ? row.cursos.filter(c => c !== null && c.id_curso !== null) : []
-  }));
+  return rows.map(row => {
+    let cursosArray = [];
+    
+    // Parse cursos if it's a string (JSON)
+    if (typeof row.cursos === 'string') {
+      try {
+        cursosArray = JSON.parse(row.cursos);
+      } catch (e) {
+        cursosArray = [];
+      }
+    } else if (Array.isArray(row.cursos)) {
+      cursosArray = row.cursos;
+    }
+    
+    // Filter out null values
+    const cursosFiltrados = cursosArray.filter(c => c !== null && c.id_curso !== null && c.id_curso !== undefined);
+    
+    return {
+      ...row,
+      cursos: cursosFiltrados
+    };
+  });
 };
 
 export const createLicencia = async (licencia) => {
