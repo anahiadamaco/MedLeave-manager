@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import pool from "../config/db.js"; // tu conexión MySQL (default export)
 import { registerValidation, loginValidation } from "../validators/authValidators.js";
 import crypto from "crypto";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
 const router = express.Router();
 
@@ -99,12 +100,15 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const { correo_usuario } = req.body;
 
+    console.log(`[FORGOT_PASSWORD] Solicitado para: ${correo_usuario}`);
+
     // Buscar usuario por correo
     const [rows] = await pool.query("SELECT * FROM usuario WHERE correo_usuario = ?", [
       correo_usuario,
     ]);
 
     if (rows.length === 0) {
+      console.log(`[FORGOT_PASSWORD] Correo no encontrado: ${correo_usuario}`);
       // No devolver error específico por seguridad
       return res.json({
         success: true,
@@ -113,6 +117,7 @@ router.post("/forgot-password", async (req, res) => {
     }
 
     const user = rows[0];
+    console.log(`[FORGOT_PASSWORD] Usuario encontrado: ${user.id_usuario}`);
 
     // Generar token único (válido 1 hora)
     const token = crypto.randomBytes(32).toString("hex");
@@ -124,15 +129,48 @@ router.post("/forgot-password", async (req, res) => {
       [token, tokenExpiry, user.id_usuario]
     );
 
-    console.log(`[FORGOT_PASSWORD] Token generado para ${correo_usuario}: ${token}`);
-    console.log(`[FORGOT_PASSWORD] Link de reset: http://localhost:8082/reset-password?token=${token}`);
+    console.log(`[FORGOT_PASSWORD] Token generado: ${token}`);
 
-    // TODO: Aquí iría el envío de email con nodemailer
-    // Por ahora, solo registramos en logs
+    // Enviar email con Brevo
+    try {
+      // Configurar cliente de Brevo
+      const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+      SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+
+      const resetLink = `http://localhost:8082/reset-password?token=${token}`;
+
+      const emailData = new SibApiV3Sdk.SendSmtpEmail();
+      emailData.subject = "Recuperar tu contraseña - MedLeave Manager";
+      emailData.htmlContent = `
+        <h2>Hola ${user.nombre}</h2>
+        <p>Recibimos una solicitud para restablecer tu contraseña.</p>
+        <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+        <a href="${resetLink}" style="background-color: #0089E0; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Restablecer Contraseña
+        </a>
+        <p><strong>Este enlace es válido por 1 hora.</strong></p>
+        <p>Si no solicitaste esto, ignora este correo.</p>
+      `;
+      emailData.sender = {
+        name: "MedLeave Manager",
+        email: process.env.BREVO_SENDER_EMAIL || "noreply.medleave@gmail.com"
+      };
+      emailData.to = [{
+        email: correo_usuario,
+        name: user.nombre
+      }];
+
+      await apiInstance.sendTransacEmail(emailData);
+      console.log(`[FORGOT_PASSWORD] Email enviado a: ${correo_usuario}`);
+    } catch (emailError) {
+      console.error("[FORGOT_PASSWORD] Error enviando email:", emailError.message);
+      // El token se generó pero el email falló - igual respondemos éxito
+    }
 
     res.json({
       success: true,
       message: "Si el correo existe en nuestro sistema, recibirás un enlace de recuperación.",
+      token: token, // Para desarrollo/testing
     });
   } catch (error) {
     console.error("Error en forgot-password:", error);
