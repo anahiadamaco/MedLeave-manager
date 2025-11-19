@@ -9,8 +9,7 @@ type Props = {
 };
 
 export default function A_Menu({ navigation }: Props) {
-  const { isDark} = useTheme();
-
+  const { isDark} = useTheme(); 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
       <TouchableOpacity
@@ -34,7 +33,7 @@ export default function A_Menu({ navigation }: Props) {
         onPress={() => navigation.navigate("A_SubirLicencia")}
       >
         <Upload color="#ffffff" size={26} />
-        <Text style={styles.label}>Subir Licencia</Text>
+        <Text style={styles.label}>Subir licencia</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -42,7 +41,7 @@ export default function A_Menu({ navigation }: Props) {
         onPress={() => navigation.navigate("A_FyQ")}
       >
         <HelpCircle color="#ffffff" size={26} />
-        <Text style={styles.label}>P&R</Text>
+        <Text style={styles.label}>Preguntas</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

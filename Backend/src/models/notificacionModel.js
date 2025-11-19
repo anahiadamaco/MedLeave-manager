@@ -1,47 +1,20 @@
 import pool from "../config/db.js";
 
 export const getAllNotificaciones = async () => {
-  const [rows] = await pool.query("SELECT * FROM notificacion ORDER BY fecha_envio DESC");
+  const [rows] = await pool.query("SELECT * FROM notificacion");
   return rows;
 };
 
 export const getNotificacionesByUsuario = async (id_usuario) => {
-  const [rows] = await pool.query(
-    "SELECT * FROM notificacion WHERE id_usuario = ? ORDER BY fecha_envio DESC",
-    [id_usuario]
-  );
-  return rows;
-};
-
-export const getNotificacionesNoLeidasByUsuario = async (id_usuario) => {
-  const [rows] = await pool.query(
-    "SELECT * FROM notificacion WHERE id_usuario = ? AND leido = 0 ORDER BY fecha_envio DESC",
-    [id_usuario]
-  );
+  const [rows] = await pool.query("SELECT * FROM notificacion WHERE id_usuario = ?", [id_usuario]);
   return rows;
 };
 
 export const createNotificacion = async (notificacion) => {
   const { asunto, contenido, id_usuario } = notificacion;
   const [result] = await pool.query(
-    "INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)",
+    "INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario) VALUES (?, ?, NOW(), ?)",
     [asunto, contenido, id_usuario]
   );
   return result.insertId;
-};
-
-export const markAsRead = async (id_notificacion) => {
-  const [result] = await pool.query(
-    "UPDATE notificacion SET leido = 1 WHERE id_notificacion = ?",
-    [id_notificacion]
-  );
-  return result.affectedRows;
-};
-
-export const markAllAsReadByUsuario = async (id_usuario) => {
-  const [result] = await pool.query(
-    "UPDATE notificacion SET leido = 1 WHERE id_usuario = ? AND leido = 0",
-    [id_usuario]
-  );
-  return result.affectedRows;
 };
