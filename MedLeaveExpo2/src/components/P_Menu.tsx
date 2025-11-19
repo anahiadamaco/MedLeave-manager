@@ -3,13 +3,17 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import { Home, History, HelpCircle, User, Mail } from "lucide-react-native";
 
+import { useTheme } from "./ThemeContext";
+
 type Props = {
   navigation: NavigationProp<any>;
 };
 
 export default function A_Menu({ navigation }: Props) {
+  const { isDark } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
       <TouchableOpacity
         style={styles.item}
         onPress={() => navigation.navigate("P_Home")}
@@ -44,7 +48,7 @@ export default function A_Menu({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("P_Perfil")}
+        onPress={() => navigation.navigate("P_ProfileUser")}
       >
         <User color="#ffffff" size={26} />
         <Text style={styles.label}>Usuario</Text>
@@ -68,6 +72,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+
+  blackContainer: {
+    backgroundColor: "#0f172a",
+    borderTopColor: "#334155",
+  },
+
   item: {
     alignItems: "center",
   },

@@ -20,6 +20,7 @@ import P_Historial from "../screens/P_Historial";
 import P_HistorialRamo from "../screens/P_HistorialRamo";
 import P_FyQ from "../screens/P_FyQ";
 import P_Mensajes from "../screens/P_Mensajes";
+import P_ProfileUser from "../screens/P_ProfileUser";
 
 // Pantallas Funcionario
 import F_Home from "../screens/F_Home";
@@ -109,6 +110,11 @@ export default function Navigation() {
         <Stack.Screen 
           name="P_Mensajes" 
           component={P_Mensajes}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="P_ProfileUser" 
+          component={P_ProfileUser}
           options={{ headerShown: false }}
         />
 

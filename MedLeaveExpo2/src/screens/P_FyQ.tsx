@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { styles } from "../styles/P_FyQ.styles";
+import { useTheme } from "../components/ThemeContext";
 import P_Menu from "../components/P_Menu";
 
 export default function P_FyQ({ navigation }: any) {
+  const { isDark } = useTheme();
   const [expanded, setExpanded] = useState<number | null>(null);
 
   const preguntas = [
@@ -76,8 +78,8 @@ export default function P_FyQ({ navigation }: any) {
   ];
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, isDark && styles.blackContainer]}>
+      <View style={[styles.header, isDark && styles.blackHeader]}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           style={styles.backButton}
@@ -91,23 +93,23 @@ export default function P_FyQ({ navigation }: any) {
 
       {/* Contenido */}
       <ScrollView 
-        style={styles.content} 
+        style={[styles.content, isDark && styles.blackContent]} 
         showsVerticalScrollIndicator={false}
       >
         {preguntas.map((item) => (
           <View key={item.id} style={styles.questionContainer}>
             <TouchableOpacity
-              style={styles.questionButton}
+              style={[styles.questionButton, isDark && styles.questionButtonDark]}
               onPress={() => setExpanded(expanded === item.id ? null : item.id)}
             >
-              <Text style={styles.questionText}>{item.pregunta}</Text>
-              <Text style={styles.expandIcon}>
+              <Text style={[styles.questionText, isDark && styles.questionTextDark]}>{item.pregunta}</Text>
+              <Text style={[styles.expandIcon, isDark && styles.expandIconDark]}>
                 {expanded === item.id ? "▲" : "▼"}
               </Text>
             </TouchableOpacity>
             {expanded === item.id && (
-              <View style={styles.answerContainer}>
-                <Text style={styles.answerText}>{item.respuesta}</Text>
+              <View style={[styles.answerContainer, isDark && styles.answerContainerDark]}>
+                <Text style={[styles.answerText, isDark && styles.answerTextDark]}>{item.respuesta}</Text>
               </View>
             )}
           </View>

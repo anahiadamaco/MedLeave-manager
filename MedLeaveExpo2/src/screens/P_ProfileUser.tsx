@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Switch, Image, Linking } from "react-native";
+import { View, Text, TouchableOpacity, Switch } from "react-native";
 import { ChevronLeft, User as UserIcon } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
-import { styles } from "../styles/A_ProfileUser.styles";
-import A_Menu from "../components/A_Menu";
+import { styles } from "../styles/P_ProfileUser.styles";
+import P_Menu from "../components/P_Menu";
 import { useTheme } from "../components/ThemeContext";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-export default function A_ProfileUser() {
-  const navigation = useNavigation<any>();
+export default function P_ProfileUser({ navigation }: any) {
   const { isDark, toggleTheme } = useTheme();
   const [correoReal, setCorreoReal] = useState<string>("");
 
@@ -20,15 +16,13 @@ export default function A_ProfileUser() {
     });
   }, []);
 
-
-
-  // Datos de ejemplo
+  // Datos de ejemplo (puedes luego leer también nombre/rut desde AsyncStorage si quieres)
   const user = {
     nombre: "Juan Castro",
     rut: "12.345.678-9",
     correo: correoReal || "Cargando...",
     carrera: "Ingeniería en Informática",
-    rol: "Estudiante",
+    rol: "Profesor",
   };
 
   return (
@@ -47,8 +41,7 @@ export default function A_ProfileUser() {
       {/* Contenido principal */}
       <View style={styles.content}>
         <View style={styles.avatarContainer}>
-
-          {/* En daDO CASO de que se use foto*/}
+          {/* En dado caso de que se use foto */}
           <View style={[styles.avatarCircle, isDark && styles.blackAvatarCircle]}>
             <UserIcon size={36} color="#ffffff" />
           </View>
@@ -60,30 +53,46 @@ export default function A_ProfileUser() {
           </Text>
         </View>
 
-        {/*Tarjeta*/}
+        {/* Tarjeta datos */}
         <View style={[styles.card, isDark && styles.cardDark]}>
           <Text style={[styles.cardTitle, isDark && styles.textDarkPrimary]}>
             Datos del usuario
           </Text>
 
           <View style={styles.row}>
-            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>RUT:</Text>
-            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>{user.rut}</Text>
+            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>
+              RUT:
+            </Text>
+            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>
+              {user.rut}
+            </Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>Correo:</Text>
-            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>{user.correo}</Text>
+            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>
+              Correo:
+            </Text>
+            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>
+              {user.correo}
+            </Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>Carrera:</Text>
-            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>{user.carrera}</Text>
+            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>
+              Carrera:
+            </Text>
+            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>
+              {user.carrera}
+            </Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>Rol:</Text>
-            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>{user.rol}</Text>
+            <Text style={[styles.label, isDark && styles.textDarkSecondary]}>
+              Rol:
+            </Text>
+            <Text style={[styles.value, isDark && styles.textDarkPrimary]}>
+              {user.rol}
+            </Text>
           </View>
 
           <Text style={[styles.infoText, isDark && styles.textDarkSecondary]}>
@@ -91,7 +100,7 @@ export default function A_ProfileUser() {
           </Text>
         </View>
 
-        {/*Modo Oscuro*/}
+        {/* Tarjeta preferencias */}
         <View style={[styles.card, isDark && styles.cardDark]}>
           <Text style={[styles.cardTitle, isDark && styles.textDarkPrimary]}>
             Preferencias
@@ -101,14 +110,13 @@ export default function A_ProfileUser() {
             <Text style={[styles.label, isDark && styles.textDarkSecondary]}>
               Modo oscuro
             </Text>
-            <Switch
-              value={isDark}
-              onValueChange={toggleTheme}
-            />
+            <Switch value={isDark} onValueChange={toggleTheme} />
           </View>
         </View>
       </View>
-      <A_Menu navigation={navigation} />
+
+      {/* Menú profesor */}
+      <P_Menu navigation={navigation} />
     </View>
   );
 }
