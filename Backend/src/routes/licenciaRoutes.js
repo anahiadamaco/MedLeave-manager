@@ -29,4 +29,10 @@ router.put("/:id_licencia/aprobar", authenticate, requireRole(ROLES.FUNCIONARIO,
 // PUT rechazar licencia - Solo FUNCIONARIO o ADMINISTRADOR
 router.put("/:id_licencia/rechazar", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), LicenciaController.rechazarLicencia);
 
+// PUT editar licencia pendiente - Solo ESTUDIANTE (dueño de la licencia)
+router.put("/:id_licencia/editar", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaController.editarLicencia);
+
+// DELETE eliminar licencia pendiente - Solo ESTUDIANTE (dueño de la licencia)
+router.delete("/:id_licencia", authenticate, requireRole(ROLES.ESTUDIANTE), LicenciaController.deletarLicencia);
+
 export default router;

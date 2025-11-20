@@ -259,3 +259,111 @@ export const rechazarLicencia = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Editar una licencia pendiente
+export const editarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_cursos } = req.body;
+    const userId = req.user.id_usuario;
+
+    console.log(`📍 [EDITAR] Editando licencia: ${id_licencia}`);
+
+    // Verificar que la licencia existe y pertenece al usuario
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [EDITAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+
+    // Verificar que pertenece al usuario autenticado
+    if (licencia.id_usuario !== userId) {
+      console.log(`❌ [EDITAR] El usuario ${userId} no es propietario de la licencia ${id_licencia}`);
+      return res.status(403).json({ success: false, error: "No tienes permiso para editar esta licencia" });
+    }
+
+    // Verificar que la licencia está en estado pendiente
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      console.log(`❌ [EDITAR] Licencia ${id_licencia} no está en estado pendiente (estado: ${licencia.estado})`);
+      return res.status(400).json({ success: false, error: "Solo puedes editar licencias en estado pendiente" });
+    }
+
+    console.log(`📊 [EDITAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+
+    // Actualizar los datos de la licencia
+    const query = `
+      UPDATE licenciamedica 
+      SET folio = ?, fecha_emision = ?, fecha_inicio = ?, fecha_fin = ?, motivo_medico = ?
+      WHERE id_licencia = ?
+    `;
+
+    await pool.query(query, [folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_licencia]);
+    console.log(`✅ [EDITAR] Licencia ${id_licencia} actualizada correctamente`);
+
+    // Actualizar cursos si se proporcionan
+    if (Array.isArray(id_cursos) && id_cursos.length > 0) {
+      // Eliminar cursos anteriores
+      await pool.query(`DELETE FROM licencia_curso WHERE id_licencia = ?`, [id_licencia]);
+      console.log(`📝 [EDITAR] Cursos anteriores eliminados`);
+
+      // Agregar nuevos cursos
+      for (const cursoId of id_cursos) {
+        const queryLicenciaCurso = `INSERT INTO licencia_curso (id_licencia, id_curso) VALUES (?, ?)`;
+        await pool.query(queryLicenciaCurso, [id_licencia, cursoId]);
+        console.log(`✅ [EDITAR] Curso ${cursoId} asociado a licencia ${id_licencia}`);
+      }
+    }
+
+    res.json({ success: true, message: "Licencia editada correctamente" });
+  } catch (error) {
+    console.error("❌ [EDITAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const deletarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const userId = req.user.id_usuario;
+
+    console.log(`🗑️ [ELIMINAR] Eliminando licencia: ${id_licencia}`);
+
+    // Verificar que la licencia existe y pertenece al usuario
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [ELIMINAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+
+    // Verificar que pertenece al usuario autenticado
+    if (licencia.id_usuario !== userId) {
+      console.log(`❌ [ELIMINAR] El usuario ${userId} no es propietario de la licencia ${id_licencia}`);
+      return res.status(403).json({ success: false, error: "No tienes permiso para eliminar esta licencia" });
+    }
+
+    // Verificar que la licencia está en estado pendiente
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      console.log(`❌ [ELIMINAR] Licencia ${id_licencia} no está en estado pendiente (estado: ${licencia.estado})`);
+      return res.status(400).json({ success: false, error: "Solo puedes eliminar licencias en estado pendiente" });
+    }
+
+    console.log(`📊 [ELIMINAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+
+    // Eliminar cursos asociados primero (por foreign key)
+    await pool.query(`DELETE FROM licencia_curso WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Cursos asociados eliminados`);
+
+    // Eliminar archivos asociados
+    await pool.query(`DELETE FROM archivolicencia WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Archivos asociados eliminados`);
+
+    // Eliminar la licencia
+    await pool.query(`DELETE FROM licenciamedica WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Licencia ${id_licencia} eliminada correctamente`);
+
+    res.json({ success: true, message: "Licencia eliminada correctamente" });
+  } catch (error) {
+    console.error("❌ [ELIMINAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
