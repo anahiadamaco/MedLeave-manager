@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator, Modal, FlatList } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator, Modal, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { ChevronLeft, Paperclip, X, Calendar, ChevronDown } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
@@ -260,21 +260,26 @@ export default function A_SubirLicencia({ navigation }: any) {
     : "Selecciona uno o más cursos";
 
   return (
-    <View style={[styles.container, isDark && styles.blackContainer]}>
-      <View style={[styles.header, isDark && styles.blackHeader]}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <ChevronLeft size={24} color="#ffffff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subir licencia médica</Text>
-      </View>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+    <View style={[styles.container, isDark && styles.blackContainer, { flex: 1 }]}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
+        <View style={[styles.header, isDark && styles.blackHeader]}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <ChevronLeft size={24} color="#ffffff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Subir licencia médica</Text>
+        </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         <Text style={[styles.description, isDark && styles.blackDescription]}>
           En esta sección podrás ingresar tu licencia médica de forma digital.
         </Text>
@@ -536,6 +541,7 @@ export default function A_SubirLicencia({ navigation }: any) {
           </View>
         </View>
       </Modal>
+      </KeyboardAvoidingView>
 
       <A_Menu navigation={navigation} />
     </View>

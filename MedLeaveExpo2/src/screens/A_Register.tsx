@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AUTH_ROUTES } from "../config/api";
 import { styles } from "../styles/A_Register.styles";
@@ -100,7 +100,11 @@ export default function A_Register({ navigation }: any) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       {/* Encabezado */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Regístrate</Text>
@@ -191,6 +195,7 @@ export default function A_Register({ navigation }: any) {
           <Text style={styles.loginLink}>¿Ya tienes cuenta? Inicia sesión</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

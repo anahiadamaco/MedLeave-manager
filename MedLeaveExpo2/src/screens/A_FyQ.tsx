@@ -101,7 +101,8 @@ export default function A_FyQ() {
 
       {/* Contenido */}
       <ScrollView 
-        style={styles.content} 
+        style={styles.content}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {preguntas.map((item) => (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { AUTH_ROUTES } from "../config/api";
 import { styles } from "../styles/ResetPassword.styles";
 
@@ -72,7 +72,11 @@ export default function ResetPassword({ route, navigation }: any) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       {/* Encabezado */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Restablecer Contraseña</Text>
@@ -124,6 +128,7 @@ export default function ResetPassword({ route, navigation }: any) {
           <Text style={styles.backLink}>← Volver a inicio de sesión</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
