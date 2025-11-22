@@ -95,6 +95,32 @@ export const uploadLicencia = async (req, res) => {
       console.log(`✅ [4a] Curso ${cursoId} asociado a licencia ${licenciaId}`);
     }
 
+    // 2b) Crear notificaciones para los profesores de los cursos
+    console.log("📬 [4b] Creando notificaciones para profesores...");
+    for (const cursoId of id_cursos) {
+      try {
+        // Obtener el profesor del curso
+        const [cursoDatos] = await pool.query(
+          `SELECT id_usuario, nombre_curso FROM curso WHERE id_curso = ?`,
+          [cursoId]
+        );
+        
+        if (cursoDatos.length > 0) {
+          const { id_usuario: id_profesor, nombre_curso } = cursoDatos[0];
+          const asunto = "Nueva licencia médica subida";
+          const contenido = `Un estudiante ha subido una nueva licencia médica para el curso "${nombre_curso}" (Folio: ${folio}). Estado: Pendiente de revisión.`;
+          
+          await pool.query(
+            `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)`,
+            [asunto, contenido, id_profesor]
+          );
+          console.log(`✅ [4b] Notificación creada para profesor ${id_profesor} del curso ${nombre_curso}`);
+        }
+      } catch (notifError) {
+        console.error(`⚠️ [4b] Error al crear notificación para profesores:`, notifError.message);
+      }
+    }
+
     // 3) Decodificar base64 y guardar archivo
     console.log("📝 [5] Decodificando base64 y guardando archivo...");
     let buffer = Buffer.from(file.base64, "base64");

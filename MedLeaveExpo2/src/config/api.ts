@@ -40,6 +40,7 @@ export const NOTIFICACION_ROUTES = {
   CREATE: `${API_BASE_URL}/api/notificaciones`,
   MARK_READ: (id: number) => `${API_BASE_URL}/api/notificaciones/${id}/leida`,
   MARK_ALL_READ: (id: number) => `${API_BASE_URL}/api/notificaciones/usuario/${id}/leidas`,
+  DELETE: (id: number) => `${API_BASE_URL}/api/notificaciones/${id}`,
 };
 
 // Rutas de cursos
