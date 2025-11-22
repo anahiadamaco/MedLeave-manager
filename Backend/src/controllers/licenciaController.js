@@ -150,3 +150,220 @@ export const uploadLicencia = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// Obtener todas las licencias pendientes de aprobación
+export const getLicenciasPendientes = async (req, res) => {
+  try {
+    console.log("📍 [SOLICITUDES] GET /solicitudes/pendientes recibida");
+    
+    const solicitudes = await LicenciaModel.getLicenciasPendientes();
+    console.log(`✅ [SOLICITUDES] ${solicitudes.length} solicitudes pendientes encontradas`);
+    
+    res.json({ success: true, data: solicitudes });
+  } catch (error) {
+    console.error("❌ [SOLICITUDES] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Aprobar una licencia
+export const aprobarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    console.log(`📍 [APROBAR] Aprobando licencia: ${id_licencia}`);
+    
+    // Verificar que la licencia existe
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [APROBAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+    
+    console.log(`📊 [APROBAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+    
+    // Actualizar estado a 'aceptado'
+    await LicenciaModel.updateLicenciaEstado(id_licencia, 'aceptado');
+    console.log(`✅ [APROBAR] Licencia ${id_licencia} actualizada a estado 'aceptado'`);
+    
+    // Crear notificación para el estudiante
+    const { id_usuario } = licencia;
+    const asunto = "Licencia médica aprobada";
+    const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido aprobada.`;
+    
+    try {
+      console.log(`📬 [APROBAR] Insertando notificación para usuario ${id_usuario}`);
+      const [result] = await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)`,
+        [asunto, contenido, id_usuario]
+      );
+      console.log(`✅ [APROBAR] Notificación creada con ID: ${result.insertId} para usuario ${id_usuario}`);
+    } catch (notifError) {
+      console.error(`⚠️ [APROBAR] Error al crear notificación:`, notifError.message);
+    }
+    
+    res.json({ success: true, message: "Licencia aprobada correctamente" });
+  } catch (error) {
+    console.error("❌ [APROBAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Rechazar una licencia
+export const rechazarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const { motivo_rechazo } = req.body;
+    
+    if (!motivo_rechazo || motivo_rechazo.trim().length < 10) {
+      console.log(`❌ [RECHAZAR] Motivo inválido`);
+      return res.status(400).json({ 
+        success: false, 
+        error: "Debe proporcionar un motivo de rechazo válido (mínimo 10 caracteres)" 
+      });
+    }
+    
+    console.log(`📍 [RECHAZAR] Rechazando licencia: ${id_licencia}`);
+    
+    // Verificar que la licencia existe
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [RECHAZAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+    
+    console.log(`📊 [RECHAZAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+    
+    // Actualizar estado a 'rechazado' con motivo
+    await LicenciaModel.updateLicenciaEstado(id_licencia, 'rechazado', motivo_rechazo.trim());
+    console.log(`✅ [RECHAZAR] Licencia ${id_licencia} actualizada a estado 'rechazado'`);
+    
+    // Crear notificación para el estudiante
+    const { id_usuario } = licencia;
+    const asunto = "Licencia médica rechazada";
+    const contenido = `Tu licencia médica con folio ${licencia.folio} ha sido rechazada.\n\nMotivo: ${motivo_rechazo.trim()}`;
+    
+    try {
+      console.log(`📬 [RECHAZAR] Insertando notificación para usuario ${id_usuario}`);
+      const [result] = await pool.query(
+        `INSERT INTO notificacion (asunto, contenido, fecha_envio, id_usuario, leido) VALUES (?, ?, NOW(), ?, 0)`,
+        [asunto, contenido, id_usuario]
+      );
+      console.log(`✅ [RECHAZAR] Notificación creada con ID: ${result.insertId} para usuario ${id_usuario}`);
+    } catch (notifError) {
+      console.error(`⚠️ [RECHAZAR] Error al crear notificación:`, notifError.message);
+    }
+    
+    res.json({ success: true, message: "Licencia rechazada correctamente" });
+  } catch (error) {
+    console.error("❌ [RECHAZAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Editar una licencia pendiente
+export const editarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const { folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_cursos } = req.body;
+    const userId = req.user.id_usuario;
+
+    console.log(`📍 [EDITAR] Editando licencia: ${id_licencia}`);
+
+    // Verificar que la licencia existe y pertenece al usuario
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [EDITAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+
+    // Verificar que pertenece al usuario autenticado
+    if (licencia.id_usuario !== userId) {
+      console.log(`❌ [EDITAR] El usuario ${userId} no es propietario de la licencia ${id_licencia}`);
+      return res.status(403).json({ success: false, error: "No tienes permiso para editar esta licencia" });
+    }
+
+    // Verificar que la licencia está en estado pendiente
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      console.log(`❌ [EDITAR] Licencia ${id_licencia} no está en estado pendiente (estado: ${licencia.estado})`);
+      return res.status(400).json({ success: false, error: "Solo puedes editar licencias en estado pendiente" });
+    }
+
+    console.log(`📊 [EDITAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+
+    // Actualizar los datos de la licencia
+    const query = `
+      UPDATE licenciamedica 
+      SET folio = ?, fecha_emision = ?, fecha_inicio = ?, fecha_fin = ?, motivo_medico = ?
+      WHERE id_licencia = ?
+    `;
+
+    await pool.query(query, [folio, fecha_emision, fecha_inicio, fecha_fin, motivo_medico, id_licencia]);
+    console.log(`✅ [EDITAR] Licencia ${id_licencia} actualizada correctamente`);
+
+    // Actualizar cursos si se proporcionan
+    if (Array.isArray(id_cursos) && id_cursos.length > 0) {
+      // Eliminar cursos anteriores
+      await pool.query(`DELETE FROM licencia_curso WHERE id_licencia = ?`, [id_licencia]);
+      console.log(`📝 [EDITAR] Cursos anteriores eliminados`);
+
+      // Agregar nuevos cursos
+      for (const cursoId of id_cursos) {
+        const queryLicenciaCurso = `INSERT INTO licencia_curso (id_licencia, id_curso) VALUES (?, ?)`;
+        await pool.query(queryLicenciaCurso, [id_licencia, cursoId]);
+        console.log(`✅ [EDITAR] Curso ${cursoId} asociado a licencia ${id_licencia}`);
+      }
+    }
+
+    res.json({ success: true, message: "Licencia editada correctamente" });
+  } catch (error) {
+    console.error("❌ [EDITAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const deletarLicencia = async (req, res) => {
+  try {
+    const { id_licencia } = req.params;
+    const userId = req.user.id_usuario;
+
+    console.log(`🗑️ [ELIMINAR] Eliminando licencia: ${id_licencia}`);
+
+    // Verificar que la licencia existe y pertenece al usuario
+    const licencia = await LicenciaModel.getLicenciaById(id_licencia);
+    if (!licencia) {
+      console.log(`❌ [ELIMINAR] Licencia no encontrada: ${id_licencia}`);
+      return res.status(404).json({ success: false, error: "Licencia no encontrada" });
+    }
+
+    // Verificar que pertenece al usuario autenticado
+    if (licencia.id_usuario !== userId) {
+      console.log(`❌ [ELIMINAR] El usuario ${userId} no es propietario de la licencia ${id_licencia}`);
+      return res.status(403).json({ success: false, error: "No tienes permiso para eliminar esta licencia" });
+    }
+
+    // Verificar que la licencia está en estado pendiente
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      console.log(`❌ [ELIMINAR] Licencia ${id_licencia} no está en estado pendiente (estado: ${licencia.estado})`);
+      return res.status(400).json({ success: false, error: "Solo puedes eliminar licencias en estado pendiente" });
+    }
+
+    console.log(`📊 [ELIMINAR] Licencia encontrada - Folio: ${licencia.folio}, Usuario: ${licencia.id_usuario}`);
+
+    // Eliminar cursos asociados primero (por foreign key)
+    await pool.query(`DELETE FROM licencia_curso WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Cursos asociados eliminados`);
+
+    // Eliminar archivos asociados
+    await pool.query(`DELETE FROM archivolicencia WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Archivos asociados eliminados`);
+
+    // Eliminar la licencia
+    await pool.query(`DELETE FROM licenciamedica WHERE id_licencia = ?`, [id_licencia]);
+    console.log(`✅ [ELIMINAR] Licencia ${id_licencia} eliminada correctamente`);
+
+    res.json({ success: true, message: "Licencia eliminada correctamente" });
+  } catch (error) {
+    console.error("❌ [ELIMINAR] Error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

@@ -33,10 +33,12 @@ export default function A_Mensajes({ navigation }: any) {
         if (user) {
           const userData = JSON.parse(user);
           setUserId(userData.id_usuario);
+          console.log(`📍 [MENSAJES] Usuario ID: ${userData.id_usuario}`);
         }
         
         if (authToken) {
           setToken(authToken);
+          console.log(`🔑 [MENSAJES] Token obtenido`);
         }
       } catch (error) {
         console.error("Error obteniendo datos del usuario:", error);
@@ -47,6 +49,7 @@ export default function A_Mensajes({ navigation }: any) {
 
   useFocusEffect(
     React.useCallback(() => {
+      console.log(`📍 [MENSAJES] Pantalla enfocada - UserId: ${userId}, Token: ${!!token}`);
       if (userId && token) {
         loadNotificaciones();
       }
@@ -54,10 +57,15 @@ export default function A_Mensajes({ navigation }: any) {
   );
 
   const loadNotificaciones = async () => {
-    if (!userId || !token) return;
+    if (!userId || !token) {
+      console.log("⚠️ [MENSAJES] No hay userId o token");
+      return;
+    }
     
     try {
       setLoading(true);
+      console.log(`📬 [MENSAJES] Cargando notificaciones para usuario ${userId}`);
+      
       const response = await fetch(NOTIFICACION_ROUTES.GET_BY_USER(userId), {
         method: "GET",
         headers: {
@@ -66,12 +74,19 @@ export default function A_Mensajes({ navigation }: any) {
         },
       });
 
+      console.log(`📊 [MENSAJES] Response status: ${response.status}`);
+      
       const data = await response.json();
+      console.log(`📦 [MENSAJES] Respuesta:`, JSON.stringify(data, null, 2));
+      
       if (data.success && Array.isArray(data.data)) {
+        console.log(`✅ [MENSAJES] ${data.data.length} notificaciones cargadas`);
         setNotificaciones(data.data);
+      } else {
+        console.log("⚠️ [MENSAJES] Respuesta inesperada o sin datos");
       }
     } catch (error) {
-      console.error("Error cargando notificaciones:", error);
+      console.error("❌ [MENSAJES] Error cargando notificaciones:", error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -79,6 +94,7 @@ export default function A_Mensajes({ navigation }: any) {
   };
 
   const onRefresh = () => {
+    console.log("🔄 [MENSAJES] Refrescando notificaciones");
     setRefreshing(true);
     loadNotificaciones();
   };
@@ -87,6 +103,8 @@ export default function A_Mensajes({ navigation }: any) {
     if (!token) return;
     
     try {
+      console.log(`📌 [MENSAJES] Marcando notificación ${id} como leída`);
+      
       const response = await fetch(NOTIFICACION_ROUTES.MARK_READ(id), {
         method: "PUT",
         headers: {
@@ -96,7 +114,10 @@ export default function A_Mensajes({ navigation }: any) {
       });
 
       const data = await response.json();
+      console.log(`📊 [MENSAJES] Response:`, data);
+      
       if (data.success) {
+        console.log(`✅ [MENSAJES] Notificación ${id} marcada como leída`);
         setNotificaciones((prev) =>
           prev.map((n) =>
             n.id_notificacion === id ? { ...n, leido: n.leido ? 0 : 1 } : n
@@ -104,7 +125,7 @@ export default function A_Mensajes({ navigation }: any) {
         );
       }
     } catch (error) {
-      console.error("Error actualizando notificación:", error);
+      console.error("❌ [MENSAJES] Error actualizando notificación:", error);
     }
   };
 

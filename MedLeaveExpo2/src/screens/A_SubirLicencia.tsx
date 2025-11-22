@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator, Modal, FlatList } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator, Modal, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { ChevronLeft, Paperclip, X, Calendar, ChevronDown } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
@@ -10,7 +10,7 @@ import { styles } from "../styles/A_SubirLicencia.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
 
-export default function A_SubirLicencia({ navigation }: any) {
+export default function A_SubirLicencia({ navigation, route }: any) {
   const { isDark } = useTheme();
 
   const [formData, setFormData] = React.useState({
@@ -29,6 +29,8 @@ export default function A_SubirLicencia({ navigation }: any) {
   const [showCalendar, setShowCalendar] = React.useState<string | null>(null);
   const [token, setToken] = React.useState<string>("");
   const [showCursosDropdown, setShowCursosDropdown] = React.useState(false);
+  const [modoEdicion, setModoEdicion] = React.useState(false);
+  const [licenciaParaEditar, setLicenciaParaEditar] = React.useState<any>(null);
 
   const loadCursos = async (authToken: string) => {
     try {
@@ -98,7 +100,26 @@ export default function A_SubirLicencia({ navigation }: any) {
       }
     };
     getUserData();
-  }, []);
+
+    // Detectar si viene en modo edición
+    if (route?.params?.licenciaParaEditar && route?.params?.modo === "editar") {
+      const licencia = route.params.licenciaParaEditar;
+      console.log("✏️ [EDITAR] Modo edición detectado");
+      console.log("📋 [EDITAR] ID Licencia:", licencia.id_licencia);
+      setModoEdicion(true);
+      setLicenciaParaEditar(licencia);
+      
+      // Cargar datos de la licencia incluyendo folio editable
+      setFormData({
+        folio: licencia.folio?.toString() || "",
+        fecha_emision: licencia.fecha_emision || "",
+        fecha_inicio: licencia.fecha_inicio || "",
+        fecha_fin: licencia.fecha_fin || "",
+        motivo_medico: licencia.motivo_medico || "",
+        id_cursos: licencia.cursos?.map((c: any) => c.id_curso) || [],
+      });
+    }
+  }, [route?.params]);
 
   const handleSelectFile = async () => {
     try {
@@ -135,7 +156,7 @@ export default function A_SubirLicencia({ navigation }: any) {
   };
 
   const handleSubmit = async () => {
-    // Validaciones
+    // Validaciones - En modo edición y crear, todos los campos incluyendo folio son obligatorios
     if (
       !formData.folio ||
       !formData.fecha_emision ||
@@ -148,7 +169,8 @@ export default function A_SubirLicencia({ navigation }: any) {
       return;
     }
 
-    if (!selectedFile) {
+    // En modo edición, el archivo es opcional. En modo crear, es obligatorio
+    if (!modoEdicion && !selectedFile) {
       Alert.alert("Error", "Por favor selecciona un archivo PDF");
       return;
     }
@@ -161,45 +183,79 @@ export default function A_SubirLicencia({ navigation }: any) {
     setLoading(true);
 
     try {
-      // Leer el archivo como base64
-      const fileResponse = await fetch(selectedFile.uri);
-      const blob = await fileResponse.blob();
-      
-      const fileContent = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64String = reader.result as string;
-          const base64Data = base64String.split(',')[1] || base64String;
-          resolve(base64Data);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-
-      // Convertir base64 a bytes y comprimir
-      const binaryString = atob(fileContent);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const compressed = pako.gzip(bytes);
-      
-      // Convertir bytes comprimidos a base64
       let compressedBase64 = "";
-      const chunkSize = 8192;
-      for (let i = 0; i < compressed.length; i += chunkSize) {
-        const chunk = compressed.slice(i, i + chunkSize);
-        compressedBase64 += String.fromCharCode(...chunk);
-      }
-      compressedBase64 = btoa(compressedBase64);
+      
+      // Solo procesar archivo si fue seleccionado
+      if (selectedFile) {
+        // Leer el archivo como base64
+        const fileResponse = await fetch(selectedFile.uri);
+        const blob = await fileResponse.blob();
+        
+        const fileContent = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = reader.result as string;
+            const base64Data = base64String.split(',')[1] || base64String;
+            resolve(base64Data);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
 
-      const response = await fetch(LICENCIA_ROUTES.UPLOAD, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+        // Convertir base64 a bytes y comprimir
+        const binaryString = atob(fileContent);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const compressed = pako.gzip(bytes);
+        
+        // Convertir bytes comprimidos a base64
+        let temp = "";
+        const chunkSize = 8192;
+        for (let i = 0; i < compressed.length; i += chunkSize) {
+          const chunk = compressed.slice(i, i + chunkSize);
+          temp += String.fromCharCode(...chunk);
+        }
+        compressedBase64 = btoa(temp);
+      }
+
+      // Determinar el endpoint y método según el modo
+      let url: string;
+      let method: string;
+      let bodyData: any;
+
+      if (modoEdicion && licenciaParaEditar) {
+        console.log("✏️ [SUBMIT] Modo edición - usando endpoint EDIT");
+        url = LICENCIA_ROUTES.EDIT(licenciaParaEditar.id_licencia);
+        method = "PUT";
+        
+        // En modo edición, enviamos todos los campos incluyendo folio (que ahora es editable)
+        bodyData = {
+          folio: formData.folio,
+          fecha_emision: formData.fecha_emision,
+          fecha_inicio: formData.fecha_inicio,
+          fecha_fin: formData.fecha_fin,
+          motivo_medico: formData.motivo_medico,
+          id_cursos: formData.id_cursos,
+        };
+        
+        // Si hay archivo nuevo, incluirlo
+        if (selectedFile) {
+          bodyData.file = {
+            name: selectedFile.name,
+            base64: compressedBase64,
+            type: selectedFile.mimeType || "application/pdf",
+            compressed: true,
+          };
+        }
+      } else {
+        console.log("📤 [SUBMIT] Modo crear - usando endpoint UPLOAD");
+        url = LICENCIA_ROUTES.UPLOAD;
+        method = "POST";
+        
+        // En modo crear, incluimos folio e id_usuario
+        bodyData = {
           folio: formData.folio,
           fecha_emision: formData.fecha_emision,
           fecha_inicio: formData.fecha_inicio,
@@ -213,7 +269,16 @@ export default function A_SubirLicencia({ navigation }: any) {
             type: selectedFile.mimeType || "application/pdf",
             compressed: true,
           },
-        }),
+        };
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(bodyData),
       });
 
       const data = await response.json();
@@ -222,11 +287,14 @@ export default function A_SubirLicencia({ navigation }: any) {
       console.log("✅ [RESPUESTA] Success:", data.success);
 
       if (!response.ok || !data.success) {
-        Alert.alert("Error", data.message || "No se pudo enviar la licencia");
+        Alert.alert("Error", data.message || `No se pudo ${modoEdicion ? "editar" : "enviar"} la licencia`);
         return;
       }
 
-      Alert.alert("✅ Éxito", "Licencia enviada correctamente", [
+      const mensaje = modoEdicion ? "Licencia editada correctamente" : "Licencia enviada correctamente";
+      const titulo = modoEdicion ? "✏️ Cambios guardados" : "✅ Éxito";
+      
+      Alert.alert(titulo, mensaje, [
         {
           text: "Ir al inicio",
           onPress: () => {
@@ -239,7 +307,9 @@ export default function A_SubirLicencia({ navigation }: any) {
               id_cursos: [],
             });
             setSelectedFile(null);
-            navigation.navigate("A_home");
+            setModoEdicion(false);
+            setLicenciaParaEditar(null);
+            navigation.navigate(modoEdicion ? "A_Historial" : "A_home");
           },
         },
       ]);
@@ -260,28 +330,42 @@ export default function A_SubirLicencia({ navigation }: any) {
     : "Selecciona uno o más cursos";
 
   return (
-    <View style={[styles.container, isDark && styles.blackContainer]}>
-      <View style={[styles.header, isDark && styles.blackHeader]}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <ChevronLeft size={24} color="#ffffff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subir licencia médica</Text>
-      </View>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+    <View style={[styles.container, isDark && styles.blackContainer, { flex: 1 }]}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
+        <View style={[styles.header, isDark && styles.blackHeader]}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <ChevronLeft size={24} color="#ffffff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            {modoEdicion ? "Editar licencia médica" : "Subir licencia médica"}
+          </Text>
+        </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         <Text style={[styles.description, isDark && styles.blackDescription]}>
-          En esta sección podrás ingresar tu licencia médica de forma digital.
+          {modoEdicion 
+            ? "Realiza los cambios necesarios en tu licencia médica."
+            : "En esta sección podrás ingresar tu licencia médica de forma digital."}
         </Text>
 
         {/* Folio */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <Text style={[styles.label, isDark && styles.blackLabel]}>Folio:</Text>
+            {modoEdicion && (
+              <Text style={{ fontSize: 11, color: '#999', fontStyle: 'italic' }}>(ID Licencia: {licenciaParaEditar?.id_licencia})</Text>
+            )}
+          </View>
           <TextInput
             style={[styles.input, isDark && styles.blackInput]}
             value={formData.folio}
@@ -476,7 +560,12 @@ export default function A_SubirLicencia({ navigation }: any) {
 
         {/* Archivo */}
         <View style={styles.fieldContainer}>
-          <Text style={[styles.label, isDark && styles.blackLabel]}>Archivo PDF:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 8 }}>
+            <Text style={[styles.label, isDark && styles.blackLabel]}>Archivo PDF:</Text>
+            {modoEdicion && (
+              <Text style={{ color: '#999', fontSize: 12 }}>(Opcional)</Text>
+            )}
+          </View>
           {selectedFile ? (
             <View style={[styles.fileContainer, isDark && { backgroundColor: '#333' }]}>
               <Paperclip size={20} color="#0089E0" />
@@ -510,7 +599,9 @@ export default function A_SubirLicencia({ navigation }: any) {
           {loading ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.submitButtonText}>Enviar Licencia</Text>
+            <Text style={styles.submitButtonText}>
+              {modoEdicion ? "Guardar Cambios" : "Enviar Licencia"}
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -536,6 +627,7 @@ export default function A_SubirLicencia({ navigation }: any) {
           </View>
         </View>
       </Modal>
+      </KeyboardAvoidingView>
 
       <A_Menu navigation={navigation} />
     </View>

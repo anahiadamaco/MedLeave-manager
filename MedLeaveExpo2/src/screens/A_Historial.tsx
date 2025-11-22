@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { View, ScrollView, TouchableOpacity, Text, ActivityIndicator, Modal, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { ChevronLeft, X, Eye } from "lucide-react-native";
+import { ChevronLeft, X, Eye, Edit2, Trash2 } from "lucide-react-native";
 import { styles } from "../styles/A_Historial.styles";
 import A_Menu from "../components/A_Menu";
 import { useTheme } from "../components/ThemeContext";
@@ -133,6 +133,62 @@ const A_Historial = () => {
   const handleVerDetalles = (licencia: Licencia) => {
     setSelectedLicencia(licencia);
     setModalVisible(true);
+  };
+
+  const handleEditar = (licencia: Licencia) => {
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      Alert.alert("No permitido", "Solo puedes editar licencias pendientes de revisión");
+      return;
+    }
+    
+    // Navegar a la pantalla de edición con los datos de la licencia
+    navigation.navigate("A_SubirLicencia", { 
+      licenciaParaEditar: licencia,
+      modo: "editar"
+    });
+    setModalVisible(false);
+  };
+
+  const handleEliminar = (licencia: Licencia) => {
+    if (licencia.estado.toLowerCase() !== "pendiente") {
+      Alert.alert("No permitido", "Solo puedes eliminar licencias pendientes de revisión");
+      return;
+    }
+
+    Alert.alert(
+      "Eliminar Licencia",
+      "¿Estás seguro de que deseas eliminar esta licencia? Esta acción no se puede deshacer.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const url = LICENCIA_ROUTES.DELETE(licencia.id_licencia!);
+              const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+                },
+              });
+
+              if (response.ok) {
+                Alert.alert("Éxito", "Licencia eliminada correctamente");
+                setModalVisible(false);
+                loadLicencias();
+              } else {
+                Alert.alert("Error", "No se pudo eliminar la licencia");
+              }
+            } catch (error) {
+              console.error("Error eliminando licencia:", error);
+              Alert.alert("Error", "Ocurrió un error al eliminar la licencia");
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -327,6 +383,49 @@ const A_Historial = () => {
                       {formatFecha(selectedLicencia.fecha_fin)}
                     </Text>
                   </View>
+
+                  {/* Botones de acción solo para pendientes */}
+                  {selectedLicencia.estado.toLowerCase() === "pendiente" && (
+                    <View style={{ marginTop: 20, flexDirection: "row", gap: 12, justifyContent: "space-between" }}>
+                      <TouchableOpacity
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#3B82F6",
+                          paddingVertical: 12,
+                          borderRadius: 8,
+                          gap: 8,
+                        }}
+                        onPress={() => handleEditar(selectedLicencia)}
+                      >
+                        <Edit2 size={16} color="#FFFFFF" />
+                        <Text style={{ color: "#FFFFFF", fontWeight: "600", fontSize: 14 }}>
+                          Editar
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#EF4444",
+                          paddingVertical: 12,
+                          borderRadius: 8,
+                          gap: 8,
+                        }}
+                        onPress={() => handleEliminar(selectedLicencia)}
+                      >
+                        <Trash2 size={16} color="#FFFFFF" />
+                        <Text style={{ color: "#FFFFFF", fontWeight: "600", fontSize: 14 }}>
+                          Eliminar
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </>
               )}
             </ScrollView>

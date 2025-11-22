@@ -93,7 +93,8 @@ export default function P_FyQ({ navigation }: any) {
 
       {/* Contenido */}
       <ScrollView 
-        style={[styles.content, isDark && styles.blackContent]} 
+        style={[styles.content, isDark && styles.blackContent]}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {preguntas.map((item) => (

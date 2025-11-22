@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { AUTH_ROUTES } from "../config/api";
 import { styles } from "../styles/ForgotPassword.styles";
 
@@ -66,7 +66,11 @@ export default function ForgotPassword({ navigation }: any) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center" }}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center" }} keyboardShouldPersistTaps="handled">
       {/* Encabezado */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Recuperar Contraseña</Text>
@@ -130,6 +134,7 @@ export default function ForgotPassword({ navigation }: any) {
           <Text style={styles.backLink}>← Volver a inicio de sesión</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

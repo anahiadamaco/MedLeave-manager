@@ -10,6 +10,8 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AUTH_ROUTES } from "../config/api";
@@ -270,15 +272,20 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+          keyboardShouldPersistTaps="handled"
+        >
         {/* ENCABEZADO */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Bienvenido</Text>
@@ -342,7 +349,8 @@ export default function LoginScreen({ navigation }: any) {
             )}
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
