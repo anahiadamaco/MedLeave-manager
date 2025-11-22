@@ -27,6 +27,9 @@ export const LICENCIA_ROUTES = {
   GET_SOLICITUDES_PENDIENTES: `${API_BASE_URL}/api/licencias/solicitudes/pendientes`,
   APROBAR: (id: number) => `${API_BASE_URL}/api/licencias/${id}/aprobar`,
   RECHAZAR: (id: number) => `${API_BASE_URL}/api/licencias/${id}/rechazar`,
+  // Rutas para profesor
+  GET_PROFESOR_HISTORIAL: `${API_BASE_URL}/api/licencias/profesor/historial/all`,
+  GET_PROFESOR_CURSO: (id_curso: number) => `${API_BASE_URL}/api/licencias/profesor/curso/${id_curso}`,
 };
 
 // Rutas de notificaciones
@@ -42,5 +45,7 @@ export const NOTIFICACION_ROUTES = {
 // Rutas de cursos
 export const CURSOS_ROUTES = {
   GET_ALL: `${API_BASE_URL}/api/cursos`,
+  GET_PROFESOR: `${API_BASE_URL}/api/cursos/profesor/mis-cursos`,
   GET_ONE: (id: number) => `${API_BASE_URL}/api/cursos/${id}`,
 };
+

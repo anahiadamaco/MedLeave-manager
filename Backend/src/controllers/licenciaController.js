@@ -367,3 +367,49 @@ export const deletarLicencia = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Obtener licencias de estudiantes en los cursos del profesor
+export const getLicenciasProfesor = async (req, res) => {
+  try {
+    const id_profesor = req.user.id_usuario; // Obtener ID del profesor desde el token JWT
+    
+    console.log(`📍 [PROFESOR LICENCIAS] Buscando licencias para profesor: ${id_profesor}`);
+    
+    const licencias = await LicenciaModel.getLicenciasByProfesor(id_profesor);
+    console.log(`✅ [PROFESOR LICENCIAS] ${licencias.length} licencias encontradas`);
+    
+    res.json({ success: true, data: licencias });
+  } catch (error) {
+    console.error(`❌ [PROFESOR LICENCIAS] Error:`, error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Obtener licencias de un curso específico del profesor
+export const getLicenciasProfesorCurso = async (req, res) => {
+  try {
+    const id_profesor = req.user.id_usuario;
+    const { id_curso } = req.params;
+    
+    console.log(`📍 [PROFESOR CURSO] Buscando licencias para profesor: ${id_profesor}, curso: ${id_curso}`);
+    
+    // Verificar que el curso pertenece al profesor
+    const [cursoVerify] = await pool.query(
+      `SELECT id_curso FROM curso WHERE id_curso = ? AND id_usuario = ?`,
+      [id_curso, id_profesor]
+    );
+    
+    if (cursoVerify.length === 0) {
+      console.log(`❌ [PROFESOR CURSO] El curso ${id_curso} no pertenece al profesor ${id_profesor}`);
+      return res.status(403).json({ success: false, error: "No tienes acceso a este curso" });
+    }
+    
+    const licencias = await LicenciaModel.getLicenciasByProfesorYCurso(id_profesor, id_curso);
+    console.log(`✅ [PROFESOR CURSO] ${licencias.length} licencias encontradas para el curso`);
+    
+    res.json({ success: true, data: licencias });
+  } catch (error) {
+    console.error(`❌ [PROFESOR CURSO] Error:`, error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
