@@ -8,13 +8,22 @@ const router = express.Router();
 // GET todas las notificaciones - Solo FUNCIONARIO o ADMINISTRADOR
 router.get("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), NotificacionController.getNotificaciones);
 
-// GET notificaciones de un usuario - Solo FUNCIONARIO/ADMINISTRADOR o el usuario mismo
+// GET notificaciones de un usuario
 router.get("/usuario/:id_usuario", authenticate, NotificacionController.getNotificacionesUsuario);
 
-// PUT marcar notificación como leída
+// GET notificaciones NO LEÍDAS de un usuario
+router.get("/usuario/:id_usuario/no-leidas", authenticate, NotificacionController.getNotificacionesNoLeidas);
+
+// PUT marcar una notificación como leída
 router.put("/:id_notificacion/leida", authenticate, NotificacionController.markNotificacionLeida);
 
-// POST crear notificación - Solo FUNCIONARIO o ADMINISTRADOR
-router.post("/", authenticate, requireRole(ROLES.FUNCIONARIO, ROLES.ADMINISTRADOR), NotificacionController.createNotificacion);
+// PUT marcar TODAS las notificaciones como leídas
+router.put("/usuario/:id_usuario/leidas", authenticate, NotificacionController.markAllNotificacionesLeidas);
+
+// POST crear notificación
+router.post("/", authenticate, NotificacionController.createNotificacion);
+
+// DELETE eliminar notificación
+router.delete("/:id_notificacion", authenticate, NotificacionController.deleteNotificacion);
 
 export default router;

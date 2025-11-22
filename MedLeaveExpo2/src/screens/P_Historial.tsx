@@ -1,43 +1,114 @@
-import React, { useState, useMemo } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from "react-native";
+import React, { useState, useMemo, useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { styles } from "../styles/P_Historial.styles";
-import { useTheme } from "../components/ThemeContext";
 import P_Menu from "../components/P_Menu";
+import { useTheme } from "../components/ThemeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CURSOS_ROUTES } from "../config/api";
+
+interface Curso {
+  id_curso: number;
+  codigo: string;
+  nombre_curso: string;
+  semestre: string;
+}
 
 export default function P_Historial() {
   const navigation = useNavigation<any>();
   const { isDark } = useTheme();
 
-  //Datos
-  const cursos = [
-    { id: 1, codigo: "INFO 1111", nombre: "Teoría de sistemas", semestre: "2024-1" },
-    { id: 2, codigo: "INFO 2222", nombre: "Programación avanzada", semestre: "2024-2" },
-    { id: 3, codigo: "INFO 3333", nombre: "Bases de datos", semestre: "2023-2" },
-    { id: 4, codigo: "INFO 4444", nombre: "Inteligencia artificial", semestre: "2024-2" },
-  ];
-
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [orden, setOrden] = useState<"az" | "za">("az");
   const [semestre, setSemestre] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
-  const semestres = ["", "2024-2", "2024-1", "2023-2"];
+  const [token, setToken] = useState<string>("");
+  
+  const semestresDisponibles = useMemo(() => {
+    const unicos = new Set(cursos.map((c) => c.semestre));
+    return Array.from(unicos).sort().reverse();
+  }, [cursos]);
+
+  // Cargar token y datos
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadData = async () => {
+        try {
+          const storedToken = await AsyncStorage.getItem("token");
+          if (storedToken) {
+            setToken(storedToken);
+            await loadCursos(storedToken);
+          }
+        } catch (error) {
+          console.error("Error al cargar datos:", error);
+        }
+      };
+      loadData();
+    }, [])
+  );
+
+  const loadCursos = async (authToken: string) => {
+    try {
+      setLoading(true);
+      console.log("📍 [P_HISTORIAL] Cargando cursos del profesor...");
+
+      const response = await fetch(CURSOS_ROUTES.GET_PROFESOR, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      const data = await response.json();
+      console.log("📦 [P_HISTORIAL] Respuesta de cursos:", data);
+
+      if (data.success && Array.isArray(data.data)) {
+        console.log(`✅ [P_HISTORIAL] ${data.data.length} cursos cargados`);
+        setCursos(data.data);
+      } else {
+        console.warn("⚠️ [P_HISTORIAL] Respuesta inesperada:", data);
+        setCursos([]);
+      }
+    } catch (error) {
+      console.error("❌ [P_HISTORIAL] Error cargando cursos:", error);
+      Alert.alert("Error", "No se pudieron cargar los cursos");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const cursosFiltrados = useMemo(() => {
     const q = query.toLowerCase();
     let out = cursos.filter(
       (c) =>
         (!semestre || c.semestre === semestre) &&
-        (c.nombre.toLowerCase().includes(q) || c.codigo.toLowerCase().includes(q))
+        (c.nombre_curso.toLowerCase().includes(q) ||
+          c.codigo.toLowerCase().includes(q))
     );
     out.sort((a, b) =>
       orden === "az"
-        ? a.nombre.localeCompare(b.nombre)
-        : b.nombre.localeCompare(a.nombre)
+        ? a.nombre_curso.localeCompare(b.nombre_curso)
+        : b.nombre_curso.localeCompare(a.nombre_curso)
     );
     return out;
   }, [cursos, query, semestre, orden]);
+
+  const handleNavToCurso = (curso: Curso) => {
+    navigation.navigate("P_HistorialRamo", { curso });
+  };
 
   return (
     <View style={[styles.container, isDark && styles.blackContainer]}>
@@ -45,7 +116,7 @@ export default function P_Historial() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ChevronLeft size={24} color="#ffffff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Historial</Text>
+        <Text style={styles.headerTitle}>Historial de Licencias</Text>
       </View>
 
       {/* Barra de filtros */}
@@ -58,8 +129,13 @@ export default function P_Historial() {
           onChangeText={setQuery}
         />
 
-        <TouchableOpacity style={[styles.selector, isDark && styles.blackSelector]} onPress={() => setModalVisible(true)}>
-          <Text style={isDark ? { color: 'white' } : { color: '#9CA3AF' }}>{semestre ? `Semestre: ${semestre}` : "Todos los semestres"}</Text>
+        <TouchableOpacity
+          style={[styles.selector, isDark && styles.blackSelector]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={isDark ? { color: "white" } : { color: "#9CA3AF" }}>
+            {semestre ? `Semestre: ${semestre}` : "Todos los semestres"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -72,21 +148,34 @@ export default function P_Historial() {
         </TouchableOpacity>
       </View>
 
-      {/* Modal */}
+      {/* Modal de semestres */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalBackground}>
-          <View style={styles.modalBox}>
+          <View style={[styles.modalBox, isDark && styles.blackModalBox]}>
             <ScrollView style={{ maxHeight: 250 }}>
-              {semestres.map((s) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSemestre("");
+                  setModalVisible(false);
+                }}
+                style={styles.modalItem}
+              >
+                <Text style={isDark ? { color: "white" } : { color: "#000" }}>
+                  Todos los semestres
+                </Text>
+              </TouchableOpacity>
+              {semestresDisponibles.map((s) => (
                 <TouchableOpacity
-                  key={s || "all"}
+                  key={s}
                   onPress={() => {
                     setSemestre(s);
                     setModalVisible(false);
                   }}
                   style={styles.modalItem}
                 >
-                  <Text>{s ? s : "Todos los semestres"}</Text>
+                  <Text style={isDark ? { color: "white" } : { color: "#000" }}>
+                    {s}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -100,28 +189,45 @@ export default function P_Historial() {
         </View>
       </Modal>
 
-      {/* Lista */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {cursosFiltrados.length > 0 ? (
-          cursosFiltrados.map((curso) => (
+      {/* Contenido */}
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color="#048ED4" />
+        </View>
+      ) : (
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {cursosFiltrados.length > 0 ? (
+            cursosFiltrados.map((curso) => (
               <TouchableOpacity
-              key={curso.id}
-              style={[styles.courseCard, isDark && styles.blackCourseCard]}
-              onPress={() => navigation.navigate("P_HistorialRamo", { curso })}
+                key={curso.id_curso}
+                style={[styles.courseCard, isDark && styles.blackCourseCard]}
+                onPress={() => handleNavToCurso(curso)}
+              >
+                <View style={styles.courseInfo}>
+                  <Text
+                    style={[styles.courseName, isDark && styles.courseNameDark]}
+                  >
+                    {curso.codigo}
+                  </Text>
+                  <Text
+                    style={[styles.courseCode, isDark && styles.courseCodeDark]}
+                  >
+                    {curso.nombre_curso} · {curso.semestre}
+                  </Text>
+                </View>
+                <ChevronRight color="#1c75bc" size={20} />
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text
+              style={[styles.emptyText, isDark && styles.emptyTextDark]}
             >
-              <View style={styles.courseInfo}>
-                <Text style={[styles.courseName, isDark && styles.courseNameDark]}>{curso.codigo}</Text>
-                <Text style={[styles.courseCode, isDark && styles.courseCodeDark]}>
-                  {curso.nombre} · {curso.semestre}
-                </Text>
-              </View>
-              <ChevronRight color="#1c75bc" size={20} />
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.emptyText}>No existe ningun ramo relacionado.</Text>
-        )}
-      </ScrollView>
+              No hay cursos para mostrar
+            </Text>
+          )}
+        </ScrollView>
+      )}
+
       <P_Menu navigation={navigation} />
     </View>
   );

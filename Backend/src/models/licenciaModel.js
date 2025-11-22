@@ -153,3 +153,119 @@ export const updateLicenciaEstado = async (id_licencia, estado, motivo_rechazo =
     return result;
   }
 };
+
+export const getLicenciasByProfesor = async (id_profesor) => {
+  const query = `
+    SELECT 
+      lm.id_licencia,
+      lm.folio,
+      lm.fecha_emision,
+      lm.fecha_inicio,
+      lm.fecha_fin,
+      lm.motivo_medico,
+      lm.estado,
+      u.id_usuario as id_estudiante,
+      u.nombre as nombre_estudiante,
+      u.correo_usuario as correo_estudiante,
+      c.id_curso,
+      c.codigo as codigo_curso,
+      c.nombre_curso,
+      c.semestre,
+      ca.hash as archivo_hash
+    FROM licenciamedica lm
+    JOIN usuario u ON lm.id_usuario = u.id_usuario
+    JOIN licencia_curso lc ON lm.id_licencia = lc.id_licencia
+    JOIN curso c ON lc.id_curso = c.id_curso
+    LEFT JOIN archivolicencia ca ON lm.id_licencia = ca.id_licencia
+    WHERE c.id_usuario = ?
+    ORDER BY lm.fecha_creacion DESC, lm.id_licencia DESC
+  `;
+  
+  const [rows] = await pool.query(query, [id_profesor]);
+  
+  // Agrupar licencias por id_licencia para manejar múltiples cursos
+  const licenciasMap = new Map();
+  
+  rows.forEach(row => {
+    const key = row.id_licencia;
+    
+    if (!licenciasMap.has(key)) {
+      licenciasMap.set(key, {
+        id_licencia: row.id_licencia,
+        folio: row.folio,
+        fecha_emision: row.fecha_emision,
+        fecha_inicio: row.fecha_inicio,
+        fecha_fin: row.fecha_fin,
+        motivo_medico: row.motivo_medico,
+        estado: row.estado,
+        id_estudiante: row.id_estudiante,
+        nombre_estudiante: row.nombre_estudiante,
+        correo_estudiante: row.correo_estudiante,
+        archivo_hash: row.archivo_hash,
+        cursos: []
+      });
+    }
+    
+    const licencia = licenciasMap.get(key);
+    
+    // Agregar curso si no está duplicado
+    if (row.id_curso && !licencia.cursos.find(c => c.id_curso === row.id_curso)) {
+      licencia.cursos.push({
+        id_curso: row.id_curso,
+        codigo_curso: row.codigo_curso,
+        nombre_curso: row.nombre_curso,
+        semestre: row.semestre
+      });
+    }
+  });
+  
+  return Array.from(licenciasMap.values());
+};
+
+export const getLicenciasByProfesorYCurso = async (id_profesor, id_curso) => {
+  const query = `
+    SELECT 
+      lm.id_licencia,
+      lm.folio,
+      lm.fecha_emision,
+      lm.fecha_inicio,
+      lm.fecha_fin,
+      lm.motivo_medico,
+      lm.estado,
+      u.id_usuario as id_estudiante,
+      u.nombre as nombre_estudiante,
+      u.correo_usuario as correo_estudiante,
+      c.id_curso,
+      c.codigo as codigo_curso,
+      c.nombre_curso,
+      ca.hash as archivo_hash
+    FROM licenciamedica lm
+    JOIN usuario u ON lm.id_usuario = u.id_usuario
+    JOIN licencia_curso lc ON lm.id_licencia = lc.id_licencia
+    JOIN curso c ON lc.id_curso = c.id_curso
+    LEFT JOIN archivolicencia ca ON lm.id_licencia = ca.id_licencia
+    WHERE c.id_usuario = ? AND c.id_curso = ?
+    ORDER BY lm.fecha_creacion DESC
+  `;
+  
+  const [rows] = await pool.query(query, [id_profesor, id_curso]);
+  
+  return rows.map(row => ({
+    id_licencia: row.id_licencia,
+    folio: row.folio,
+    fecha_emision: row.fecha_emision,
+    fecha_inicio: row.fecha_inicio,
+    fecha_fin: row.fecha_fin,
+    motivo_medico: row.motivo_medico,
+    estado: row.estado,
+    id_estudiante: row.id_estudiante,
+    nombre_estudiante: row.nombre_estudiante,
+    correo_estudiante: row.correo_estudiante,
+    archivo_hash: row.archivo_hash,
+    curso: {
+      id_curso: row.id_curso,
+      codigo_curso: row.codigo_curso,
+      nombre_curso: row.nombre_curso
+    }
+  }));
+};

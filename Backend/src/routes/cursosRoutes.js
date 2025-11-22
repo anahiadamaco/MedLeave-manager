@@ -1,100 +1,26 @@
 import express from "express";
-import pool from "../config/db.js";
+import * as CursoController from "../controllers/cursoController.js";
 import { authenticate } from "../middlewares/auth.js";
+import { requireRole, ROLES } from "../middlewares/authorizacion.js";
 
 const router = express.Router();
 
-/**
- * GET /api/cursos - Obtener cursos del alumno
- * Query: id_usuario (opcional, si no se pasa usa el del token)
- */
-router.get("/", authenticate, async (req, res) => {
-  try {
-    console.log("📍 [CURSOS] GET / recibida");
-    console.log(`🔑 [CURSOS] Usuario: ${req.user?.id_usuario}`);
-    
-    const id_usuario = req.query.id_usuario || req.user.id_usuario;
-    console.log(`📊 [CURSOS] Buscando cursos para usuario: ${id_usuario}`);
+// GET todos los cursos - Públicos (requiere autenticación)
+router.get("/", authenticate, CursoController.getCursos);
 
-    // Obtener cursos del alumno mediante la tabla matriculas
-    const [cursos] = await pool.query(
-      `SELECT 
-        c.id_curso,
-        c.codigo,
-        c.nombre_curso,
-        c.semestre,
-        c.seccion,
-        p.codigo as periodo_codigo,
-        u.nombre as profesor_nombre
-      FROM matriculas m
-      JOIN curso c ON m.id_curso = c.id_curso
-      JOIN periodosacademicos p ON c.id_periodo = p.id_periodo
-      JOIN usuario u ON c.id_usuario = u.id_usuario
-      WHERE m.id_usuario = ? AND p.activo = 1
-      ORDER BY c.semestre, c.codigo`,
-      [id_usuario]
-    );
+// GET cursos del profesor autenticado - Solo PROFESOR
+router.get("/profesor/mis-cursos", authenticate, requireRole(ROLES.PROFESOR), CursoController.getCursosByProfesor);
 
-    console.log(`✅ [CURSOS] ${cursos.length} cursos encontrados`);
-    
-    res.json({
-      success: true,
-      data: cursos,
-      message: `${cursos.length} cursos encontrados`,
-    });
-  } catch (error) {
-    console.error("❌ [CURSOS] Error en GET /cursos:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener cursos",
-      error: error.message,
-    });
-  }
-});
+// GET un curso específico
+router.get("/:id", authenticate, CursoController.getCurso);
 
-/**
- * GET /api/cursos/:id_curso - Obtener detalles de un curso
- */
-router.get("/:id_curso", authenticate, async (req, res) => {
-  try {
-    const { id_curso } = req.params;
+// POST crear curso - Solo PROFESOR
+router.post("/", authenticate, requireRole(ROLES.PROFESOR), CursoController.createCurso);
 
-    const [curso] = await pool.query(
-      `SELECT 
-        c.id_curso,
-        c.codigo,
-        c.nombre_curso,
-        c.semestre,
-        c.seccion,
-        p.codigo as periodo_codigo,
-        u.nombre as profesor_nombre,
-        u.correo_usuario as profesor_email
-      FROM curso c
-      JOIN periodosacademicos p ON c.id_periodo = p.id_periodo
-      JOIN usuario u ON c.id_usuario = u.id_usuario
-      WHERE c.id_curso = ?`,
-      [id_curso]
-    );
+// PUT actualizar curso - Solo PROFESOR (propietario)
+router.put("/:id", authenticate, requireRole(ROLES.PROFESOR), CursoController.updateCurso);
 
-    if (curso.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Curso no encontrado",
-      });
-    }
-
-    res.json({
-      success: true,
-      data: curso[0],
-    });
-  } catch (error) {
-    console.error("Error en GET /cursos/:id_curso:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener curso",
-      error: error.message,
-    });
-  }
-});
+// DELETE eliminar curso - Solo PROFESOR (propietario)
+router.delete("/:id", authenticate, requireRole(ROLES.PROFESOR), CursoController.deleteCurso);
 
 export default router;
